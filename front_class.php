@@ -191,7 +191,7 @@ class TwicPics {
     /* Treat figure background style attributes */
     foreach ( $dom->getElementsByTagName( 'figure' ) as $fig ) {
       /* not already treated */
-      if( $this->is_treated($fig->getAttribute( 'class' )) ) $this->treat_tag_for_bg($fig);
+      if( !$this->is_treated($fig->getAttribute( 'class' )) ) $this->treat_tag_for_bg($fig);
     }
 
     /* Return data without doctype and html/body */
