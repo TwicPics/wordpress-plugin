@@ -264,7 +264,10 @@ class TwicPics {
           if( strpos($value,'url(') === false ){ $new_style_attr.= $property.':'.$value.';'; break; }
           if( strpos($value,',') === false ){
             $value = trim($value);
+
+            /* remove "url(" and ")" */
             $bg_urls = array(substr($value,4,-1));
+
             $new_style_attr.= $property.':url('.$this->get_twic_src($bg_urls[0]).');';
           }else{
             /* multiple background not yet implemented */
@@ -277,6 +280,11 @@ class TwicPics {
       $tag->setAttribute('style',$new_style_attr);
       $tag->setAttribute('class', $tag->getAttribute( 'class' ) . " twic" );
       $tag->setAttribute('data-background', 'url('.$bg_urls[0].')' );
+
+      preg_match('/.+\-(\d+)x(\d+)\..+/', $bg_urls[0], $sizes);
+      if( isset($sizes[1]) && isset($sizes[2]) ){
+        $tag->setAttribute('data-background-transform', "cover={$sizes[1]}:{$sizes[2]}" );
+      }
     }
   }
 
