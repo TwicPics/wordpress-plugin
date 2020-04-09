@@ -1,0 +1,261 @@
+<?php
+defined( 'ABSPATH' ) || die( 'ERROR !' );
+
+/**
+ * The Class for TwicPics Front
+ */
+class TwicPics {
+  function __construct() {
+    $options = get_option( 'twicpics_options' );
+
+    $this->_url = defined('TWICPICS_URL')?TWICPICS_URL:($options['url']?:'https://i.twic.it/v1');
+
+    /* LQIP or placeholder */
+    $this->_lazyload = defined('TWICPICS_LAZYLOAD_TYPE')?TWICPICS_LAZYLOAD_TYPE:($options['lazyload_type']?:'placeholder');
+
+    /* Conf (colors or percent) depending on lazyload type */
+    $this->_lazyload_conf = defined('TWICPICS_LAZYLOAD_CONF')?TWICPICS_LAZYLOAD_CONF:$this->get_LazyLoad_conf();
+
+
+    $this->add_action('wp_enqueue_scripts','enqueue_scripts',1);
+    $this->add_action('wp_enqueue_scripts','enqueue_styles',1);
+    $this->add_filter('wp_get_attachment_image_attributes','image_attr',99);
+    $this->add_filter('the_content','content',99);
+
+    if( in_array('js_composer/js_composer.php', apply_filters('active_plugins', get_option('active_plugins') ) ) ){
+      $this->add_filter( 'get_post_metadata', 'js_composer', 10, 3 );
+    }
+
+    load_plugin_textdomain('twicpics',false, dirname( plugin_basename( __FILE__ ) ) . '/languages');
+  }
+
+  /**
+   * Provide the abilty to replace our add_action(s) with the prefix of "twicpics_" using the same params as the original add_action
+   */
+  private function add_action(string $tag, $function_to_add, int $priority = 10, int $accepted_args = 1){
+    if( function_exists('twicpics_'.$function_to_add) ) add_action($tag, 'twicpics_'.$function_to_add,$priority,$accepted_args);
+    else add_action($tag, array($this,$function_to_add),$priority,$accepted_args);
+  }
+
+  /**
+   * Provide the abilty to replace our add_filter(s) with the prefix of "twicpics_" using the same params as the original add_filter
+   */
+  private function add_filter(string $tag, $function_to_add, int $priority = 10, int $accepted_args = 1){
+    if( function_exists('twicpics_'.$function_to_add) ) add_filter($tag, 'twicpics_'.$function_to_add,$priority,$accepted_args);
+    else add_filter($tag, array($this,$function_to_add),$priority,$accepted_args);
+  }
+
+  /**
+   * Check if an elem has already been treated
+   *
+   * @param     string $class the element's class value
+   * @return    boolean true if already treated, false otherwise
+   */
+  private function is_treated($class){
+    return in_array('twic',explode( " ", $class ) );
+  }
+
+  /**
+   * Get the lazyload placeholder configuration
+   *
+   * @return    string the config
+   */
+  private function get_LazyLoad_conf(){
+    $options = get_option( 'twicpics_options' );
+    switch( $this->_lazyload ):
+      case 'placeholder' :
+        $colors = array();
+        if( isset($options['lazyload_placeholder_foreground']) && !empty($options['lazyload_placeholder_foreground']) ) array_push($colors,substr($options['lazyload_placeholder_foreground'],1));
+        if( isset($options['lazyload_placeholder_background']) && !empty($options['lazyload_placeholder_background']) ) array_push($colors,substr($options['lazyload_placeholder_background'],1));
+
+        return empty($colors)? "transparent" : implode("/",$colors);
+      break;
+      case "LQIP":
+        return (int) (isset($options['lazyload_lqip_percent']) && !empty($options['lazyload_lqip_percent']) )? $options['lazyload_lqip_percent'] : 2;
+      break;
+    endswitch;
+
+    return false;
+  }
+
+  /**
+   * Get the replacement src depending of the type of lazyload configured
+   *
+   * @param     string $src the original (cropped or not) src of the image
+   * @param     int|string $width if know the width of the image
+   * @param     int|string $height if know the height of the image
+   * @return    string the replacement src
+   */
+  private function get_twic_src($src,$width='',$height=''){
+    switch( $this->_lazyload ):
+      case 'LQIP': $src = $this->_url.'/resize='.$this->_lazyload_conf.'p/'.$this->get_full_src($src); break;
+      case 'placeholder' :
+        $src = $this->_url.'/placeholder:'.((!empty($width)&&!empty($height))? ($width*2).'x'.($height*2) : '10000x10000').':'.$this->_lazyload_conf;
+      break;
+    endswitch;
+    return $src;
+  }
+
+  /**
+   * Get the full src of a potential cropped image
+   *
+   * The method simply removes the -{width}x{height} added by WordPress
+   *
+   * @param     string $url the original (maybe cropped) url of the image
+   * @return    string the full src image url
+   */
+  private function get_full_src($url){
+    return preg_replace('/(.+)\-\d+x\d+(.+)/', '$1$2', $url);
+  }
+
+  /**
+   * Enqueue the TwicPics js script
+   */
+  public function enqueue_scripts(){ wp_enqueue_script('twicpics',$this->_url.'/script'); }
+
+  /**
+   * Echo inline style depending on lazyload type configured
+   */
+  public function enqueue_styles(){
+    switch( $this->_lazyload ):
+      case 'LQIP': echo '<style>.twic{filter:blur(10px);will-change:filter;transition:filter .2s linear;}.twic-done,.twic-background-done{filter:blur(0);}</style>'; break;
+      case 'placeholder' : echo '<style>.twic{opacity:0;will-change:opacity;transition:opacity .2s linear;}.twic-done,.twic-background-done{opacity:1;}</style>'; break;
+  	endswitch;
+  }
+
+  /**
+   * Treats image attributes returned by WordPress functions
+   *
+   * @param     array $attr The image attributes
+   * @return    array treated image attributes
+   */
+  public function image_attr($attr){
+    /* already treated */
+    if( $this->is_treated( $attr['class']?:"" ) ) return $attr;
+
+    $url = $attr['src']; if( strpos($url,'http') === false ) $url = home_url($url);
+    $attr['data-src'] = $this->get_full_src($url);
+    // $attr['data-src-transform'] = "focus=10px10p/cover=400x250";
+    if( !$attr['class'] ) $attr['class'] = 'twic'; else $attr['class'] .= ' twic';
+
+    unset($attr['srcset']); unset($attr['sizes']);
+
+    /* Speed load */
+    $attr['src'] = $this->get_twic_src($url,$attr['width'],$attr['height']);
+
+  	return $attr;
+  }
+
+  /**
+   * Treats WordPress content
+   *
+   * @param     string $original_content The original content
+   * @return    string the treated content
+   */
+  public function content($original_content){
+    if ( empty( $original_content ) ) return $original_content;
+    $modified_content = $original_content;
+    $dom = new DOMDocument();
+    libxml_use_internal_errors( true );
+    $dom->loadHTML( mb_convert_encoding($original_content, 'HTML-ENTITIES', 'UTF-8') );
+    libxml_clear_errors();
+
+    /* Treat img tags */
+    foreach ( $dom->getElementsByTagName( 'img' ) as $img ) {
+      /* already treated */
+      if( $this->is_treated($img->getAttribute( 'class' )) ) continue;
+
+      $url = $img->getAttribute( 'src' );
+      if( strpos($url,'/') === 0 ) $url = home_url($url);
+      if( strpos($url,'http') === false ) continue;
+
+      $img->setAttribute('data-src', $this->get_full_src($url) );
+      // $img->setAttribute('data-src-transform', "focus=10px10p/cover=400x250" );
+      $img->setAttribute('class', $img->getAttribute( 'class' ) . " twic" );
+
+      $img->removeAttribute('srcset'); $img->removeAttribute('sizes');
+
+      /* Speed load */
+      $img->setAttribute( 'src', $this->get_twic_src($url, $img->getAttribute( 'width' ), $img->getAttribute( 'height' )) );
+
+      $modified_content = $dom->saveHTML();
+    }
+
+    /* Treat div background style attributes and visual composer class .vc_custom */
+    foreach ( $dom->getElementsByTagName( 'div' ) as $div ) {
+      /* already treated */
+      if( $this->is_treated($div->getAttribute( 'class' )) ) continue;
+
+      /* check class for vc_custom */
+      if( strpos( $div->getAttribute( 'class' ), 'vc_custom_' ) !== false ){
+        global $vc_bg;
+        $classes = explode(" ",$div->getAttribute( 'class' ));
+        foreach($classes as $class){
+          if( strpos( $class, 'vc_custom_' ) === false ) continue;
+          $style = $div->getAttribute('style');
+          /* if no background image (others styles) */
+          if( !isset($vc_bg[$class]) ) continue;
+          if( empty($style) ) $style = 'background-image:url('.$vc_bg[$class].')'; else $style.= ';background-image:url('.$vc_bg[$class].')';
+          $div->setAttribute('style',$style);
+        }
+      }
+
+      $style_attr = $div->getAttribute('style'); if( empty($style_attr) || strpos($style_attr,'background') === false ) continue;
+      $styles = explode(";",$style_attr);
+      $new_style_attr = "";
+      foreach($styles as $rule){ if( empty(trim($rule)) ) continue;
+        list($property,$value) = explode(":",$rule,2);
+        switch( $property ){
+          case "background" :
+            if( strpos($value,'url(') === false ){ $new_style_attr.= $property.':'.$value.';'; break; }
+            if( strpos($value,',') === false ){
+              $value = trim($value);
+              $bg_urls = array(substr($value, strpos($value,'url(')+4, strpos($value,')',strpos($value,'url('))-4 ));
+              $new_style_attr.= $property.':'.str_replace($bg_urls[0], $this->get_twic_src($bg_urls[0]),$value).';';
+            }
+          break;
+          case "background-image" :
+            if( strpos($value,'url(') === false ){ $new_style_attr.= $property.':'.$value.';'; break; }
+            if( strpos($value,',') === false ){
+              $value = trim($value);
+              $bg_urls = array(substr($value,4,-1));
+              $new_style_attr.= $property.':url('.$this->get_twic_src($bg_urls[0]).');';
+            }else{
+              /* multiple background not yet implemented */
+            }
+          break;
+          default : $new_style_attr.= $property.':'.$value.';';
+        }
+      }
+      if( isset($bg_urls) && is_array($bg_urls) ){
+        $div->setAttribute('style',$new_style_attr);
+        $div->setAttribute('class', $div->getAttribute( 'class' ) . " twic" );
+        $div->setAttribute('data-background', 'url('.$bg_urls[0].')' );
+      }
+    }
+
+    /* Return data without doctype and html/body */
+    return apply_filters('twicpics_the_content_return',substr($dom->saveHTML($dom->getElementsByTagName('body')->item(0)), 6, -7),$original_content);
+	}
+
+  /**
+   * For Visual Composer, parse the css metadata to extract image urls associated with vc_custom_id and fill an global array
+   *
+   * @param     string $metadata the metadata value
+   * @param     int $object_id (not used) the post_id
+   * @param     string $meta_key the metakey associated to the metadata value
+   * @return    string the unmodified metadata
+   */
+  public function js_composer($metadata, $object_id, $meta_key){
+    if( ($meta_key != '_wpb_shortcodes_custom_css' && $meta_key != "_wpb_post_custom_css") || empty($metadata) ) return $metadata;
+    switch( $meta_key ){
+      case "_wpb_post_custom_css" : break;
+      case "_wpb_shortcodes_custom_css" :
+        global $vc_bg; if( !is_array($vc_bg) ) $vc_bg = array();
+        preg_match_all('/\.(vc_custom_\d+)\{background-image:\s?url\((.*)\)/', $metadata, $output_array);
+        if( !empty($output_array[1] ) ) $vc_bg = array_merge($vc_bg,array_combine ( $output_array[1] , $output_array[2] ));
+      break;
+    }
+    return $metadata;
+  }
+}
