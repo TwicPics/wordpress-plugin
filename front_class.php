@@ -162,23 +162,8 @@ class TwicPics {
 
     /* Treat img tags */
     foreach ( $dom->getElementsByTagName( 'img' ) as $img ) {
-      /* already treated */
-      if( $this->is_treated($img->getAttribute( 'class' )) ) continue;
-
-      $url = $img->getAttribute( 'src' );
-      if( strpos($url,'/') === 0 ) $url = home_url($url);
-      if( strpos($url,'http') === false ) continue;
-
-      $img->setAttribute('data-src', $this->get_full_src($url) );
-      // $img->setAttribute('data-src-transform', "focus=10px10p/cover=400x250" );
-      $img->setAttribute('class', $img->getAttribute( 'class' ) . " twic" );
-
-      $img->removeAttribute('srcset'); $img->removeAttribute('sizes');
-
-      /* Speed load */
-      $img->setAttribute( 'src', $this->get_twic_src($url, $img->getAttribute( 'width' ), $img->getAttribute( 'height' )) );
-
-      $modified_content = $dom->saveHTML();
+      /* not already treated */
+      if( !$this->is_treated($img->getAttribute( 'class' )) ) $this->treat_imgtag($img);
     }
 
     /* Treat div background style attributes and visual composer class .vc_custom */
@@ -186,7 +171,7 @@ class TwicPics {
       /* already treated */
       if( $this->is_treated($div->getAttribute( 'class' )) ) continue;
 
-      /* check class for vc_custom */
+      /* check class for vc_custom and add style for treatment */
       if( strpos( $div->getAttribute( 'class' ), 'vc_custom_' ) !== false ){
         global $vc_bg;
         $classes = explode(" ",$div->getAttribute( 'class' ));
@@ -200,43 +185,76 @@ class TwicPics {
         }
       }
 
-      $style_attr = $div->getAttribute('style'); if( empty($style_attr) || strpos($style_attr,'background') === false ) continue;
-      $styles = explode(";",$style_attr);
-      $new_style_attr = "";
-      foreach($styles as $rule){ if( empty(trim($rule)) ) continue;
-        list($property,$value) = explode(":",$rule,2);
-        switch( $property ){
-          case "background" :
-            if( strpos($value,'url(') === false ){ $new_style_attr.= $property.':'.$value.';'; break; }
-            if( strpos($value,',') === false ){
-              $value = trim($value);
-              $bg_urls = array(substr($value, strpos($value,'url(')+4, strpos($value,')',strpos($value,'url('))-4 ));
-              $new_style_attr.= $property.':'.str_replace($bg_urls[0], $this->get_twic_src($bg_urls[0]),$value).';';
-            }
-          break;
-          case "background-image" :
-            if( strpos($value,'url(') === false ){ $new_style_attr.= $property.':'.$value.';'; break; }
-            if( strpos($value,',') === false ){
-              $value = trim($value);
-              $bg_urls = array(substr($value,4,-1));
-              $new_style_attr.= $property.':url('.$this->get_twic_src($bg_urls[0]).');';
-            }else{
-              /* multiple background not yet implemented */
-            }
-          break;
-          default : $new_style_attr.= $property.':'.$value.';';
-        }
-      }
-      if( isset($bg_urls) && is_array($bg_urls) ){
-        $div->setAttribute('style',$new_style_attr);
-        $div->setAttribute('class', $div->getAttribute( 'class' ) . " twic" );
-        $div->setAttribute('data-background', 'url('.$bg_urls[0].')' );
-      }
+      $this->treat_tag_for_bg($div);
     }
 
     /* Return data without doctype and html/body */
     return apply_filters('twicpics_the_content_return',substr($dom->saveHTML($dom->getElementsByTagName('body')->item(0)), 6, -7),$original_content);
 	}
+
+  /**
+   * Treat dom node img tag
+   *
+   * @param     DOMNode $img The img tag node
+   * @return    void
+   */
+  private function treat_imgtag(&$img){
+    $url = $img->getAttribute( 'src' );
+
+    /* relative path */
+    if( strpos($url,'/') === 0 ) $url = home_url($url);
+    if( strpos($url,'http') === false ) return;
+
+    $img->setAttribute('data-src', $this->get_full_src($url) );
+    // $img->setAttribute('data-src-transform', "focus=10px10p/cover=400x250" );
+    $img->setAttribute('class', $img->getAttribute( 'class' ) . " twic" );
+
+    $img->removeAttribute('srcset'); $img->removeAttribute('sizes');
+
+    /* Speed load */
+    $img->setAttribute( 'src', $this->get_twic_src($url, $img->getAttribute( 'width' ), $img->getAttribute( 'height' )) );
+  }
+
+  /**
+   * Treat dom node for background
+   *
+   * @param     DOMNode $div The tag node
+   * @return    void
+   */
+  private function treat_tag_for_bg(&$tag){
+    $style_attr = $tag->getAttribute('style'); if( empty($style_attr) || strpos($style_attr,'background') === false ) return;
+    $styles = explode(";",$style_attr);
+    $new_style_attr = "";
+    foreach($styles as $rule){ if( empty(trim($rule)) ) return;
+      list($property,$value) = explode(":",$rule,2);
+      switch( $property ){
+        case "background" :
+          if( strpos($value,'url(') === false ){ $new_style_attr.= $property.':'.$value.';'; break; }
+          if( strpos($value,',') === false ){
+            $value = trim($value);
+            $bg_urls = array(substr($value, strpos($value,'url(')+4, strpos($value,')',strpos($value,'url('))-4 ));
+            $new_style_attr.= $property.':'.str_replace($bg_urls[0], $this->get_twic_src($bg_urls[0]),$value).';';
+          }
+        break;
+        case "background-image" :
+          if( strpos($value,'url(') === false ){ $new_style_attr.= $property.':'.$value.';'; break; }
+          if( strpos($value,',') === false ){
+            $value = trim($value);
+            $bg_urls = array(substr($value,4,-1));
+            $new_style_attr.= $property.':url('.$this->get_twic_src($bg_urls[0]).');';
+          }else{
+            /* multiple background not yet implemented */
+          }
+        break;
+        default : $new_style_attr.= $property.':'.$value.';';
+      }
+    }
+    if( isset($bg_urls) && is_array($bg_urls) ){
+      $tag->setAttribute('style',$new_style_attr);
+      $tag->setAttribute('class', $tag->getAttribute( 'class' ) . " twic" );
+      $tag->setAttribute('data-background', 'url('.$bg_urls[0].')' );
+    }
+  }
 
   /**
    * For Visual Composer, parse the css metadata to extract image urls associated with vc_custom_id and fill an global array
