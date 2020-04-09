@@ -212,13 +212,31 @@ class TwicPics {
     if( strpos($url,'http') === false ) return;
 
     $img->setAttribute('data-src', $this->get_full_src($url) );
-    // $img->setAttribute('data-src-transform', "focus=10px10p/cover=400x250" );
+
     $img->setAttribute('class', $img->getAttribute( 'class' ) . " twic" );
 
     $img->removeAttribute('srcset'); $img->removeAttribute('sizes');
 
+    $width = $height = "";
+    /* Get sizing */
+    if( $img->getAttribute( 'width' ) && $img->getAttribute( 'height' )){
+      /* treat only if both width & height */
+      $width = $img->getAttribute( 'width' );
+      $height = $img->getAttribute( 'height' );
+    }else{
+      /* check by filename */
+      preg_match('/.+\-(\d+)x(\d+)\..+/', $url, $sizes);
+      if( isset($sizes[1]) && isset($sizes[2]) ){
+        $width = $sizes[1];
+        $height = $sizes[2];
+      }
+    }
+    if( $width && $height ){
+      $img->setAttribute('data-src-transform', "cover={$width}x{$height}" );
+    }
+
     /* Speed load */
-    $img->setAttribute( 'src', $this->get_twic_src($url, $img->getAttribute( 'width' ), $img->getAttribute( 'height' )) );
+    $img->setAttribute( 'src', $this->get_twic_src($url, $width, $height) );
   }
 
   /**
