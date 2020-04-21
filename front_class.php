@@ -232,7 +232,7 @@ class TwicPics {
       }
     }
     if( $width && $height ){
-      $img->setAttribute('data-src-transform', "cover={$width}x{$height}" );
+      $img->setAttribute( 'data-src-transform', "cover={$width}x{$height}/auto" );
     }
 
     /* Speed load */
