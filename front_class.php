@@ -282,9 +282,6 @@ class TwicPics {
       $tag->setAttribute('data-background', 'url('.$bg_urls[0].')' );
 
       preg_match('/.+\-(\d+)x(\d+)\..+/', $bg_urls[0], $sizes);
-      if( isset($sizes[1]) && isset($sizes[2]) ){
-        $tag->setAttribute('data-background-transform', "cover={$sizes[1]}:{$sizes[2]}" );
-      }
     }
   }
 
