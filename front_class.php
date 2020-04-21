@@ -280,8 +280,6 @@ class TwicPics {
       $tag->setAttribute('style',$new_style_attr);
       $tag->setAttribute('class', $tag->getAttribute( 'class' ) . " twic" );
       $tag->setAttribute('data-background', 'url('.$bg_urls[0].')' );
-
-      preg_match('/.+\-(\d+)x(\d+)\..+/', $bg_urls[0], $sizes);
     }
   }
 
