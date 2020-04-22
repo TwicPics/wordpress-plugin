@@ -249,8 +249,10 @@ class TwicPics {
     $style_attr = $tag->getAttribute('style'); if( empty($style_attr) || strpos($style_attr,'background') === false ) return;
     $styles = explode(";",$style_attr);
     $new_style_attr = "";
+
     foreach($styles as $rule){ if( empty(trim($rule)) ) return;
       list($property,$value) = explode(":",$rule,2);
+
       switch( $property ){
         case "background" :
           if( strpos($value,'url(') === false ){ $new_style_attr.= $property.':'.$value.';'; break; }
@@ -260,6 +262,7 @@ class TwicPics {
             $new_style_attr.= $property.':'.str_replace($bg_urls[0], $this->get_twic_src($bg_urls[0]),$value).';';
           }
         break;
+
         case "background-image" :
           if( strpos($value,'url(') === false ){ $new_style_attr.= $property.':'.$value.';'; break; }
           if( strpos($value,',') === false ){
@@ -273,13 +276,24 @@ class TwicPics {
             /* multiple background not yet implemented */
           }
         break;
+
+        case "background-position":
+          $coordinates = explode( " ", $value );
+          $x = str_replace( '%', '', $coordinates[0] );
+          $y = str_replace( '%', '', $coordinates[1] );
+          break;
+
         default : $new_style_attr.= $property.':'.$value.';';
       }
     }
+    
     if( isset($bg_urls) && is_array($bg_urls) ){
       $tag->setAttribute('style',$new_style_attr);
       $tag->setAttribute('class', $tag->getAttribute( 'class' ) . " twic" );
       $tag->setAttribute('data-background', 'url('.$bg_urls[0].')' );
+
+      if ( isset( $x ) && isset( $y ) )
+        $tag->setAttribute('data-background-transform', "focus={$x}px{$y}p/auto");
     }
   }
 
