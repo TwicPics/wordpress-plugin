@@ -292,8 +292,10 @@ class TwicPics {
       $tag->setAttribute('class', $tag->getAttribute( 'class' ) . " twic" );
       $tag->setAttribute('data-background', 'url('.$bg_urls[0].')' );
 
-      if ( isset( $x ) && isset( $y ) )
-        $tag->setAttribute('data-background-transform', "focus={$x}px{$y}p/auto");
+      if ( isset( $x ) && isset( $y ) ) {
+        if ( $x != 50 && $y != 50 ) 
+          $tag->setAttribute('data-background-transform', "focus={$x}px{$y}p/auto");
+      }   
     }
   }
 
