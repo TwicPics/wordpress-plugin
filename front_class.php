@@ -295,7 +295,11 @@ class TwicPics {
       if ( isset( $x ) && isset( $y ) ) {
         if ( $x != 50 || $y != 50 ) 
           $tag->setAttribute('data-background-transform', "focus={$x}px{$y}p/auto");
-      }   
+      }
+      
+      foreach ( $tag->getElementsByTagName( 'img' ) as $img ) {
+        $tag->removeChild( $img );
+      }
     }
   }
 
