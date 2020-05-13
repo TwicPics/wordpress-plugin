@@ -8,7 +8,9 @@ class TwicPics {
   function __construct() {
     $options = get_option( 'twicpics_options' );
 
-    $this->_url = defined('TWICPICS_URL')?TWICPICS_URL:($options['url']?:'https://i.twic.it/v1');
+    $this->_url = 'https://'. (
+      defined('TWICPICS_URL')? TWICPICS_URL : ( ($options['url']?:'i.twic.it') )
+    ) . '/v1' ;
 
     /* LQIP or placeholder */
     $this->_lazyload = defined('TWICPICS_LAZYLOAD_TYPE')?TWICPICS_LAZYLOAD_TYPE:($options['lazyload_type']?:'placeholder');
