@@ -54,7 +54,9 @@ class TwicPics {
    * @return    boolean true if already treated, false otherwise
    */
   private function is_treated($class){
-    return in_array('twic',explode( " ", $class ) );
+    return
+      in_array('twic',explode( " ", $class ) ) ||
+      in_array('notwic',explode( " ", $class ) );
   }
 
   /**
