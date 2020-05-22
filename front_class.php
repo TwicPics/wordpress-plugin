@@ -12,8 +12,8 @@ class TwicPics {
       defined('TWICPICS_URL')? TWICPICS_URL : ( ($options['url']?:'i.twic.it') )
     ) . '/v1' ;
 
-    /* LQIP or placeholder */
-    $this->_lazyload = defined('TWICPICS_LAZYLOAD_TYPE')?TWICPICS_LAZYLOAD_TYPE:($options['lazyload_type']?:'placeholder');
+    /* placeholder */
+    $this->_lazyload = defined('TWICPICS_LAZYLOAD_TYPE')?TWICPICS_LAZYLOAD_TYPE:'placeholder';
 
     /* Conf (colors or percent) depending on lazyload type */
     $this->_lazyload_conf = defined('TWICPICS_LAZYLOAD_CONF')?TWICPICS_LAZYLOAD_CONF:$this->get_LazyLoad_conf();
@@ -67,16 +67,7 @@ class TwicPics {
   private function get_LazyLoad_conf(){
     $options = get_option( 'twicpics_options' );
     switch( $this->_lazyload ):
-      case 'placeholder' :
-        $colors = array();
-        if( isset($options['lazyload_placeholder_foreground']) && !empty($options['lazyload_placeholder_foreground']) ) array_push($colors,substr($options['lazyload_placeholder_foreground'],1));
-        if( isset($options['lazyload_placeholder_background']) && !empty($options['lazyload_placeholder_background']) ) array_push($colors,substr($options['lazyload_placeholder_background'],1));
-
-        return empty($colors)? "transparent" : implode("/",$colors);
-      break;
-      case "LQIP":
-        return (int) (isset($options['lazyload_lqip_percent']) && !empty($options['lazyload_lqip_percent']) )? $options['lazyload_lqip_percent'] : 2;
-      break;
+      case 'placeholder' : return "transparent"; break;
     endswitch;
 
     return false;
@@ -92,7 +83,6 @@ class TwicPics {
    */
   private function get_twic_src($src,$width='',$height=''){
     switch( $this->_lazyload ):
-      case 'LQIP': $src = $this->_url.'/resize='.$this->_lazyload_conf.'p/'.$this->get_full_src($src); break;
       case 'placeholder' :
         $src = $this->_url.'/placeholder:'.((!empty($width)&&!empty($height))? ($width*2).'x'.($height*2) : '10000x10000').':'.$this->_lazyload_conf;
       break;
@@ -122,7 +112,6 @@ class TwicPics {
    */
   public function enqueue_styles(){
     switch( $this->_lazyload ):
-      case 'LQIP': echo '<style>.twic{filter:blur(10px);will-change:filter;transition:filter .2s linear;}.twic-done,.twic-background-done{filter:blur(0);}</style>'; break;
       case 'placeholder' : echo '<style>.twic{opacity:0;will-change:opacity;transition:opacity .2s linear;}.twic-done,.twic-background-done{opacity:1;}</style>'; break;
   	endswitch;
   }
