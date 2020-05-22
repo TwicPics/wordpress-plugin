@@ -60,6 +60,18 @@ class TwicPics {
   }
 
   /**
+   * Check if an url is on the same domain
+   *
+   * @param     string $url_to_check the url to check
+   * @return    boolean true if on same domain, false otherwise
+   */
+  private function is_on_same_domain($url_to_check){
+    preg_match('/:\/\/([^\/?#]*)/', get_bloginfo('url'), $domain);
+    preg_match('/:\/\/([^\/?#]*)/', $url_to_check, $url);
+    return $domain[1] === $url[1];
+  }
+
+  /**
    * Get the lazyload placeholder configuration
    *
    * @return    string the config
@@ -203,6 +215,7 @@ class TwicPics {
     /* relative path */
     if( strpos($url,'/') === 0 ) $url = home_url($url);
     if( strpos($url,'http') === false ) return;
+    if( !$this->is_on_same_domain($url) ) return;
 
     $img->setAttribute('data-src', $this->get_full_src($url) );
 
@@ -280,7 +293,7 @@ class TwicPics {
       }
     }
 
-    if( isset($bg_urls) && is_array($bg_urls) ){
+    if( isset($bg_urls) && is_array($bg_urls) && $this->is_on_same_domain($bg_urls[0]) ){
       $tag->setAttribute('style',$new_style_attr);
       $tag->setAttribute('class', $tag->getAttribute( 'class' ) . " twic" );
       $tag->setAttribute('data-background', 'url('.$bg_urls[0].')' );
