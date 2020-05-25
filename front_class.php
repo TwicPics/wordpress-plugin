@@ -145,11 +145,28 @@ class TwicPics {
 
     $url = $attr['src']; if( strpos($url,'http') === false ) $url = home_url($url);
     $attr['data-src'] = $this->get_full_src($url);
-    // $attr['data-src-transform'] = "focus=10px10p/cover=400x250";
+
     if( !$attr['class'] ) $attr['class'] = 'twic'; else $attr['class'] .= ' twic';
 
     unset($attr['srcset']); unset($attr['sizes']);
 
+    $width = $height = "";
+    /* Get sizing */
+    if( $attr['width'] && $attr['height'] ){
+      /* treat only if both width & height */
+      $width = $attr['width'];
+      $height = $attr['height'];
+    }else{
+      /* check by filename */
+      preg_match('/.+\-(\d+)x(\d+)\..+/', $url, $sizes);
+      if( isset($sizes[1]) && isset($sizes[2]) ){
+        $width = $sizes[1];
+        $height = $sizes[2];
+      }
+    }
+    if( $width && $height ){
+      $attr['data-src-transform'] = "cover={$width}x{$height}/auto";
+    }
     /* Speed load */
     $attr['src'] = $this->get_twic_src($url,$attr['width'],$attr['height']);
 
