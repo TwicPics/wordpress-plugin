@@ -111,7 +111,12 @@ class TwicPics {
    * @return    string the full src image url
    */
   private function get_full_src($url){
-    return preg_replace('/(.+)\-\d+x\d+(.+)/', '$1$2', $url);
+    global $wpdb;
+    $base_url = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $url );
+    $image = $wpdb->get_col($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE guid='%s' OR guid='%s';", $base_url, $url ));
+
+    if(!empty($image)) return wp_get_attachment_image_src( (int) $image[0], 'full' )[0];
+    else return preg_replace('/(.+)\-\d+x\d+(.+)/', '$1$2', $url);
   }
 
   /**
