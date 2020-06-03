@@ -22,6 +22,7 @@ class TwicPics {
     $this->add_action('wp_enqueue_scripts','enqueue_scripts',1);
     $this->add_action('wp_enqueue_scripts','enqueue_styles',1);
     $this->add_filter('wp_get_attachment_image_attributes','image_attr',99);
+    $this->add_filter('post_thumbnail_html','append_noscript_tag',99);
     $this->add_filter('the_content','content',99);
 
     if( in_array('js_composer/js_composer.php', apply_filters('active_plugins', get_option('active_plugins') ) ) ){
@@ -174,6 +175,23 @@ class TwicPics {
   }
 
   /**
+   * Treats get_post_thumbnail html return to append a noscript tag
+   *
+   * @param     string $html The img tag html content
+   * @return    string the $imgtag with noscript appended
+   */
+  public function append_noscript_tag($html){
+    $dom = new DOMDocument();
+    libxml_use_internal_errors( true );
+    $dom->loadHTML( mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8') );
+    libxml_clear_errors();
+
+    $img = $dom->getElementsByTagName( 'img' )->item(0);
+    $noscript = '<noscript><img src="' . $img->getAttribute('data-src') . '" alt="' . $img->getAttribute('alt') . '" ></noscript>';
+    return $html.$noscript;
+  }
+
+  /**
    * Treats WordPress content
    *
    * @param     string $original_content The original content
@@ -225,6 +243,15 @@ class TwicPics {
     return apply_filters('twicpics_the_content_return',substr($dom->saveHTML($dom->getElementsByTagName('body')->item(0)), 6, -7),$original_content);
 	}
 
+  private function add_noscript_tag(&$img,&$dom){
+    $noscript = $dom->createElement('noscript');
+    $img_cloned = $dom->createElement('img');
+    $img_cloned->setAttribute('src', $img->getAttribute('data-src'));
+    $img_cloned->setAttribute('alt', $img->getAttribute('alt'));
+    $noscript->appendChild( $img_cloned );
+    $img->parentNode->appendChild( $noscript );
+  }
+
   /**
    * Treat dom node img tag
    *
@@ -265,16 +292,11 @@ class TwicPics {
       $img->setAttribute( 'data-src-transform', "cover={$width}x{$height}/auto" );
     }
 
-    /* noscript for SEO */
-    $noscript = $dom->createElement('noscript');
-    $img_cloned = $dom->createElement('img');
-    $img_cloned->setAttribute('src', $img->getAttribute('data-src'));
-    $img_cloned->setAttribute('alt', $img->getAttribute('alt'));
-    $noscript->appendChild( $img_cloned );
-    $img->parentNode->appendChild( $noscript );
-
     /* Speed load */
     $img->setAttribute( 'src', $this->get_twic_src($url, $width, $height) );
+
+    /* noscript for SEO */
+    $this->add_noscript_tag($img,$dom);
   }
 
   /**
