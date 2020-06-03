@@ -190,7 +190,7 @@ class TwicPics {
     /* Treat img tags */
     foreach ( $dom->getElementsByTagName( 'img' ) as $img ) {
       /* not already treated */
-      if( !$this->is_treated($img->getAttribute( 'class' )) ) $this->treat_imgtag($img);
+      if( !$this->is_treated($img->getAttribute( 'class' )) ) $this->treat_imgtag($img,$dom);
     }
 
     /* Treat div background style attributes and visual composer class .vc_custom */
@@ -229,15 +229,17 @@ class TwicPics {
    * Treat dom node img tag
    *
    * @param     DOMNode $img The img tag node
+   * @param     DOMDocument $dom The dom document
    * @return    void
    */
-  private function treat_imgtag(&$img){
+  private function treat_imgtag(&$img,&$dom){
     $url = $img->getAttribute( 'src' );
 
     /* relative path */
     if( strpos($url,'/') === 0 ) $url = home_url($url);
     if( strpos($url,'http') === false ) return;
     if( !$this->is_on_same_domain($url) ) return;
+    if( $img->parentNode->tagName == 'noscript' ) return;
 
     $img->setAttribute('data-src', $this->get_full_src($url) );
 
@@ -262,6 +264,14 @@ class TwicPics {
     if( $width && $height ){
       $img->setAttribute( 'data-src-transform', "cover={$width}x{$height}/auto" );
     }
+
+    /* noscript for SEO */
+    $noscript = $dom->createElement('noscript');
+    $img_cloned = $dom->createElement('img');
+    $img_cloned->setAttribute('src', $img->getAttribute('data-src'));
+    $img_cloned->setAttribute('alt', $img->getAttribute('alt'));
+    $noscript->appendChild( $img_cloned );
+    $img->parentNode->appendChild( $noscript );
 
     /* Speed load */
     $img->setAttribute( 'src', $this->get_twic_src($url, $width, $height) );
