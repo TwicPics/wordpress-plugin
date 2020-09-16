@@ -97,7 +97,8 @@ class TwicPics {
   private function get_twic_src($src,$width='',$height=''){
     switch( $this->_lazyload ):
       case 'placeholder' :
-        $src = $this->_url.'/placeholder:'.((!empty($width)&&!empty($height))? ($width*2).'x'.($height*2) : '10000x10000').':'.$this->_lazyload_conf;
+        if( !empty($width) && !empty($height) )
+          $src = $this->_url.'/placeholder:'.$width.'x'.$height.':'.$this->_lazyload_conf;
       break;
     endswitch;
     return $src;
@@ -181,13 +182,14 @@ class TwicPics {
    * @return    string the $imgtag with noscript appended
    */
   public function append_noscript_tag($html){
-    $dom = new DOMDocument();
+    if( empty($html) ) return $html;
+    $dom = new DOMDocument(); $noscript = "";
     libxml_use_internal_errors( true );
     $dom->loadHTML( mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8') );
     libxml_clear_errors();
 
     $img = $dom->getElementsByTagName( 'img' )->item(0);
-    $noscript = '<noscript><img src="' . $img->getAttribute('data-src') . '" alt="' . $img->getAttribute('alt') . '" ></noscript>';
+    if( $img ) $noscript = '<noscript><img src="' . $img->getAttribute('data-src') . '" alt="' . $img->getAttribute('alt') . '" ></noscript>';
     return $html.$noscript;
   }
 
