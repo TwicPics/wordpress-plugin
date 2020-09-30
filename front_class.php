@@ -164,6 +164,15 @@ class TwicPics {
       if( isset($sizes[1]) && isset($sizes[2]) ){
         $width = $sizes[1];
         $height = $sizes[2];
+      }else{
+        $file = str_replace(content_url(),WP_CONTENT_DIR,$url);
+        if( file_exists( $file ) ){
+          $sizes = getimagesize( $file );
+          if( isset($sizes[0]) && isset($sizes[1]) ){
+            $width = $sizes[0];
+            $height = $sizes[1];
+          }
+        }
       }
     }
     if( $width && $height ){
@@ -288,6 +297,15 @@ class TwicPics {
       if( isset($sizes[1]) && isset($sizes[2]) ){
         $width = $sizes[1];
         $height = $sizes[2];
+      }else{
+        $file = str_replace(content_url(),WP_CONTENT_DIR,$url);
+        if( file_exists( $file ) ){
+          $sizes = getimagesize( $file );
+          if( isset($sizes[0]) && isset($sizes[1]) ){
+            $width = $sizes[0];
+            $height = $sizes[1];
+          }
+        }
       }
     }
     if( $width && $height ){
