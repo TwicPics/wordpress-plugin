@@ -135,7 +135,7 @@ msgid "Twicpics - Responsive Images as a Service"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
-msgid "https://www.twicpics.com/"
+msgid "https://www.twicpics.com/wordpress"
 msgstr ""
 
 #. Description of the plugin/theme
