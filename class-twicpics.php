@@ -17,9 +17,10 @@ class TwicPics {
 		$this->_lazyload = defined( 'TWICPICS_LAZYLOAD_TYPE' ) ? TWICPICS_LAZYLOAD_TYPE : 'placeholder';
 
 		/* Conf (colors or percent) depending on lazyload type */
-		$this->_lazyload_conf = defined( 'TWICPICS_LAZYLOAD_CONF' ) ? TWICPICS_LAZYLOAD_CONF : $this->get_lazyload_conf();
+        $this->_lazyload_conf = defined( 'TWICPICS_LAZYLOAD_CONF' ) ? TWICPICS_LAZYLOAD_CONF : $this->get_lazyload_conf();
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts', 1 );
-		$this->add_action( 'wp_enqueue_scripts', 'enqueue_styles', 1 );
+        $this->add_action( 'wp_enqueue_scripts', 'enqueue_styles', 1 );
+        $this->add_filter( 'script_loader_tag', 'add_async_defer_to_twicpics_script', 10, 3 );
 		$this->add_filter( 'wp_get_attachment_image_attributes', 'image_attr', 99 );
 		$this->add_filter( 'post_thumbnail_html', 'append_noscript_tag', 99 );
 		$this->add_filter( 'the_content', 'content', 99 );
@@ -143,11 +144,29 @@ class TwicPics {
 	}
 
 	/**
-	 * Enqueue the TwicPics js script
+	 * Enqueues the TwicPics JS script
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_script( 'twicpics', $this->_url . '/script', array(), $ver = null, true );
-	}
+    }
+ 
+    /**
+     * Allows TwicPics Script to be loaded in async/defer mode
+     */
+    public function add_async_defer_to_twicpics_script( $tag, $handle, $src ) {
+
+        if ( 'twicpics' === $handle ) {
+            if ( false === stripos( $tag, 'defer' ) ) {
+                $tag = str_replace( ' src', ' defer src', $tag );
+            }
+
+            if ( false === stripos( $tag, 'async' ) ) {
+                $tag = str_replace( '<script ', '<script async ', $tag );  
+            }
+        }
+    
+        return $tag;
+    }
 
 	/**
 	 * Echo inline style depending on lazyload type configured
