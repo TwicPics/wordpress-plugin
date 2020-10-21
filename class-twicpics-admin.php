@@ -66,16 +66,16 @@ class TwicPics_Admin {
 	public function settings_init() {
 		register_setting( 'twicpics', 'twicpics_options' );
 
-		add_settings_section( 'twicpics_section_identity', __( 'Identity', 'twicppics' ), array( $this, 'section_identity' ), 'twicpics' );
+		add_settings_section( 'twicpics_section_account_settings', __( 'Account Settings', 'twicpics' ), array( $this, 'section_account_settings' ), 'twicpics' );
 		add_settings_field(
 			'twicpics_field_url',
-			__( 'Custom Url', 'twicpics' ),
+			__( 'TwicPics Domain', 'twicpics' ),
 			array( $this, 'field_textinput' ),
 			'twicpics',
-			'twicpics_section_identity',
+			'twicpics_section_account_settings',
 			array(
 				'label_for'   => 'url',
-				'description' => esc_html( __( 'Fill your twicpics url in this field', 'twicpics' ) ),
+				'description' => esc_html( __( 'Fill in your TwicPics domain in this field.', 'twicpics' ) ),
 			)
 		);
 	}
@@ -85,13 +85,14 @@ class TwicPics_Admin {
 	 *
 	 * @param     array $args Displays arguments.
 	 */
-	public function section_identity( $args ) {
+	public function section_account_settings( $args ) {
 		?>
 	<p id="<?php echo esc_attr( $args['id'] ); ?>">
 		<?php
 		echo sprintf(
-			__( 'In this section, you can set your registred TwicPics url. You can find it in your <a href="%1$s" target="_blank">account</a>', 'twicpics' ),
-			'https://account.twicpics.com/login'
+			__( 'Set your <strong>TwicPics domain</strong> here to begin with your images optimization.<br />To get your domain, go to your <a href="%1$s" target="_blank">TwicPics account</a>.<br />For more information, please refer to <a href="%2$s" target="_blank">TwicPics documentation</a>.', 'twicpics' ),
+      'https://account.twicpics.com/login',
+      'https://www.twicpics.com/documentation/subdomain/'
 		);
 		?>
 	</p>
