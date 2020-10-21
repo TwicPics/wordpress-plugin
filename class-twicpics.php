@@ -147,7 +147,7 @@ class TwicPics {
 	 * Enqueues the TwicPics JS script
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script( 'twicpics', $this->_url . '/script', array(), $ver = null, true );
+		wp_enqueue_script( 'twicpics', $this->_url . '/script', array(), $ver = null, false );
     }
  
     /**
