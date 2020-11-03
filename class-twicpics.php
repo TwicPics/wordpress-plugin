@@ -14,7 +14,7 @@ class TwicPics {
 		) . '/v1';
 
 		/* placeholder */
-		$this->_lazyload = defined( 'TWICPICS_LAZYLOAD_TYPE' ) ? TWICPICS_LAZYLOAD_TYPE : 'placeholder';
+		$this->_lazyload = defined( 'TWICPICS_LAZYLOAD_TYPE' ) ? TWICPICS_LAZYLOAD_TYPE : 'preview_placeholder';
 
 		/* Conf (colors or percent) depending on lazyload type */
 		$this->_lazyload_conf = defined( 'TWICPICS_LAZYLOAD_CONF' ) ? TWICPICS_LAZYLOAD_CONF : $this->get_lazyload_conf();
@@ -95,8 +95,8 @@ class TwicPics {
 	private function get_lazyload_conf() {
 		$options = get_option( 'twicpics_options' );
 		switch ( $this->_lazyload ) :
-			case 'placeholder':
-				return 'transparent';
+			case 'preview_placeholder':
+				return 'output=preview';
 		endswitch;
 
 		return false;
@@ -112,9 +112,9 @@ class TwicPics {
 	 */
 	private function get_twic_src( $src, $width = '', $height = '' ) {
 		switch ( $this->_lazyload ) :
-			case 'placeholder':
+			case 'preview_placeholder':
 				if ( ! empty( $width ) && ! empty( $height ) ) {
-					$src = $this->_url . '/placeholder:' . $width . 'x' . $height . ':' . $this->_lazyload_conf;
+					$src = chop( $this->_url, 'v1' ) . $src . '?twic=v1/cover=' . $width . 'x' . $height . '/' . $this->_lazyload_conf;
 				}
 				break;
 		endswitch;
