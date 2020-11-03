@@ -90,9 +90,9 @@ class TwicPics_Admin {
 	<p id="<?php echo esc_attr( $args['id'] ); ?>">
 		<?php
 		echo sprintf(
-			__( 'Set your <strong>TwicPics domain</strong> here to begin with your images optimization.<br />To get your domain, go to your <a href="%1$s" target="_blank">TwicPics account</a>.<br />For more information, please refer to <a href="%2$s" target="_blank">TwicPics documentation</a>.', 'twicpics' ),
-      'https://account.twicpics.com/login',
-      'https://www.twicpics.com/documentation/subdomain/'
+			esc_html( __( 'Set your <strong>TwicPics domain</strong> here to begin with your images optimization.<br />To get your domain, go to your <a href="%1$s" target="_blank">TwicPics account</a>.<br />For more information, please refer to <a href="%2$s" target="_blank">TwicPics documentation</a>.', 'twicpics' ) ),
+			'https://account.twicpics.com/login',
+			'https://www.twicpics.com/documentation/subdomain/'
 		);
 		?>
 	</p>
