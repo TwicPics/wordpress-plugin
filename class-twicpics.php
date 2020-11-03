@@ -19,7 +19,6 @@ class TwicPics {
 		/* Conf (colors or percent) depending on lazyload type */
 		$this->_lazyload_conf = defined( 'TWICPICS_LAZYLOAD_CONF' ) ? TWICPICS_LAZYLOAD_CONF : $this->get_lazyload_conf();
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts', 1 );
-		$this->add_action( 'wp_enqueue_scripts', 'enqueue_styles', 1 );
 		$this->add_filter( 'script_loader_tag', 'add_async_defer_to_twicpics_script', 10, 3 );
 		$this->add_filter( 'wp_get_attachment_image_attributes', 'image_attr', 99 );
 		$this->add_filter( 'post_thumbnail_html', 'append_noscript_tag', 99 );
@@ -170,17 +169,6 @@ class TwicPics {
 		}
 
 		return $tag;
-	}
-
-	/**
-	 * Echo inline style depending on lazyload type configured
-	 */
-	public function enqueue_styles() {
-		switch ( $this->_lazyload ) :
-			case 'placeholder':
-				echo '<style>.twic{opacity:0;will-change:opacity;transition:opacity .2s linear;}.twic-done,.twic-background-done{opacity:1;}</style>';
-				break;
-		endswitch;
 	}
 
 	/**
