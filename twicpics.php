@@ -1,6 +1,6 @@
 <?php
 /**
- * TwicPics - Responsive Images as a Service
+ * Real Time Responsive Images Plugin for WordPress by TwicPics
  *
  * @link             https://www.twicpics.com/
  * @package          TwicPics_Responsive_Image_As_A_Service
@@ -8,7 +8,7 @@
  * @license          gpl-2.0
  *
  * @wordpress-plugin
- * Plugin Name:      TwicPics - Responsive Images as a Service
+ * Plugin Name:      Real Time Responsive Images Plugin for WordPress by TwicPics
  * Plugin URI:       https://www.twicpics.com/wordpress
  * Description:      Delivers pixel perfect images on the fly.
  * Version:          1.0
