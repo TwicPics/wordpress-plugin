@@ -16,7 +16,9 @@ class TwicPics_Admin {
 	 * Add the settings's menu under the upload section
 	 */
 	public function options_page() {
+		add_menu_page( __( 'TwicPics Options', 'twicpics' ), 'TwicPics', 'manage_options', 'twicpics', array( $this, 'render_config_page' ), '', null );
 		add_submenu_page( 'upload.php', __( 'TwicPics Options', 'twicpics' ), 'TwicPics', 'manage_options', 'twicpics', array( $this, 'render_config_page' ) );
+		add_submenu_page( 'options-general.php', __( 'TwicPics Options', 'twicpics' ), 'TwicPics', 'manage_options', 'twicpics', array( $this, 'render_config_page' ) );
 	}
 
 	/**
@@ -90,7 +92,7 @@ class TwicPics_Admin {
 	<p id="<?php echo esc_attr( $args['id'] ); ?>">
 		<?php
 		echo sprintf(
-			__( 'Set your <strong>TwicPics domain</strong> here to begin with your images optimization.<br />To get your domain, go to your <a href="%1$s" target="_blank">TwicPics account</a>.<br />For more information, please refer to <a href="%2$s" target="_blank">TwicPics documentation</a>.', 'twicpics' ),
+			__( '<p> Set your <strong>TwicPics domain</strong> here to begin with your images optimization.<br />You can get your domain by going to your <a href="%1$s" target="_blank">TwicPics account</a>.<p><em>For more information about TwicPics domain, please refer to the <a href="%2$s" target="_blank">documentation</a>.</em></p>', 'twicpics' ),
 			'https://account.twicpics.com/login',
 			'https://www.twicpics.com/documentation/subdomain/'
 		);
