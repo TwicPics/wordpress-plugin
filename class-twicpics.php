@@ -72,7 +72,8 @@ class TwicPics {
 	 * @return boolean true if already treated, false otherwise
 	 */
 	private function is_treated( $class ) {
-		return in_array( 'twic', explode( ' ', $class ), true ) || in_array( 'notwic', explode( ' ', $class ), true );
+		// return in_array( 'twic', explode( ' ', $class ), true ) || in_array( 'notwic', explode( ' ', $class ), true );
+		return in_array( 'notwic', explode( ' ', $class ), true );
 	}
 
 	/**
@@ -189,13 +190,7 @@ class TwicPics {
 			$url = home_url( $url );
 		}
 
-		$attributes['data-src'] = $this->get_full_src( $url );
-
-		if ( ! $attributes['class'] ) {
-			$attributes['class'] = 'twic';
-		} else {
-			$attributes['class'] .= ' twic';
-		}
+		$attributes['data-twic-src'] = $this->get_full_src( $url );
 
 		unset( $attributes['srcset'] );
 		unset( $attributes['sizes'] );
@@ -230,7 +225,7 @@ class TwicPics {
 		}
 
 		if ( $width && $height ) {
-			$attributes['data-src-transform'] = "cover={$width}x{$height}/auto";
+			$attributes['data-twic-src-transform'] = "cover={$width}x{$height}/auto";
 		}
 		/* Speed load */
 		$attributes['src'] = $this->get_twic_src( $url, $attributes['width'], $attributes['height'] );
@@ -256,7 +251,7 @@ class TwicPics {
 
 		$img = $dom->getElementsByTagName( 'img' )->item( 0 );
 		if ( $img ) {
-			$noscript = '<noscript><img src="' . $img->getAttribute( 'data-src' ) . '" alt="' . $img->getAttribute( 'alt' ) . '" ></noscript>';
+			$noscript = '<noscript><img src="' . $img->getAttribute( 'data-twic-src' ) . '" alt="' . $img->getAttribute( 'alt' ) . '" ></noscript>';
 		}
 		return $html . $noscript;
 	}
@@ -340,7 +335,7 @@ class TwicPics {
 	private function add_noscript_tag( &$img, &$dom ) {
 		$noscript   = $dom->createElement( 'noscript' );
 		$img_cloned = $dom->createElement( 'img' );
-		$img_cloned->setAttribute( 'src', $img->getAttribute( 'data-src' ) );
+		$img_cloned->setAttribute( 'src', $img->getAttribute( 'data-twic-src' ) );
 		$img_cloned->setAttribute( 'alt', $img->getAttribute( 'alt' ) );
 		$noscript->appendChild( $img_cloned );
 		$img->parentNode->appendChild( $noscript );
@@ -370,9 +365,7 @@ class TwicPics {
 			return;
 		}
 
-		$img->setAttribute( 'data-src', $this->get_full_src( $url ) );
-		$img->setAttribute( 'class', $img->getAttribute( 'class' ) . ' twic' );
-
+		$img->setAttribute( 'data-twic-src', $this->get_full_src( $url ) );
 		$img->removeAttribute( 'srcset' );
 		$img->removeAttribute( 'sizes' );
 
@@ -403,7 +396,7 @@ class TwicPics {
 			}
 		}
 		if ( $width && $height ) {
-			$img->setAttribute( 'data-src-transform', "cover={$width}x{$height}/auto" );
+			$img->setAttribute( 'data-twic-src-transform', "cover={$width}x{$height}/auto" );
 		}
 
 		/* Speed load */
@@ -476,12 +469,11 @@ class TwicPics {
 
 		if ( isset( $bg_urls ) && is_array( $bg_urls ) && $this->is_on_same_domain( $bg_urls[0] ) ) {
 			$tag->setAttribute( 'style', $new_style_attr );
-			$tag->setAttribute( 'class', $tag->getAttribute( 'class' ) . ' twic' );
-			$tag->setAttribute( 'data-background', 'url(' . $bg_urls[0] . ')' );
+			$tag->setAttribute( 'data-twic-background', 'url(' . $bg_urls[0] . ')' );
 
 			if ( isset( $x ) && isset( $y ) ) {
 				if ( 50 !== $x || 50 !== $y ) {
-					$tag->setAttribute( 'data-background-transform', "focus={$x}px{$y}p/auto" );
+					$tag->setAttribute( 'data-twic-background-transform', "focus={$x}px{$y}p/auto" );
 				}
 			}
 		}
