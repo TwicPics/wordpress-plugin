@@ -19,6 +19,7 @@ class TwicPics {
 		/* Conf (colors or percent) depending on lazyload type */
 		$this->_lazyload_conf = defined( 'TWICPICS_LAZYLOAD_CONF' ) ? TWICPICS_LAZYLOAD_CONF : $this->get_lazyload_conf();
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts', 1 );
+		$this->add_filter( 'wp_lazy_loading_enabled', '__return_false', 1 );
 		$this->add_filter( 'script_loader_tag', 'add_async_defer_to_twicpics_script', 10, 3 );
 		$this->add_filter( 'wp_get_attachment_image_attributes', 'image_attributes', 99 );
 		$this->add_filter( 'post_thumbnail_html', 'append_noscript_tag', 99 );
