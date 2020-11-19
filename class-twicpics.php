@@ -20,7 +20,7 @@ class TwicPics {
 		$this->_lazyload_conf = defined( 'TWICPICS_LAZYLOAD_CONF' ) ? TWICPICS_LAZYLOAD_CONF : $this->get_lazyload_conf();
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts', 1 );
 		$this->add_filter( 'script_loader_tag', 'add_async_defer_to_twicpics_script', 10, 3 );
-		$this->add_filter( 'wp_get_attachment_image_attributes', 'image_attr', 99 );
+		$this->add_filter( 'wp_get_attachment_image_attributes', 'image_attributes', 99 );
 		$this->add_filter( 'post_thumbnail_html', 'append_noscript_tag', 99 );
 		$this->add_filter( 'the_content', 'content', 99 );
 
@@ -174,49 +174,53 @@ class TwicPics {
 	/**
 	 * Treats image attributes returned by WordPress functions
 	 *
-	 * @param      array $attr The image attributes.
+	 * @param      array $attributes The image attributes.
 	 * @return array treated image attributes
 	 */
-	public function image_attr( $attr ) {
+	public function image_attributes( $attributes ) {
 		/* already treated */
-		if ( $this->is_treated( $attr['class'] ? $attr['class'] : '' ) ) {
-			return $attr;
+		if ( $this->is_treated( $attributes['class'] ? $attributes['class'] : '' ) ) {
+			return $attributes;
 		}
 
-		$url = $attr['src'];
+		$url = $attributes['src'];
+
 		if ( strpos( $url, 'http' ) === false ) {
 			$url = home_url( $url );
 		}
 
-		$attr['data-src'] = $this->get_full_src( $url );
+		$attributes['data-src'] = $this->get_full_src( $url );
 
-		if ( ! $attr['class'] ) {
-			$attr['class'] = 'twic';
+		if ( ! $attributes['class'] ) {
+			$attributes['class'] = 'twic';
 		} else {
-			$attr['class'] .= ' twic';
+			$attributes['class'] .= ' twic';
 		}
 
-		unset( $attr['srcset'] );
-		unset( $attr['sizes'] );
+		unset( $attributes['srcset'] );
+		unset( $attributes['sizes'] );
 
 		$width  = '';
 		$height = $width;
 
 		/* Get sizing */
-		if ( $attr['width'] && $attr['height'] ) {
+		if ( $attributes['width'] && $attributes['height'] ) {
 			/* treat only if both width & height */
-			$width  = $attr['width'];
-			$height = $attr['height'];
+			$width  = $attributes['width'];
+			$height = $attributes['height'];
 		} else {
 			/* check by filename */
 			preg_match( '/.+\-(\d+)x(\d+)\..+/', $url, $sizes );
+
 			if ( isset( $sizes[1] ) && isset( $sizes[2] ) ) {
 				$width  = $sizes[1];
 				$height = $sizes[2];
 			} else {
 				$file = str_replace( content_url(), WP_CONTENT_DIR, $url );
+
 				if ( file_exists( $file ) ) {
 					$sizes = getimagesize( $file );
+
 					if ( isset( $sizes[0] ) && isset( $sizes[1] ) ) {
 						$width  = $sizes[0];
 						$height = $sizes[1];
@@ -226,12 +230,12 @@ class TwicPics {
 		}
 
 		if ( $width && $height ) {
-			$attr['data-src-transform'] = "cover={$width}x{$height}/auto";
+			$attributes['data-src-transform'] = "cover={$width}x{$height}/auto";
 		}
 		/* Speed load */
-		$attr['src'] = $this->get_twic_src( $url, $attr['width'], $attr['height'] );
+		$attributes['src'] = $this->get_twic_src( $url, $attributes['width'], $attributes['height'] );
 
-		return $attr;
+		return $attributes;
 	}
 
 	/**
@@ -429,7 +433,7 @@ class TwicPics {
 				return;
 			}
 
-			list($property,$value) = explode( ':', $rule, 2 );
+			list( $property, $value ) = explode( ':', $rule, 2 );
 
 			switch ( $property ) {
 				case 'background':
