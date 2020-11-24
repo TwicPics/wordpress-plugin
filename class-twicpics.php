@@ -11,7 +11,7 @@ class TwicPics {
 
 		$this->_url = 'https://' . (
 			defined( 'TWICPICS_URL' ) ? TWICPICS_URL : ( ( $options['url'] ? $options['url'] : 'i.twic.it' ) )
-		) . '/v1';
+		) . '/?v1';
 
 		/* placeholder */
 		$this->_lazyload = defined( 'TWICPICS_LAZYLOAD_TYPE' ) ? TWICPICS_LAZYLOAD_TYPE : 'preview_placeholder';
@@ -116,7 +116,7 @@ class TwicPics {
 		switch ( $this->_lazyload ) :
 			case 'preview_placeholder':
 				if ( ! empty( $width ) && ! empty( $height ) ) {
-					$src = chop( $this->_url, 'v1' ) . $src . '?twic=v1/cover=' . $width . 'x' . $height . '/' . $this->_lazyload_conf;
+					$src = chop( $this->_url, '?v1' ) . $src . '?twic=v1/cover=' . $width . 'x' . $height . '/' . $this->_lazyload_conf;
 				}
 				break;
 		endswitch;
@@ -148,7 +148,7 @@ class TwicPics {
 	 * Enqueues the TwicPics JS script
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script( 'twicpics', $this->_url . '/script', array(), $ver = null, false );
+		wp_enqueue_script( 'twicpics', $this->_url, array(), $ver = null, false );
 	}
 
 	/**
