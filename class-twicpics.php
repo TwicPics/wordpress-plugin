@@ -456,8 +456,11 @@ class TwicPics {
 						$value = trim( $value );
 
 						/* removes 'url(' and ')' */
-						$bg_urls         = array( substr( $value, 4, -1 ) );
-						$new_style_attr .= $property . ':url(' . $this->get_twic_src( $bg_urls[0] ) . ');';
+						$bg_urls        = array( substr( $value, 4, -1 ) );
+						$bg_placeholder = str_replace( get_site_url(), chop( $this->_script_url, '/?v1' ), $bg_urls[0] );
+
+						// $new_style_attr .= $property . ':url(' . $this->get_twic_src( $bg_urls[0] ) . ');'; // est-ce vmt utile d'appeler ici get_twic_src() sachant qu'on ne passe ni largeur ni hauteur ?
+						$new_style_attr .= $property . ':url(' . $bg_placeholder . '?twic=v1/output=preview);'; // à déplacer (nvlle fonction ou dans get_twic_src?).
 					}
 					/* else { multiple backgrounds } */
 					break;
