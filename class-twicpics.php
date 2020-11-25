@@ -116,7 +116,8 @@ class TwicPics {
 		switch ( $this->_lazyload ) :
 			case 'preview_placeholder':
 				if ( ! empty( $width ) && ! empty( $height ) ) {
-					$src = chop( $this->_script_url, '?v1' ) . $src . '?twic=v1/cover=' . $width . 'x' . $height . '/' . $this->_lazyload_conf;
+					$src = str_replace( get_site_url(), '', $src );
+					$src = chop( $this->_script_url, '/?v1' ) . $src . '?twic=v1/cover=' . $width . 'x' . $height . '/' . $this->_lazyload_conf;
 				}
 				break;
 		endswitch;
