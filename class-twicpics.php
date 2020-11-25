@@ -10,7 +10,7 @@ class TwicPics {
 		$options = get_option( 'twicpics_options' );
 
 		$this->_script_url = 'https://' . (
-			defined( 'TWICPICS_URL' ) ? TWICPICS_URL : ( ( $options['url'] ? $options['url'] : 'i.twic.it' ) )
+			defined( 'TWICPICS_URL' ) ? TWICPICS_URL : $options['url']
 		) . '/?v1';
 
 		/* placeholder */
