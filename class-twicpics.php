@@ -351,23 +351,23 @@ class TwicPics {
 	 * @return void
 	 */
 	private function treat_imgtag( &$img, &$dom ) {
-		$url = $img->getAttribute( 'src' );
+		$img_url = $img->getAttribute( 'src' );
 
 		/* relative path */
-		if ( strpos( $url, '/' ) === 0 ) {
-			$url = home_url( $url );
+		if ( strpos( $img_url, '/' ) === 0 ) {
+			$img_url = home_url( $img_url );
 		}
-		if ( strpos( $url, 'http' ) === false ) {
+		if ( strpos( $img_url, 'http' ) === false ) {
 			return;
 		}
-		if ( ! $this->is_on_same_domain( $url ) ) {
+		if ( ! $this->is_on_same_domain( $img_url ) ) {
 			return;
 		}
 		if ( 'noscript' === $img->parentNode->tagName ) {
 			return;
 		}
 
-		$img->setAttribute( 'data-twic-src', $this->get_full_src( $url ) );
+		$img->setAttribute( 'data-twic-src', $this->get_full_src( $img_url ) );
 		$img->removeAttribute( 'srcset' );
 		$img->removeAttribute( 'sizes' );
 
@@ -381,13 +381,13 @@ class TwicPics {
 			$height = $img->getAttribute( 'height' );
 		} else {
 			/* check by filename */
-			preg_match( '/.+\-(\d+)x(\d+)\..+/', $url, $sizes );
+			preg_match( '/.+\-(\d+)x(\d+)\..+/', $img_url, $sizes );
 
 			if ( isset( $sizes[1] ) && isset( $sizes[2] ) ) {
 				$width  = $sizes[1];
 				$height = $sizes[2];
 			} else {
-				$file = str_replace( content_url(), WP_CONTENT_DIR, $url );
+				$file = str_replace( content_url(), WP_CONTENT_DIR, $img_url );
 				if ( file_exists( $file ) ) {
 					$sizes = getimagesize( $file );
 					if ( isset( $sizes[0] ) && isset( $sizes[1] ) ) {
@@ -402,7 +402,7 @@ class TwicPics {
 		}
 
 		/* Speed load */
-		$img->setAttribute( 'src', $this->get_twic_src( $url, $width, $height ) );
+		$img->setAttribute( 'src', $this->get_twic_src( $img_url, $width, $height ) );
 
 		/* noscript for SEO */
 		$this->add_noscript_tag( $img, $dom );
