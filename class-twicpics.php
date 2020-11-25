@@ -486,6 +486,21 @@ class TwicPics {
 					$tag->setAttribute( 'data-twic-background-transform', "focus={$x}px{$y}p/auto" );
 				}
 			}
+
+			$tag_img_children = $tag->getElementsByTagName( 'img' );
+
+			if ( ! empty( $tag_img_children ) ) {
+
+				foreach ( $tag_img_children as $img ) {
+					$img_url = $img->getAttribute( 'src' );
+					$img_url = explode( '?', $img_url );
+
+					/* Compares preview placeholders of <figure> and its <img> children */
+					if ( strpos( $bg_placeholder, $img_url[0] ) !== false ) {
+						$tag->removeChild( $img );
+					}
+				}
+			}
 		}
 	}
 
