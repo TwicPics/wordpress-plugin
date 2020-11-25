@@ -367,7 +367,10 @@ class TwicPics {
 			return;
 		}
 
-		$img->setAttribute( 'data-twic-src', $this->get_full_src( $img_url ) );
+		/* TwicPics Script 'image:' alias */
+		$data_twic_src_value = str_replace( ( get_site_url() . '/' ), 'image:', $this->get_full_src( $img_url ) );
+
+		$img->setAttribute( 'data-twic-src', $data_twic_src_value );
 		$img->removeAttribute( 'srcset' );
 		$img->removeAttribute( 'sizes' );
 
@@ -376,11 +379,11 @@ class TwicPics {
 
 		/* Get sizing */
 		if ( $img->getAttribute( 'width' ) && $img->getAttribute( 'height' ) ) {
-			/* treat only if both width & height */
+			/* with both width & height */
 			$width  = $img->getAttribute( 'width' );
 			$height = $img->getAttribute( 'height' );
 		} else {
-			/* check by filename */
+			/* with filename */
 			preg_match( '/.+\-(\d+)x(\d+)\..+/', $img_url, $sizes );
 
 			if ( isset( $sizes[1] ) && isset( $sizes[2] ) ) {
@@ -397,11 +400,12 @@ class TwicPics {
 				}
 			}
 		}
+
 		if ( $width && $height ) {
 			$img->setAttribute( 'data-twic-src-transform', "cover={$width}x{$height}/auto" );
 		}
 
-		/* Speed load */
+		/* LQIP */
 		$img->setAttribute( 'src', $this->get_twic_src( $img_url, $width, $height ) );
 
 		/* noscript for SEO */
