@@ -9,9 +9,19 @@ class TwicPics {
 	public function __construct() {
 		$options = get_option( 'twicpics_options' );
 
-		$this->_script_url = 'https://' . (
-			defined( 'TWICPICS_URL' ) ? TWICPICS_URL : $options['url']
-		) . '/?v1';
+		$script_url = '';
+
+		if ( defined( 'TWICPICS_URL' ) ) {
+			$script_url = 'https://' . ( 'TWICPICS_URL' ) . '/?v1';
+		} elseif ( ! empty( $options['url'] ) ) {
+			$script_url = 'https://' . ( $options['url'] ) . '/?v1';
+		}
+
+		if ( empty( $script_url ) ) {
+			return;
+		}
+
+		$this->_script_url = $script_url;
 
 		/* placeholder */
 		$this->_lazyload = defined( 'TWICPICS_LAZYLOAD_TYPE' ) ? TWICPICS_LAZYLOAD_TYPE : 'preview_placeholder';
