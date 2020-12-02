@@ -150,7 +150,7 @@ class TwicPics {
 		if ( ! empty( $image ) ) {
 			return wp_get_attachment_image_src( (int) $image[0], 'full' )[0];
 		} else {
-			return preg_replace( '/(.+)\-\d+x\d+(.+)/', '$1$2', $url );
+			return preg_replace( '/(.+)\-\d+x\d+\_[a-z|A-Z](.+)/', '$1$2', $url );
 		}
 	}
 
