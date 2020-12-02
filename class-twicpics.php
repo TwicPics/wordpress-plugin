@@ -7,9 +7,9 @@ defined( 'ABSPATH' ) || die( 'ERROR !' );
  */
 class TwicPics {
 	public function __construct() {
-		$options = get_option( 'twicpics_options' );
 
 		$script_url = '';
+		$options    = get_option( 'twicpics_options' );
 
 		if ( defined( 'TWICPICS_URL' ) ) {
 			$script_url = 'https://' . ( 'TWICPICS_URL' ) . '/?v1';
@@ -22,6 +22,13 @@ class TwicPics {
 		}
 
 		$this->_script_url = $script_url;
+
+		/**
+		 * List of incompatible plugins
+		 *
+		 * - 'n2-ss-slide-background' => Smart Slider plugin
+		 */
+		$this->_plugins_blacklist = array( 'n2-ss-slide-background' );
 
 		/* placeholder */
 		$this->_lazyload = defined( 'TWICPICS_LAZYLOAD_TYPE' ) ? TWICPICS_LAZYLOAD_TYPE : 'preview_placeholder';
@@ -73,6 +80,16 @@ class TwicPics {
 			add_filter( $tag, 'twicpics_' . $function_to_add, $priority, $accepted_args );
 		} else {
 			add_filter( $tag, array( $this, $function_to_add ), $priority, $accepted_args );
+		}
+	}
+
+	private function is_blacklisted( $tag ) {
+		$parent_node = $tag->parentNode;
+
+		foreach ( $this->_plugins_blacklist as $plugin_class ) {
+			if ( false !== strpos( $parent_node->getAttribute( 'class' ), $plugin_class ) ) { // la classe du parent fait partie des classes backlistées.
+				return true;
+			}
 		}
 	}
 
@@ -360,6 +377,10 @@ class TwicPics {
 	 * @return void
 	 */
 	private function treat_imgtag( &$img, &$dom ) {
+		if ( $this->is_blacklisted( $img ) ) {
+			return;
+		};
+
 		$img_url = $img->getAttribute( 'src' );
 
 		/* relative path */
@@ -426,6 +447,10 @@ class TwicPics {
 	 * @return void
 	 */
 	private function treat_tag_for_bg( &$tag ) {
+		if ( $this->is_blacklisted( $tag ) ) {
+			return;
+		}
+
 		$style_attr = $tag->getAttribute( 'style' );
 
 		if ( empty( $style_attr ) || strpos( $style_attr, 'background' ) === false ) {
