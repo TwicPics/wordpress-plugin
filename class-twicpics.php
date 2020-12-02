@@ -28,7 +28,7 @@ class TwicPics {
 		 *
 		 * - 'n2-ss-slide-background' => Smart Slider plugin
 		 */
-		$this->_plugins_blacklist = array( 'n2-ss-slide-background' );
+		$this->_plugins_blacklist = array( 'n2-ss-slide-background-wrap' );
 
 		/* placeholder */
 		$this->_lazyload = defined( 'TWICPICS_LAZYLOAD_TYPE' ) ? TWICPICS_LAZYLOAD_TYPE : 'preview_placeholder';
