@@ -126,8 +126,7 @@ class TwicPics {
 		switch ( $this->_lazyload ) :
 			case 'preview_placeholder':
 				if ( ! empty( $width ) && ! empty( $height ) ) {
-					$src = str_replace( get_site_url(), '', $src );
-					$src = chop( $this->_script_url, '/?v1' ) . $src . '?twic=v1/cover=' . $width . 'x' . $height . '/' . $this->_lazyload_conf;
+					$src = chop( $this->_script_url, '?v1' ) . $src . '?twic=v1/cover=' . $width . 'x' . $height . '/' . $this->_lazyload_conf;
 				}
 				break;
 		endswitch;
@@ -377,10 +376,8 @@ class TwicPics {
 			return;
 		}
 
-		/* TwicPics Script 'image:' alias */
-		$data_twic_src_value = str_replace( ( get_site_url() . '/' ), 'image:', $this->get_full_src( $img_url ) );
-
-		$img->setAttribute( 'data-twic-src', $data_twic_src_value );
+		/* TwicPics Script 'data-twic-src' attribute */
+		$img->setAttribute( 'data-twic-src', $this->get_full_src( $img_url ) );
 		$img->removeAttribute( 'srcset' );
 		$img->removeAttribute( 'sizes' );
 
@@ -467,7 +464,7 @@ class TwicPics {
 
 						/* removes 'url(' and ')' */
 						$bg_urls        = array( substr( $value, 4, -1 ) );
-						$bg_placeholder = str_replace( get_site_url(), chop( $this->_script_url, '/?v1' ), $bg_urls[0] );
+						$bg_placeholder = chop( $this->_script_url, '?v1' ) . $bg_urls[0];
 
 						// $new_style_attr .= $property . ':url(' . $this->get_twic_src( $bg_urls[0] ) . ');'; // est-ce vmt utile d'appeler ici get_twic_src() sachant qu'on ne passe ni largeur ni hauteur ?
 						$new_style_attr .= $property . ':url(' . $bg_placeholder . '?twic=v1/output=preview);'; // à déplacer (nvlle fonction ou dans get_twic_src?).
@@ -488,7 +485,6 @@ class TwicPics {
 
 		if ( isset( $bg_urls ) && is_array( $bg_urls ) && $this->is_on_same_domain( $bg_urls[0] ) ) {
 			$tag->setAttribute( 'style', $new_style_attr );
-			$bg_urls[0] = str_replace( ( get_site_url() . '/' ), 'image:', $bg_urls[0] );
 			$tag->setAttribute( 'data-twic-background', 'url(' . $bg_urls[0] . ')' );
 
 			if ( isset( $x ) && isset( $y ) ) {
@@ -506,7 +502,7 @@ class TwicPics {
 					$img_url = explode( '?', $img_url );
 
 					/* Compares preview placeholders of <figure> and its <img> children */
-					if ( strpos( $bg_placeholder, $img_url[0] ) !== false ) {
+					if ( $bg_placeholder === $img_url[0] ) {
 						$tag->removeChild( $img );
 					}
 				}
