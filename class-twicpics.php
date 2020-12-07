@@ -8,20 +8,17 @@ defined( 'ABSPATH' ) || die( 'ERROR !' );
 class TwicPics {
 	public function __construct() {
 
-		$script_url = '';
-		$options    = get_option( 'twicpics_options' );
+		$options = get_option( 'twicpics_options' );
 
 		if ( defined( 'TWICPICS_URL' ) ) {
-			$script_url = 'https://' . ( 'TWICPICS_URL' ) . '/?v1';
+			$this->_script_url = 'https://' . ( 'TWICPICS_URL' ) . '/?v1';
 		} elseif ( ! empty( $options['url'] ) ) {
-			$script_url = 'https://' . ( $options['url'] ) . '/?v1';
+			$this->_script_url = 'https://' . ( $options['url'] ) . '/?v1';
 		}
 
-		if ( empty( $script_url ) ) {
+		if ( empty( $this->_script_url ) ) {
 			return;
 		}
-
-		$this->_script_url = $script_url;
 
 		/**
 		 * List of incompatible plugins
