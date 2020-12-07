@@ -136,7 +136,7 @@ class TwicPics {
 	 * @param     int|string $height if the height of the image is known.
 	 * @return string the replacement src
 	 */
-	private function get_twic_src( $src, $width = '', $height = '' ) {
+	private function get_twicpics_placeholder( $src, $width = '', $height = '' ) {
 		switch ( $this->_lazyload ) :
 			case 'preview_placeholder':
 				if ( ! empty( $width ) && ! empty( $height ) ) {
@@ -253,7 +253,7 @@ class TwicPics {
 			$attributes['data-twic-src-transform'] = "cover={$width}x{$height}/auto";
 		}
 		/* Speed load */
-		$attributes['src'] = $this->get_twic_src( $url, $attributes['width'], $attributes['height'] );
+		$attributes['src'] = $this->get_twicpics_placeholder( $url, $attributes['width'], $attributes['height'] );
 
 		return $attributes;
 	}
@@ -431,7 +431,7 @@ class TwicPics {
 		}
 
 		/* LQIP */
-		$img->setAttribute( 'src', $this->get_twic_src( $img_url, $width, $height ) );
+		$img->setAttribute( 'src', $this->get_twicpics_placeholder( $img_url, $width, $height ) );
 
 		/* noscript for SEO */
 		$this->add_noscript_tag( $img, $dom );
@@ -472,7 +472,7 @@ class TwicPics {
 					if ( strpos( $value, ',' ) === false ) {
 						$value           = trim( $value );
 						$bg_urls         = array( substr( $value, strpos( $value, 'url(' ) + 4, strpos( $value, ')', strpos( $value, 'url(' ) ) - 4 ) );
-						$new_style_attr .= $property . ':' . str_replace( $bg_urls[0], $this->get_twic_src( $bg_urls[0] ), $value ) . ';';
+						$new_style_attr .= $property . ':' . str_replace( $bg_urls[0], $this->get_twicpics_placeholder( $bg_urls[0] ), $value ) . ';';
 					}
 					break;
 
@@ -488,8 +488,8 @@ class TwicPics {
 						$bg_urls        = array( substr( $value, 4, -1 ) );
 						$bg_placeholder = chop( $this->_script_url, '?v1' ) . $bg_urls[0];
 
-						// $new_style_attr .= $property . ':url(' . $this->get_twic_src( $bg_urls[0] ) . ');'; // est-ce vmt utile d'appeler ici get_twic_src() sachant qu'on ne passe ni largeur ni hauteur ?
-						$new_style_attr .= $property . ':url(' . $bg_placeholder . '?twic=v1/output=preview);'; // à déplacer (nvlle fonction ou dans get_twic_src?).
+						// $new_style_attr .= $property . ':url(' . $this->get_twicpics_placeholder( $bg_urls[0] ) . ');'; // est-ce vmt utile d'appeler ici get_twicpics_placeholder() sachant qu'on ne passe ni largeur ni hauteur ?
+						$new_style_attr .= $property . ':url(' . $bg_placeholder . '?twic=v1/output=preview);'; // à déplacer (nvlle fonction ou dans get_twicpics_placeholder?).
 					}
 					/* else { multiple backgrounds } */
 					break;
