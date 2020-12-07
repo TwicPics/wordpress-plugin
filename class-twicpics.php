@@ -26,6 +26,7 @@ class TwicPics {
 		 * - 'n2-ss-slide-background' => Smart Slider plugin
 		 */
 		$this->_plugins_blacklist = array( 'n2-ss-slide-background-wrap' );
+		// $this->_plugins_blacklist = 'n2-ss-slide-background-wrap ms-image';
 
 		/* placeholder */
 		$this->_lazyload = defined( 'TWICPICS_LAZYLOAD_TYPE' ) ? TWICPICS_LAZYLOAD_TYPE : 'preview_placeholder';
@@ -80,8 +81,18 @@ class TwicPics {
 		}
 	}
 
+	/**
+	 * Checks if the image (<img> or background type) is handled by an uncompatible plugin.
+	 *
+	 * @param      string $tag The image.
+	 * @return boolean true if image's parent is marked with a blacklisted plugin class.
+	 */
 	private function is_blacklisted( $tag ) {
 		$parent_node = $tag->parentNode;
+
+		// if ( false !== strpos( $parent_node->getAttribute( 'class' ), $this->_plugins_blacklist ) ) { // la classe du parent fait partie des classes backlistées.
+		// 	return true;
+		// }
 
 		foreach ( $this->_plugins_blacklist as $plugin_class ) {
 			if ( false !== strpos( $parent_node->getAttribute( 'class' ), $plugin_class ) ) { // la classe du parent fait partie des classes backlistées.
@@ -120,6 +131,7 @@ class TwicPics {
 	 */
 	private function get_lazyload_conf() {
 		$options = get_option( 'twicpics_options' );
+
 		switch ( $this->_lazyload ) :
 			case 'preview_placeholder':
 				return 'output=preview';
@@ -153,18 +165,18 @@ class TwicPics {
 	 *
 	 * The method simply removes the -{width}x{height} added by WordPress
 	 *
-	 * @param      string $url the original (maybe cropped) url of the image.
+	 * @param      string $img_url the original (maybe cropped) url of the image.
 	 * @return string the full src image url
 	 */
-	private function get_full_src( $url ) {
+	private function get_full_src( $img_url ) {
 		global $wpdb;
-		$base_url = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $url );
-		$image    = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE guid=%s OR guid=%s;", $base_url, $url ) );
+		$base_url = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $img_url );
+		$image    = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE guid=%s OR guid=%s;", $base_url, $img_url ) );
 
 		if ( ! empty( $image ) ) {
 			return wp_get_attachment_image_src( (int) $image[0], 'full' )[0];
 		} else {
-			return preg_replace( '/(.+)\-\d+x\d+\_[a-z|A-Z](.+)/', '$1$2', $url );
+			return preg_replace( '/(.+)\-\d+x\d+\_[a-z|A-Z](.+)/', '$1$2', $img_url );
 		}
 	}
 
@@ -209,13 +221,13 @@ class TwicPics {
 			return $attributes;
 		}
 
-		$url = $attributes['src'];
+		$img_url = $attributes['src'];
 
-		if ( strpos( $url, 'http' ) === false ) {
-			$url = home_url( $url );
+		if ( strpos( $img_url, 'http' ) === false ) {
+			$img_url = home_url( $img_url );
 		}
 
-		$attributes['data-twic-src'] = $this->get_full_src( $url );
+		$attributes['data-twic-src'] = $this->get_full_src( $img_url );
 
 		unset( $attributes['srcset'] );
 		unset( $attributes['sizes'] );
@@ -230,13 +242,13 @@ class TwicPics {
 			$height = $attributes['height'];
 		} else {
 			/* check by filename */
-			preg_match( '/.+\-(\d+)x(\d+)\..+/', $url, $sizes );
+			preg_match( '/.+\-(\d+)x(\d+)\..+/', $img_url, $sizes );
 
 			if ( isset( $sizes[1] ) && isset( $sizes[2] ) ) {
 				$width  = $sizes[1];
 				$height = $sizes[2];
 			} else {
-				$file = str_replace( content_url(), WP_CONTENT_DIR, $url );
+				$file = str_replace( content_url(), WP_CONTENT_DIR, $img_url );
 
 				if ( file_exists( $file ) ) {
 					$sizes = getimagesize( $file );
@@ -253,7 +265,7 @@ class TwicPics {
 			$attributes['data-twic-src-transform'] = "cover={$width}x{$height}/auto";
 		}
 		/* Speed load */
-		$attributes['src'] = $this->get_twicpics_placeholder( $url, $attributes['width'], $attributes['height'] );
+		$attributes['src'] = $this->get_twicpics_placeholder( $img_url, $attributes['width'], $attributes['height'] );
 
 		return $attributes;
 	}
