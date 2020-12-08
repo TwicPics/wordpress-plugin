@@ -366,7 +366,7 @@ class TwicPics {
 	private function add_noscript_tag( &$img, &$dom ) {
 		$noscript   = $dom->createElement( 'noscript' );
 		$img_cloned = $dom->createElement( 'img' );
-		$img_cloned->setAttribute( 'src', $img->getAttribute( 'data-twic-src' ) );
+		$img_cloned->setAttribute( 'src', ( $this->_user_domain . '/' . get_site_url() . $img->getAttribute( 'data-twic-src' ) ) );
 		$img_cloned->setAttribute( 'alt', $img->getAttribute( 'alt' ) );
 		$noscript->appendChild( $img_cloned );
 		$img->parentNode->appendChild( $noscript );
