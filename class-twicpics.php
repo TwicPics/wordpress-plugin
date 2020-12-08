@@ -11,12 +11,12 @@ class TwicPics {
 		$options = get_option( 'twicpics_options' );
 
 		if ( defined( 'TWICPICS_URL' ) ) {
-			$this->_script_url = 'https://' . ( 'TWICPICS_URL' ) . '/?v1';
+			$this->_user_domain = 'https://' . ( 'TWICPICS_URL' );
 		} elseif ( ! empty( $options['url'] ) ) {
-			$this->_script_url = 'https://' . ( $options['url'] ) . '/?v1';
+			$this->_user_domain = 'https://' . ( $options['url'] );
 		}
 
-		if ( empty( $this->_script_url ) ) {
+		if ( empty( $this->_user_domain ) ) {
 			return;
 		}
 
@@ -146,7 +146,7 @@ class TwicPics {
 		switch ( $this->_lazyload ) :
 			case 'preview_placeholder':
 				if ( ! empty( $width ) && ! empty( $height ) ) {
-					$src = chop( $this->_script_url, '?v1' ) . $src . '?twic=v1/cover=' . $width . 'x' . $height . '/' . $this->_lazyload_conf;
+					$src = $this->_user_domain . '/' . $src . '?twic=v1/cover=' . $width . 'x' . $height . '/' . $this->_lazyload_conf;
 				}
 				break;
 		endswitch;
@@ -178,7 +178,7 @@ class TwicPics {
 	 * Enqueues the TwicPics JS script
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script( 'twicpics', $this->_script_url, array(), $ver = null, false );
+		wp_enqueue_script( 'twicpics', $this->_user_domain . '/?v1', array(), $ver = null, false );
 	}
 
 	/**
@@ -492,7 +492,7 @@ class TwicPics {
 
 						/* removes 'url(' and ')' */
 						$bg_urls        = array( substr( $value, 4, -1 ) );
-						$bg_placeholder = chop( $this->_script_url, '?v1' ) . $bg_urls[0];
+						$bg_placeholder = $this->_user_domain . '/' . $bg_urls[0];
 
 						// $new_style_attr .= $property . ':url(' . $this->get_twicpics_placeholder( $bg_urls[0] ) . ');'; // est-ce vmt utile d'appeler ici get_twicpics_placeholder() sachant qu'on ne passe ni largeur ni hauteur ?
 						$new_style_attr .= $property . ':url(' . $bg_placeholder . '?twic=v1/output=preview);'; // à déplacer (nvlle fonction ou dans get_twicpics_placeholder?).
