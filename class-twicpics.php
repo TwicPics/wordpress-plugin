@@ -20,15 +20,12 @@ class TwicPics {
 			return;
 		}
 
-		/**
-		 * List of incompatible plugins
-		 *
-		 * - 'n2-ss-slide-background' => Smart Slider plugin
-		 */
-		$this->_plugins_blacklist = array( 'n2-ss-slide-background-wrap' );
-		// $this->_plugins_blacklist = 'n2-ss-slide-background-wrap ms-image';
+		include 'blacklist.php';
 
-		/* placeholder */
+		/* Plugins blacklist */
+		$this->_plugins_blacklist = $plugins_blacklist;
+
+		/* Placeholder config */
 		$this->_lazyload = defined( 'TWICPICS_LAZYLOAD_TYPE' ) ? TWICPICS_LAZYLOAD_TYPE : 'preview_placeholder';
 
 		/* Conf (colors or percent) depending on lazyload type */
@@ -88,14 +85,11 @@ class TwicPics {
 	 * @return boolean true if image's parent is marked with a blacklisted plugin class.
 	 */
 	private function is_blacklisted( $tag ) {
-		$parent_node = $tag->parentNode;
+		$parent_node         = $tag->parentNode;
+		$parent_node_classes = explode( ' ', $parent_node->getAttribute( 'class' ) );
 
-		// if ( false !== strpos( $parent_node->getAttribute( 'class' ), $this->_plugins_blacklist ) ) { // la classe du parent fait partie des classes backlistées.
-		// 	return true;
-		// }
-
-		foreach ( $this->_plugins_blacklist as $plugin_class ) {
-			if ( false !== strpos( $parent_node->getAttribute( 'class' ), $plugin_class ) ) { // la classe du parent fait partie des classes backlistées.
+		foreach ( $parent_node_classes as $class ) {
+			if ( in_array( $class, $this->_plugins_blacklist, true ) ) {
 				return true;
 			}
 		}
