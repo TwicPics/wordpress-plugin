@@ -30,6 +30,7 @@ class TwicPics {
 
 		/* Conf (colors or percent) depending on lazyload type */
 		$this->_lazyload_conf = defined( 'TWICPICS_LAZYLOAD_CONF' ) ? TWICPICS_LAZYLOAD_CONF : $this->get_lazyload_conf();
+
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts', 1 );
 		$this->add_filter( 'wp_lazy_loading_enabled', '__return_false', 1 );
 		$this->add_filter( 'script_loader_tag', 'add_async_defer_to_twicpics_script', 10, 3 );
@@ -366,7 +367,8 @@ class TwicPics {
 	private function add_noscript_tag( &$img, &$dom ) {
 		$noscript   = $dom->createElement( 'noscript' );
 		$img_cloned = $dom->createElement( 'img' );
-		$img_cloned->setAttribute( 'src', ( $this->_user_domain . '/' . get_site_url() . $img->getAttribute( 'data-twic-src' ) ) );
+		$img_src    = explode( '?', $img->getAttribute( 'src' ) )[0];
+		$img_cloned->setAttribute( 'src', ( str_replace( ( $this->_user_domain . '/' ), '', $img_src ) ) );
 		$img_cloned->setAttribute( 'alt', $img->getAttribute( 'alt' ) );
 		$noscript->appendChild( $img_cloned );
 		$img->parentNode->appendChild( $noscript );
@@ -422,8 +424,10 @@ class TwicPics {
 				$height = $sizes[2];
 			} else {
 				$file = str_replace( content_url(), WP_CONTENT_DIR, $img_url );
+
 				if ( file_exists( $file ) ) {
 					$sizes = getimagesize( $file );
+
 					if ( isset( $sizes[0] ) && isset( $sizes[1] ) ) {
 						$width  = $sizes[0];
 						$height = $sizes[1];
