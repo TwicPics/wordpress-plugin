@@ -12,8 +12,8 @@ class TwicPics {
 
 		if ( defined( 'TWICPICS_URL' ) ) {
 			$this->_user_domain = 'https://' . ( 'TWICPICS_URL' );
-		} elseif ( ! empty( $options['url'] ) ) {
-			$this->_user_domain = 'https://' . ( $options['url'] );
+		} elseif ( ! empty( $options['user_domain'] ) ) {
+			$this->_user_domain = 'https://' . ( $options['user_domain'] );
 		}
 
 		if ( empty( $this->_user_domain ) ) {

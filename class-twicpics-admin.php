@@ -69,14 +69,15 @@ class TwicPics_Admin {
 		register_setting( 'twicpics', 'twicpics_options' );
 
 		add_settings_section( 'twicpics_section_account_settings', __( 'Account Settings', 'twicpics' ), array( $this, 'section_account_settings' ), 'twicpics' );
+
 		add_settings_field(
-			'twicpics_field_url',
-			__( 'TwicPics Domain', 'twicpics' ),
+			'twicpics_field_user_domain',
+			__( 'TwicPics domain', 'twicpics' ),
 			array( $this, 'field_textinput' ),
 			'twicpics',
 			'twicpics_section_account_settings',
 			array(
-				'label_for'   => 'url',
+				'label_for'   => 'user_domain',
 				'description' => esc_html( __( 'Fill in your TwicPics domain in this field.', 'twicpics' ) ),
 			)
 		);
