@@ -474,7 +474,8 @@ class TwicPics {
 					if ( strpos( $value, ',' ) === false ) {
 						$value           = trim( $value );
 						$bg_urls         = array( substr( $value, strpos( $value, 'url(' ) + 4, strpos( $value, ')', strpos( $value, 'url(' ) ) - 4 ) );
-						$new_style_attr .= $property . ':' . str_replace( $bg_urls[0], $this->get_twicpics_placeholder( $bg_urls[0] ), $value ) . ';';
+						$bg_placeholder  = $this->_user_domain . '/' . $bg_urls[0];
+						$new_style_attr .= $property . ':' . str_replace( $bg_urls[0], $bg_placeholder, $value ) . ';';
 					}
 					break;
 
@@ -484,14 +485,12 @@ class TwicPics {
 						break;
 					}
 					if ( strpos( $value, ',' ) === false ) {
-						$value = trim( $value );
-
-						/* removes 'url(' and ')' */
-						$bg_urls        = array( substr( $value, 4, -1 ) );
+						$value          = trim( $value );
+						$bg_urls        = array( substr( $value, 4, -1 ) ); // removes 'url(' and ')'.
 						$bg_placeholder = $this->_user_domain . '/' . $bg_urls[0];
 
-						// $new_style_attr .= $property . ':url(' . $this->get_twicpics_placeholder( $bg_urls[0] ) . ');'; // est-ce vmt utile d'appeler ici get_twicpics_placeholder() sachant qu'on ne passe ni largeur ni hauteur ?
-						$new_style_attr .= $property . ':url(' . $bg_placeholder . '?twic=v1/output=preview);'; // à déplacer (nvlle fonction ou dans get_twicpics_placeholder?).
+						// $new_style_attr .= $property . ':url(' . $this->get_twicpics_placeholder( $bg_urls[0] ) . ');'; // utile d'appeler ici get_twicpics_placeholder() sachant qu'on ne passe ni largeur ni hauteur ?
+						$new_style_attr .= $property . ':url(' . $bg_placeholder . '?twic=v1/output=preview);';
 					}
 					/* else { multiple backgrounds } */
 					break;
