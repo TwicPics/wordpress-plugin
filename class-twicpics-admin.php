@@ -81,6 +81,18 @@ class TwicPics_Admin {
 				'description' => esc_html( __( 'Fill in your TwicPics domain in this field.', 'twicpics' ) ),
 			)
 		);
+
+		add_settings_field(
+			'twicpics_field_max_width',
+			__( 'Max width of images', 'twicpics' ),
+			array( $this, 'field_textinput' ),
+			'twicpics',
+			'twicpics_section_account_settings',
+			array(
+				'label_for'   => 'max_width',
+				'description' => esc_html( __( 'The max width you want your images to be displayed' ) ),
+			)
+		);
 	}
 
 	/**

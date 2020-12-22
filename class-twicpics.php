@@ -20,10 +20,18 @@ class TwicPics {
 			return;
 		}
 
-		include 'blacklist.php';
-
 		/* Plugins blacklist */
+		include 'blacklist.php';
 		$this->_plugins_blacklist = $plugins_blacklist;
+
+		/* Images' max width */
+		if ( ! empty( $options['max_width'] ) ) {
+			$this->_max_width = $options['max_width'];
+		} else {
+			$this->_max_width = '2000';
+		}
+
+		var_dump( $this->_max_width );
 
 		/* Placeholder config */
 		$this->_lazyload = defined( 'TWICPICS_LAZYLOAD_TYPE' ) ? TWICPICS_LAZYLOAD_TYPE : 'preview_placeholder';
@@ -147,7 +155,7 @@ class TwicPics {
 		switch ( $this->_lazyload ) :
 			case 'preview_placeholder':
 				if ( ! empty( $width ) && ! empty( $height ) ) {
-					$src = $this->_user_domain . '/' . $src . '?twic=v1/cover=' . $width . 'x' . $height . '/' . $this->_lazyload_conf;
+					$src = $this->_user_domain . '/' . $src . '?twic=v1/cover=' . $width . 'x' . $height . '/resize-max=' . $this->_max_width . '/' . $this->_lazyload_conf;
 				}
 				break;
 		endswitch;
@@ -272,10 +280,47 @@ class TwicPics {
 		unset( $attributes['srcset'] );
 		unset( $attributes['sizes'] );
 
+		// $width  = '';
+		// $height = $width;
+
+		// /* Get sizing */
+		// if ( $attributes['width'] && $attributes['height'] ) {
+		// 	if ( 'auto' !== $attributes['width'] && 'auto' !== $$attributes['height'] ) {
+		// 		/* treat only if both width & height */
+		// 		$width  = $attributes['width'];
+		// 		$height = $attributes['height'];
+		// 	}
+		// } else {
+		// 	/* check by filename */
+		// 	preg_match( '/.+\-(\d+)x(\d+)\..+/', $img_url, $sizes );
+
+		// 	if ( isset( $sizes[1] ) && isset( $sizes[2] ) ) {
+		// 		$width  = $sizes[1];
+		// 		$height = $sizes[2];
+		// 	} else {
+		// 		$file = str_replace( content_url(), WP_CONTENT_DIR, $img_url );
+
+		// 		if ( file_exists( $file ) ) {
+		// 			$sizes = getimagesize( $file );
+
+		// 			if ( isset( $sizes[0] ) && isset( $sizes[1] ) ) {
+		// 				$width  = $sizes[0];
+		// 				$height = $sizes[1];
+		// 			}
+		// 		}
+		// 	}
+		// }
+
+		// if ( $width && $height ) {
+		// 	$attributes['data-twic-src-transform'] = "cover={$width}:{$height}/auto/resize-max={$this->_max_width}";
+		// }
+		// /* Speed load */
+		// $attributes['src'] = $this->get_twicpics_placeholder( $img_url, $attributes['width'], $attributes['height'] );
+
 		$aspect_ratio = $this->get_aspect_ratio( $img_url, $attributes['width'], $attributes['height'] );
 
 		if ( $aspect_ratio['width'] && $aspect_ratio['height'] ) {
-			$attributes['data-twic-src-transform'] = 'cover=' . $aspect_ratio['width'] . ':' . $aspect_ratio['height'] . '/auto';
+			$attributes['data-twic-src-transform'] = 'cover=' . $aspect_ratio['width'] . ':' . $aspect_ratio['height'] . '/auto/resize-max=' . $this->_max_width;
 		}
 
 		/* LQIP */
@@ -426,10 +471,46 @@ class TwicPics {
 		$img->removeAttribute( 'srcset' );
 		$img->removeAttribute( 'sizes' );
 
+		// $width  = '';
+		// $height = $width;
+
+		// /* Get sizing */
+		// if ( $img->getAttribute( 'width' ) && $img->getAttribute( 'height' ) ) {
+		// 	if ( 'auto' !== $img->getAttribute( 'width' ) && 'auto' !== $img->getAttribute( 'height' ) ) {
+		// 		/* with both width & height */
+		// 		$width  = $img->getAttribute( 'width' );
+		// 		$height = $img->getAttribute( 'height' );
+		// 	}
+		// } else {
+		// 	/* with filename */
+		// 	preg_match( '/.+\-(\d+)x(\d+)\..+/', $img_url, $sizes );
+
+		// 	if ( isset( $sizes[1] ) && isset( $sizes[2] ) ) {
+		// 		$width  = $sizes[1];
+		// 		$height = $sizes[2];
+		// 	} else {
+		// 		$file = str_replace( content_url(), WP_CONTENT_DIR, $img_url );
+		// 		if ( file_exists( $file ) ) {
+		// 			$sizes = getimagesize( $file );
+		// 			if ( isset( $sizes[0] ) && isset( $sizes[1] ) ) {
+		// 				$width  = $sizes[0];
+		// 				$height = $sizes[1];
+		// 			}
+		// 		}
+		// 	}
+		// }
+
+		// if ( $width && $height ) {
+		// 	$img->setAttribute( 'data-twic-src-transform', "cover={$width}:{$height}/auto/resize-max={$this->_max_width}" );
+		// }
+
+		// /* LQIP */
+		// $img->setAttribute( 'src', $this->get_twicpics_placeholder( $img_url, $width, $height ) );
+
 		$aspect_ratio = $this->get_aspect_ratio( $img_url, $img->getAttribute( 'width' ), $img->getAttribute( 'height' ) );
 
 		if ( $aspect_ratio['width'] && $aspect_ratio['height'] ) {
-			$img->setAttribute( 'data-twic-src-transform', 'cover=' . $aspect_ratio['width'] . ':' . $aspect_ratio['height'] . '/auto' );
+			$img->setAttribute( 'data-twic-src-transform', 'cover=' . $aspect_ratio['width'] . ':' . $aspect_ratio['height'] . '/auto/resize-max=' . $this->_max_width );
 		}
 
 		/* LQIP */
