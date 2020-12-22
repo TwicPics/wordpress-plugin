@@ -156,6 +156,51 @@ class TwicPics {
 	}
 
 	/**
+	 * Gets the aspect-ratio of the image
+	 *
+	 * @param     string $img_url the URL of the image.
+	 * @param     string $width   the width of the image.
+	 * @param     string $height  the height of the image.
+	 * @return array              the aspect-ratio of the image.
+	 */
+	private function get_aspect_ratio( $img_url, $width, $height ) {
+		$aspect_ratio = array(
+			'width'  => '',
+			'height' => '',
+		);
+
+		if ( $width && $height ) {
+			/* Fix for Divi builder plugin */
+			if ( 'auto' !== $width && 'auto' !== $height ) {
+				/* with both width & height */
+				$aspect_ratio['width']  = $width;
+				$aspect_ratio['height'] = $height;
+			}
+		} else {
+			/* with filename */
+			preg_match( '/.+\-(\d+)x(\d+)\..+/', $img_url, $sizes );
+
+			if ( isset( $sizes[1] ) && isset( $sizes[2] ) ) {
+				$aspect_ratio['width']  = $sizes[1];
+				$aspect_ratio['height'] = $sizes[2];
+			} else {
+				$file = str_replace( content_url(), WP_CONTENT_DIR, $img_url );
+
+				if ( file_exists( $file ) ) {
+					$sizes = getimagesize( $file );
+
+					if ( isset( $sizes[0] ) && isset( $sizes[1] ) ) {
+						$aspect_ratio['width']  = $sizes[0];
+						$aspect_ratio['height'] = $sizes[1];
+					}
+				}
+			}
+		}
+
+		return $aspect_ratio;
+	}
+
+	/**
 	 * Gets the full src of a potential cropped image
 	 *
 	 * The method simply removes the -{width}x{height} added by WordPress
@@ -227,40 +272,14 @@ class TwicPics {
 		unset( $attributes['srcset'] );
 		unset( $attributes['sizes'] );
 
-		$width  = '';
-		$height = $width;
+		$aspect_ratio = $this->get_aspect_ratio( $img_url, $attributes['width'], $attributes['height'] );
 
-		/* Get sizing */
-		if ( $attributes['width'] && $attributes['height'] ) {
-			/* treat only if both width & height */
-			$width  = $attributes['width'];
-			$height = $attributes['height'];
-		} else {
-			/* check by filename */
-			preg_match( '/.+\-(\d+)x(\d+)\..+/', $img_url, $sizes );
-
-			if ( isset( $sizes[1] ) && isset( $sizes[2] ) ) {
-				$width  = $sizes[1];
-				$height = $sizes[2];
-			} else {
-				$file = str_replace( content_url(), WP_CONTENT_DIR, $img_url );
-
-				if ( file_exists( $file ) ) {
-					$sizes = getimagesize( $file );
-
-					if ( isset( $sizes[0] ) && isset( $sizes[1] ) ) {
-						$width  = $sizes[0];
-						$height = $sizes[1];
-					}
-				}
-			}
+		if ( $aspect_ratio['width'] && $aspect_ratio['height'] ) {
+			$attributes['data-twic-src-transform'] = 'cover=' . $aspect_ratio['width'] . ':' . $aspect_ratio['height'] . '/auto';
 		}
 
-		if ( $width && $height ) {
-			$attributes['data-twic-src-transform'] = "cover={$width}x{$height}/auto";
-		}
-		/* Speed load */
-		$attributes['src'] = $this->get_twicpics_placeholder( $img_url, $attributes['width'], $attributes['height'] );
+		/* LQIP */
+		$attributes['src'] = $this->get_twicpics_placeholder( $img_url, $aspect_ratio['width'], $aspect_ratio['height'] );
 
 		return $attributes;
 	}
@@ -407,41 +426,14 @@ class TwicPics {
 		$img->removeAttribute( 'srcset' );
 		$img->removeAttribute( 'sizes' );
 
-		$width  = '';
-		$height = $width;
+		$aspect_ratio = $this->get_aspect_ratio( $img_url, $img->getAttribute( 'width' ), $img->getAttribute( 'height' ) );
 
-		/* Get sizing */
-		if ( $img->getAttribute( 'width' ) && $img->getAttribute( 'height' ) ) {
-			/* with both width & height */
-			$width  = $img->getAttribute( 'width' );
-			$height = $img->getAttribute( 'height' );
-		} else {
-			/* with filename */
-			preg_match( '/.+\-(\d+)x(\d+)\..+/', $img_url, $sizes );
-
-			if ( isset( $sizes[1] ) && isset( $sizes[2] ) ) {
-				$width  = $sizes[1];
-				$height = $sizes[2];
-			} else {
-				$file = str_replace( content_url(), WP_CONTENT_DIR, $img_url );
-
-				if ( file_exists( $file ) ) {
-					$sizes = getimagesize( $file );
-
-					if ( isset( $sizes[0] ) && isset( $sizes[1] ) ) {
-						$width  = $sizes[0];
-						$height = $sizes[1];
-					}
-				}
-			}
-		}
-
-		if ( $width && $height ) {
-			$img->setAttribute( 'data-twic-src-transform', "cover={$width}x{$height}/auto" );
+		if ( $aspect_ratio['width'] && $aspect_ratio['height'] ) {
+			$img->setAttribute( 'data-twic-src-transform', 'cover=' . $aspect_ratio['width'] . ':' . $aspect_ratio['height'] . '/auto' );
 		}
 
 		/* LQIP */
-		$img->setAttribute( 'src', $this->get_twicpics_placeholder( $img_url, $width, $height ) );
+		$img->setAttribute( 'src', $this->get_twicpics_placeholder( $img_url, $aspect_ratio['width'], $aspect_ratio['height'] ) );
 
 		/* noscript for SEO */
 		$this->add_noscript_tag( $img, $dom );
