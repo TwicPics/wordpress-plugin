@@ -155,7 +155,7 @@ class TwicPics {
 		switch ( $this->_lazyload ) :
 			case 'preview_placeholder':
 				if ( ! empty( $width ) && ! empty( $height ) ) {
-					$src = $this->_user_domain . '/' . $src . '?twic=v1/cover=' . $width . 'x' . $height . '/resize-max=' . $this->_max_width . '/' . $this->_lazyload_conf;
+					$src = $this->_user_domain . '/' . $src . '?twic=v1/cover=' . $width . ':' . $height . '/resize-max=' . $this->_max_width . '/' . $this->_lazyload_conf;
 				}
 				break;
 		endswitch;
