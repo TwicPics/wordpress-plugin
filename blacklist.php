@@ -4,5 +4,5 @@
  */
 
 $plugins_blacklist = array(
-	'Smart Slider Plugin' => 'n2-ss-slide-background-wrap',
+	'Smart Slider Plugin' => 'wp-block-nextend-smartslider3',
 );

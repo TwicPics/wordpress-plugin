@@ -94,13 +94,18 @@ class TwicPics {
 	 * @return boolean true if image's parent is marked with a blacklisted plugin class.
 	 */
 	private function is_blacklisted( $tag ) {
-		$parent_node         = $tag->parentNode;
-		$parent_node_classes = explode( ' ', $parent_node->getAttribute( 'class' ) );
+		$parent_node = $tag->parentNode;
 
-		foreach ( $parent_node_classes as $class ) {
-			if ( in_array( $class, $this->_plugins_blacklist, true ) ) {
-				return true;
+		while ( 'html' !== $parent_node->tagName ) {
+			$parent_node_classes = explode( ' ', $parent_node->getAttribute( 'class' ) );
+
+			foreach ( $parent_node_classes as $class ) {
+				if ( in_array( $class, $this->_plugins_blacklist, true ) ) {
+					return true;
+				}
 			}
+
+			$parent_node = $parent_node->parentNode;
 		}
 	}
 
