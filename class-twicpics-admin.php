@@ -18,7 +18,6 @@ class TwicPics_Admin {
 	public function options_page() {
 		add_menu_page( __( 'TwicPics Options', 'twicpics' ), 'TwicPics', 'manage_options', 'twicpics', array( $this, 'render_config_page' ), '', null );
 		add_submenu_page( 'upload.php', __( 'TwicPics Options', 'twicpics' ), 'TwicPics', 'manage_options', 'twicpics', array( $this, 'render_config_page' ) );
-		add_submenu_page( 'options-general.php', __( 'TwicPics Options', 'twicpics' ), 'TwicPics', 'manage_options', 'twicpics', array( $this, 'render_config_page' ) );
 	}
 
 	/**
