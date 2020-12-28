@@ -160,7 +160,7 @@ class TwicPics {
 		switch ( $this->_lazyload ) :
 			case 'preview_placeholder':
 				if ( ! empty( $width ) && ! empty( $height ) ) {
-					$src = $this->_user_domain . '/' . $src . '?twic=v1/cover=' . $width . ':' . $height . '/resize-max=' . $this->_max_width . '/' . $this->_lazyload_conf;
+					$src = $this->_user_domain . '/' . $src . '?twic=v1/cover=' . $width . ':' . $height . '/max=' . $this->_max_width . '/' . $this->_lazyload_conf;
 				}
 				break;
 		endswitch;
@@ -317,7 +317,7 @@ class TwicPics {
 		// }
 
 		// if ( $width && $height ) {
-		// 	$attributes['data-twic-src-transform'] = "cover={$width}:{$height}/auto/resize-max={$this->_max_width}";
+		// 	$attributes['data-twic-src-transform'] = "cover={$width}:{$height}/auto/max={$this->_max_width}";
 		// }
 		// /* Speed load */
 		// $attributes['src'] = $this->get_twicpics_placeholder( $img_url, $attributes['width'], $attributes['height'] );
@@ -325,7 +325,7 @@ class TwicPics {
 		$aspect_ratio = $this->get_aspect_ratio( $img_url, $attributes['width'], $attributes['height'] );
 
 		if ( $aspect_ratio['width'] && $aspect_ratio['height'] ) {
-			$attributes['data-twic-src-transform'] = 'cover=' . $aspect_ratio['width'] . ':' . $aspect_ratio['height'] . '/auto/resize-max=' . $this->_max_width;
+			$attributes['data-twic-src-transform'] = 'cover=' . $aspect_ratio['width'] . ':' . $aspect_ratio['height'] . '/auto/max=' . $this->_max_width;
 		}
 
 		/* LQIP */
@@ -506,7 +506,7 @@ class TwicPics {
 		// }
 
 		// if ( $width && $height ) {
-		// 	$img->setAttribute( 'data-twic-src-transform', "cover={$width}:{$height}/auto/resize-max={$this->_max_width}" );
+		// 	$img->setAttribute( 'data-twic-src-transform', "cover={$width}:{$height}/auto/max={$this->_max_width}" );
 		// }
 
 		// /* LQIP */
@@ -515,7 +515,7 @@ class TwicPics {
 		$aspect_ratio = $this->get_aspect_ratio( $img_url, $img->getAttribute( 'width' ), $img->getAttribute( 'height' ) );
 
 		if ( $aspect_ratio['width'] && $aspect_ratio['height'] ) {
-			$img->setAttribute( 'data-twic-src-transform', 'cover=' . $aspect_ratio['width'] . ':' . $aspect_ratio['height'] . '/auto/resize-max=' . $this->_max_width );
+			$img->setAttribute( 'data-twic-src-transform', 'cover=' . $aspect_ratio['width'] . ':' . $aspect_ratio['height'] . '/auto/max=' . $this->_max_width );
 		}
 
 		/* LQIP */
