@@ -21,6 +21,9 @@
 
 defined( 'ABSPATH' ) || die( 'ERROR !' );
 
+/**
+ * Plugin initialisation
+ */
 function twicpics_init() {
 	include 'class-twicpics.php';
 	$twicpics = new TwicPics();

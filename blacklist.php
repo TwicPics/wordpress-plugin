@@ -1,6 +1,6 @@
 <?php
 /**
- * Represents blacklisted plugins (in which images shouldn't be optimized by TwicPics)
+ * Blacklisted plugins (in which images shouldn't be optimized by TwicPics)
  */
 
 $plugins_blacklist = array(

@@ -6,6 +6,9 @@ defined( 'ABSPATH' ) || die( 'ERROR !' );
  * The class for TwicPics admin settings
  */
 class TwicPics_Admin {
+	/**
+	 * Set required actions
+	 */
 	public function __construct() {
 		add_action( 'admin_init', array( $this, 'settings_init' ) );
 		add_action( 'admin_menu', array( $this, 'options_page' ) );
@@ -89,7 +92,7 @@ class TwicPics_Admin {
 			'twicpics_section_account_settings',
 			array(
 				'label_for'   => 'max_width',
-				'description' => esc_html( __( 'The max width you want your images to be displayed' ) ),
+				'description' => esc_html( __( 'The max width you want your images to be intrinsically resized. Default value is 2000.' ) ),
 			)
 		);
 	}
