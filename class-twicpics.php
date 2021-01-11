@@ -274,7 +274,10 @@ class TwicPics {
 
 		if ( $width && $height ) {
 			$attributes['data-twic-src-transform'] = "cover={$width}:{$height}/auto/max={$this->_max_width}";
+		} else {
+			$attributes['data-twic-src-transform'] = "auto/max={$this->_max_width}";
 		}
+
 		/* Speed load */
 		$attributes['src'] = $this->get_twicpics_placeholder( $img_url, $attributes['width'], $attributes['height'] );
 
@@ -454,6 +457,8 @@ class TwicPics {
 
 		if ( $width && $height ) {
 			$img->setAttribute( 'data-twic-src-transform', "cover={$width}:{$height}/auto/max={$this->_max_width}" );
+		} else {
+			$img->setAttribute( 'data-twic-src-transform', "auto/max={$this->_max_width}" );
 		}
 
 		/* LQIP */
