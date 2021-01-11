@@ -34,6 +34,11 @@ class TwicPics {
 			$this->_max_width = '2000';
 		}
 
+		/* Step for images resizing */
+		if ( ! empty( $options['step'] ) ) {
+			$this->_step = $options['step'];
+		}
+
 		/* Placeholder config */
 		$this->_lazyload = defined( 'TWICPICS_LAZYLOAD_TYPE' ) ? TWICPICS_LAZYLOAD_TYPE : 'preview_placeholder';
 
@@ -193,7 +198,7 @@ class TwicPics {
 	 * Enqueues the TwicPics JS script
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script( 'twicpics', $this->_user_domain . '/?v1', array(), $ver = null, false );
+		wp_enqueue_script( 'twicpics', $this->_user_domain . '/?v1' . ( $this->_step ? ( '&step=' . $this->_step ) : '' ), array(), $ver = null, false );
 	}
 
 	/**

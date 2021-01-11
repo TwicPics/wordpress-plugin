@@ -92,7 +92,19 @@ class TwicPics_Admin {
 			'twicpics_section_account_settings',
 			array(
 				'label_for'   => 'max_width',
-				'description' => esc_html( __( 'The max width you want your images to be intrinsically resized. Default value is 2000.' ) ),
+				'description' => esc_html( __( 'The max width you want your images to be intrinsically resized. The default value is 2000.' ) ),
+			)
+		);
+
+		add_settings_field(
+			'twicpics_field_step',
+			__( 'Step for images resizing', 'twicpics' ),
+			array( $this, 'field_textinput' ),
+			'twicpics',
+			'twicpics_section_account_settings',
+			array(
+				'label_for'   => 'step',
+				'description' => esc_html( __( 'The step you want your images to be resized. The default value is 10.' ) ),
 			)
 		);
 	}
