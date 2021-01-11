@@ -273,9 +273,9 @@ class TwicPics {
 		}
 
 		if ( $width && $height ) {
-			$attributes['data-twic-src-transform'] = "cover={$width}:{$height}/auto/max={$this->_max_width}";
+			$attributes['data-twic-src-transform'] = "cover={$width}:{$height}/*/max={$this->_max_width}";
 		} else {
-			$attributes['data-twic-src-transform'] = "auto/max={$this->_max_width}";
+			$attributes['data-twic-src-transform'] = "*/max={$this->_max_width}";
 		}
 
 		/* Speed load */
@@ -456,9 +456,9 @@ class TwicPics {
 		}
 
 		if ( $width && $height ) {
-			$img->setAttribute( 'data-twic-src-transform', "cover={$width}:{$height}/auto/max={$this->_max_width}" );
+			$img->setAttribute( 'data-twic-src-transform', "cover={$width}:{$height}/*/max={$this->_max_width}" );
 		} else {
-			$img->setAttribute( 'data-twic-src-transform', "auto/max={$this->_max_width}" );
+			$img->setAttribute( 'data-twic-src-transform', "*/max={$this->_max_width}" );
 		}
 
 		/* LQIP */
@@ -541,7 +541,7 @@ class TwicPics {
 
 			if ( isset( $x ) && isset( $y ) ) {
 				if ( 50 !== $x || 50 !== $y ) {
-					$tag->setAttribute( 'data-twic-background-transform', "focus={$x}px{$y}p/auto" );
+					$tag->setAttribute( 'data-twic-background-transform', "focus={$x}px{$y}p/*" );
 				}
 			}
 
