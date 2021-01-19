@@ -53,46 +53,34 @@ TwicPics Wordpress Plugin is an open source software. The following people have 
 
 If you don't have any TwicPics account yet, you can create one on [TwicPics website](https://account.twicpics.com/signup) for free.
 
-Once your account is created, TwicPics provides you with a `domain` that has the following syntax `my-sub.twic.pics` , with `my-sub` corresponding to  you personal subdomain.
+Once your account is created, TwicPics provides you with a `domain` that has the following syntax `subdomain.twic.pics` , with `subdomain` corresponding to  you personal subdomain.
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/bb46bab3-30fb-4081-82cf-ad990310a749/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/bb46bab3-30fb-4081-82cf-ad990310a749/Untitled.png)
-
-Your TwicPics domain will allow the plugin to handle image optimization on your WordPress website.
+It will allow the plugin to handle your image optimization on WordPress.
 
 **Connect your TwicPics domain to your WordPress website**
 
-This step will be automatically handled for you in the future versions of the plugin.
+*This step will be automatically handled for you in the future versions of the plugin.*
 
 On your TwicPics back-office, from `Domains` section, connect your TwicPics account to your WordPress website.
 
 To do so, click on the button `Add new path`.
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/35b5ac26-48b5-48cb-a149-6c20e23ac04a/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/35b5ac26-48b5-48cb-a149-6c20e23ac04a/Untitled.png)
+A new window opens, in which you must set the URL of your WordPress website as a `path` of your TwicPics domain, as well as the `Source URL` of you WordPress website images.
 
-A new window opens, in which you must set the `URL of your WordPress website` as a `path` of your TwicPics domain, as well as the `Source URL` of you WordPress website images.
-
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/4a821d8d-ac77-4d2c-a9e8-25ccd29b7650/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/4a821d8d-ac77-4d2c-a9e8-25ccd29b7650/Untitled.png)
-
-Say your TwicPics domain is [`my-sub.twic.pics`](http://my-sub.twic.pics) and the URL of your WordPress website is [`http://minos.goldorak.co.za/`](http://minos.goldorak.co.za/), then the path [`my-sub.twic.pics/](http://my-sub.twic.pics)[http://minos.goldorak.co.za/](http://minos.goldorak.co.za/)` will point to your WordPress website [`http://minos.goldorak.co.za/`](http://minos.goldorak.co.za/) as the source of your images.
+Say your TwicPics domain is `https://my-sub.twic.pics/` and the URL of your WordPress website is `https://my-wordpress.com/`, then the path `https://my-sub.twic.pics/https://my-wordpress.com/` will point to your WordPress website `https://my-wordpress.com/`, as the source of your images.
 
 = 2. Install the plugin =
 
-Install TwicPics plugin like you would do for any other plugin on WordPress.
-
-If you are using the **beta version** of the plugin or you need to install it manually, click on the button `Upload Plugin` from `Add Plugin` section and then select the `.zip` file of the plugin that you have been provided with.
-
-Finally, click on `Install Now` to install the plugin on your WordPress website.
-
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c388ceaa-4884-4e49-8f15-9914f5608b71/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c388ceaa-4884-4e49-8f15-9914f5608b71/Untitled.png)
+Once the configuration of your TwicPics account is done, install the plugin like you would do for any other plugin on WordPress.
 
 = 3. Plugin settings =
 
-If you use other image optimization or lazy-loading plugins, please disable them or any related features before moving on the next steps.
+**If you use other image optimization or lazy-loading plugins, please disable them or any related features before moving on the next steps.**
 
-- `Activate` TwicPics plugin from the list of plugins
-- Navigate to TwicPics settings to enter your **TwicPics domain**, so the plugin can be able to know who you are. You can find these settings at two levels on your WordPress **admin menu**: at the **top-level menu** and at `**Media` sub-level menu** ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8a44ad1a-0fbd-4227-b864-6604c29f8424/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8a44ad1a-0fbd-4227-b864-6604c29f8424/Untitled.png)
-- Also, you can define a `max width` at which your images will be intrinsically resized. Note that the default value for this option is `2000px`.
-- Save your settings and that's is ! The plugin can now delivers real time responsive images to all of your WordPress website visitors.
+- Activate TwicPics plugin from the list of plugins.
+- Navigate to TwicPics settings to enter your **TwicPics domain**, so the plugin can be able to know who you are. You can find these settings at two levels on your WordPress admin menu: at the **top-level menu** and at **Media** sub-level menu.
+- Note that you can define a `max width` at which your images will be intrinsically resized (default value is `2000px`).
+- Save your settings and that's is ! The plugin can now deliver real time responsive images to all of your WordPress website visitors.
 
 == Screenshots ==
 
