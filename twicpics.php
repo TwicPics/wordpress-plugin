@@ -2,20 +2,19 @@
 /**
  * Real Time Responsive Images Plugin for WordPress by TwicPics
  *
+ * @package          TwicPics
  * @link             https://www.twicpics.com/
- * @package          TwicPics_Responsive_Image_As_A_Service
- * @version          1.0
+ * @version          0.1.0
  * @license          gpl-2.0
  *
  * @wordpress-plugin
- * Plugin Name:      Real Time Responsive Images Plugin for WordPress by TwicPics
- * Plugin URI:       https://www.twicpics.com/wordpress
+ * Plugin Name:      TwicPics
+ * Plugin URI:       https://www.twicpics.com/wordpress/
  * Description:      Delivers pixel perfect images on the fly.
- * Version:          1.0
+ * Version:          0.1.0
  * Licence URI:      http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
  * Author:           Studio Cassette
  * Author URI:       https://www.studiocassette.com/
- * Text Domain:      twicpics-responsive-image-as-a-service
  * Domain Path:      /languages
  */
 
