@@ -1,2 +1,1 @@
-# wordpress-plugin
-TwicPics Wordpress Plugin
+# TwicPics' WordPress Plugin
