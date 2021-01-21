@@ -9,12 +9,14 @@
  *
  * @wordpress-plugin
  * Plugin Name:      TwicPics
- * Plugin URI:       https://www.twicpics.com/wordpress/
+ * Plugin URI:       https://www.twicpics.com/documentation/
  * Description:      Delivers pixel perfect images on the fly.
  * Version:          0.1.0
- * Licence URI:      http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Author:           Studio Cassette
- * Author URI:       https://www.studiocassette.com/
+ * License:          GPL-2.0+
+ * Licence URI:      http://www.gnu.org/licenses/gpl-2.0.txt
+ * Author:           TwicPics
+ * Author URI:       https://www.twicpics.com/
+ * Text Domain:      twicpics
  * Domain Path:      /languages
  */
 

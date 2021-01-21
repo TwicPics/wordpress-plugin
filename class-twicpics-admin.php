@@ -1,6 +1,6 @@
 <?php
 /**
- * TwicPics plugin admin
+ * TwicPics plugin admin-specific functionality.
  *
  * @package TwicPics
  */
