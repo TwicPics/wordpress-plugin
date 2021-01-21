@@ -1,4 +1,30 @@
 <?php
+/**
+ * Plugin Name: TwicPics
+ * Plugin URI: https://www.twicpics.com/documentation/
+ * Description: Responsive Images as a Service
+ * Version: 0.1.0
+ * Author:  TwicPics
+ * Author URI: https://www.twicpics.com/
+ * License: GPLv2+
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2 or, at
+ * your discretion, any later version, as published by the Free
+ * Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ * @package TwicPics
+ */
 
 defined( 'ABSPATH' ) || die( 'ERROR !' );
 
@@ -100,8 +126,10 @@ class TwicPics {
 	 * @return boolean true if image's parent is marked with a blacklisted plugin class.
 	 */
 	private function is_blacklisted( $tag ) {
+		// phpcs:ignore
 		$parent_node = $tag->parentNode;
 
+		// phpcs:ignore
 		while ( 'html' !== $parent_node->tagName ) {
 			$parent_node_classes = explode( ' ', $parent_node->getAttribute( 'class' ) );
 
@@ -111,6 +139,7 @@ class TwicPics {
 				}
 			}
 
+			// phpcs:ignore
 			$parent_node = $parent_node->parentNode;
 		}
 	}
@@ -122,7 +151,6 @@ class TwicPics {
 	 * @return boolean true if already treated, false otherwise
 	 */
 	private function is_treated( $class ) {
-		// return in_array( 'twic', explode( ' ', $class ), true ) || in_array( 'notwic', explode( ' ', $class ), true );
 		return in_array( 'notwic', explode( ' ', $class ), true );
 	}
 
@@ -395,6 +423,7 @@ class TwicPics {
 		$img_cloned->setAttribute( 'src', ( str_replace( ( $this->_user_domain . '/' ), '', $img_src ) ) );
 		$img_cloned->setAttribute( 'alt', $img->getAttribute( 'alt' ) );
 		$noscript->appendChild( $img_cloned );
+		// phpcs:ignore
 		$img->parentNode->appendChild( $noscript );
 	}
 
@@ -422,6 +451,7 @@ class TwicPics {
 		if ( ! $this->is_on_same_domain( $img_url ) ) {
 			return;
 		}
+		// phpcs:ignore
 		if ( 'noscript' === $img->parentNode->tagName ) {
 			return;
 		}

@@ -1,4 +1,9 @@
 <?php
+/**
+ * TwicPics plugin admin
+ *
+ * @package TwicPics
+ */
 
 defined( 'ABSPATH' ) || die( 'ERROR !' );
 
