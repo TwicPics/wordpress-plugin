@@ -124,7 +124,7 @@ class TwicPics_Admin {
 	<p id="<?php echo esc_attr( $args['id'] ); ?>">
 		<?php
 		echo sprintf(
-			__( '<p> Set your <strong>TwicPics domain</strong> here to begin with your images optimization.<br />You can get your domain by going to your <a href="%1$s" target="_blank">TwicPics account</a>.<p><em>For more information about TwicPics domain, please refer to the <a href="%2$s" target="_blank">documentation</a>.</em></p>', 'twicpics' ),
+			'<p> Set your <strong>TwicPics domain</strong> here to begin with your images optimization.<br />You can get your domain by going to your <a href="%1$s" target="_blank">TwicPics account</a>.<p><em>For more information about TwicPics domain, please refer to the <a href="%2$s" target="_blank">documentation</a>.</em></p>',
 			'https://account.twicpics.com/login',
 			'https://www.twicpics.com/documentation/subdomain/'
 		);
