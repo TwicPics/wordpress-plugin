@@ -3,6 +3,7 @@
 /node_modules
 /src
 /.wordpress-org
+/vendor
 
 .distignore
 .eslintrc.js
@@ -11,4 +12,6 @@
 Makefile
 package.json
 package-lock.json
+composer.json
+composer.lock
 readme.md
