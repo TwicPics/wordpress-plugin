@@ -40,7 +40,7 @@ TwicPics' library being the heart of this WordPress plugin means **you don't hav
 
 == Installation ==
 
-To get the full description of the plugin set up, please [visit TwicPics website](https://www.twicpics.com/documentation/plugin-wordpress-setup/?ref=wordpress).
+To get the full description of the plugin set up, please [visit TwicPics website](https://www.twicpics.com/documentation/wordpress-plugin/?ref=wordpress).
 
 = Set your TwicPics account =
 
