@@ -14,5 +14,5 @@ package.json
 package-lock.json
 composer.json
 composer.lock
-readme.md
+README.md
 phpcs.xml.dist
