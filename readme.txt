@@ -5,7 +5,7 @@ Tags: image, image optimization, image compression, resize image, responsive ima
 Requires at least: 5.0
 Tested up to: 5.6
 Requires PHP: 7.4
-Stable tag: 0.1.0
+Stable tag: 0.1.2
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,7 +13,7 @@ Boost your website performance and SEO by delivering pixel perfect images on the
 
 == Description ==
 
-TwicPics is a real-time image processing service that enables individuals and businesses of all sizes to deliver high performing and rich visual content with easy setup.
+[TwicPics](https://www.twicpics.com/?ref=wordpress) is a real-time image processing service that enables individuals and businesses of all sizes to deliver high performing and rich visual content with easy setup.
 
 It reduces image file sizes with adaptive compression and automatic Next-Gen format to boost your website performance and SEO by delivering pixel perfect images on the fly.
 
@@ -29,7 +29,7 @@ TwicPics' library being the heart of this WordPress plugin means **you don't hav
 
 = Features =
 
-- **Image resizing and DPR:** TwicPics automatically detects the DPR of your visitors. This means your existing and future images are automatically sized ****at the correct DPR for any device.
+- **Image resizing and DPR:** TwicPics automatically detects the DPR of your visitors. This means your existing and future images are automatically sized at the correct DPR for any device.
 - **Lazy loading**: automatically defers offscreen images to improve page loading time. TwicPics also uses image placeholders for better user experience.
 - **Process many image formats**: non-animated AVIF, GIF, HEIF, JPEG, PNG and WebP formats are supported.
 - **Next-Gen format and WebP conversion**: for better optimization, your images are automatically converted to WebP format by default.
@@ -38,19 +38,13 @@ TwicPics' library being the heart of this WordPress plugin means **you don't hav
 - **Global CDN**: serve your images closer to your visitors thanks to a worldwide CDN powered by Amazon™.
 - **SEO optimization**
 
-= Contributors & Developers =
-TwicPics Wordpress Plugin is an open source software. The following people have contributed to this plugin:
-[TwicPics](https://profiles.wordpress.org/twicpics/)
-[Studio Cassette](https://profiles.wordpress.org/studiocassette/)
-
 == Installation ==
 
-To get the full description of the plugin set up, please [visit TwicPics website](https://www.twicpics.com/documentation/plugin-wordpress-setup/).
+To get the full description of the plugin set up, please [visit TwicPics website](https://www.twicpics.com/documentation/plugin-wordpress-setup/?ref=wordpress).
 
 = Set your TwicPics account =
 
-- Create your TwicPics account [here](https://account.twicpics.com/signup) for free. A personal TwicPics *subdomain* is then automatically generated for you (e.g.: my-subdomain, from my-subdomain.twic.pics domain).
-- Connect your TwicPics account to your WordPress website (*this step will be automatically handled in the future versions of the plugin*).
+- Create your TwicPics account [here](https://account.twicpics.com/signup?ref=wordpress) for free. A personal TwicPics *domain* is then automatically generated for you (e.g.: xxxxxxxxxxx.twic.pics domain).
 
 = Install the plugin =
 
@@ -61,21 +55,24 @@ To get the full description of the plugin set up, please [visit TwicPics website
 **If you use other image optimization or lazy-loading plugins, please disable them or any related features before moving on the next steps.**
 
 - Activate TwicPics plugin from the list of plugins.
-- Navigate to TwicPics settings to enter your TwicPics *personal subdomain*.
+- Navigate to TwicPics settings to enter your TwicPics *personal domain*.
 - You can define a *max width* at which your images will be intrinsically resized (default value is 2000 pixels).
+- To avoid requesting too may variants of the same image, you can also set a *step* option. TwicPics will round the width of images to the closest multiple of this value (default is 10 pixels).
 - Save your settings.
 
 That's it ! The plugin can now deliver real time responsive images to all of your WordPress website visitors.
 
 == Screenshots ==
 
-1. TwicPics homepage
-2. TwicPics documentation
-3. TwicPics dashboard
-4. TwicPics account connection to the WordPress website
+1. The simplest way to tackle responsive images
+2. Deliver the best image quality
+3. Improve page loading time
+4. Do not lose the SEO race
 
 == Changelog ==
 
 = 0.1.0 =
+*Initial release*
 
-Initial release
+= 0.1.2 =
+*Minor fixes*
