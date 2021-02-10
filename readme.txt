@@ -1,6 +1,6 @@
 === Real Time Responsive Images Plugin for WordPress by TwicPics  ===
 
-Contributors: TwicPics, Studio Cassette
+Contributors: TwicPics, studiocassette
 Tags: image, image optimization, image compression, resize image, responsive image, optimize image, performance optimization, page speed, next-gen format, WebP, lazy loading, DPR, Retina, SEO optimization, CDN
 Requires at least: 5.0
 Tested up to: 5.6
@@ -45,49 +45,34 @@ TwicPics Wordpress Plugin is an open source software. The following people have 
 
 == Installation ==
 
-*Follow these steps to help you get started with TwicPics image optimization on your WordPress website.*
+To get the full description of the plugin set up, please [visit TwicPics website](https://www.twicpics.com/documentation/plugin-wordpress-setup/).
 
-= 1. Set and get your TwicPics domain =
+= Set your TwicPics account =
 
-**Create a TwicPics account**
+- Create your TwicPics account [here](https://account.twicpics.com/signup) for free. A personal TwicPics *subdomain* is then automatically generated for you (e.g.: my-subdomain, from my-subdomain.twic.pics domain).
+- Connect your TwicPics account to your WordPress website (*this step will be automatically handled in the future versions of the plugin*).
 
-If you don't have any TwicPics account yet, you can create one on [TwicPics website](https://account.twicpics.com/signup) for free.
+= Install the plugin =
 
-Once your account is created, TwicPics provides you with a `domain` that has the following syntax `subdomain.twic.pics` , with `subdomain` corresponding to  you personal subdomain.
+- Install the plugin like you would do for any other plugin on WordPress.
 
-It will allow the plugin to handle your image optimization on WordPress.
-
-**Connect your TwicPics domain to your WordPress website**
-
-*This step will be automatically handled for you in the future versions of the plugin.*
-
-On your TwicPics back-office, from `Domains` section, connect your TwicPics account to your WordPress website.
-
-To do so, click on the button `Add new path`.
-
-A new window opens, in which you must set the URL of your WordPress website as a `path` of your TwicPics domain, as well as the `Source URL` of you WordPress website images.
-
-Say your TwicPics domain is `https://my-sub.twic.pics/` and the URL of your WordPress website is `https://my-wordpress.com/`, then the path `https://my-sub.twic.pics/https://my-wordpress.com/` will point to your WordPress website `https://my-wordpress.com/`, as the source of your images.
-
-= 2. Install the plugin =
-
-Once the configuration of your TwicPics account is done, install the plugin like you would do for any other plugin on WordPress.
-
-= 3. Plugin settings =
+= Plugin settings =
 
 **If you use other image optimization or lazy-loading plugins, please disable them or any related features before moving on the next steps.**
 
 - Activate TwicPics plugin from the list of plugins.
-- Navigate to TwicPics settings to enter your **TwicPics domain**, so the plugin can be able to know who you are. You can find these settings at two levels on your WordPress admin menu: at the **top-level menu** and at **Media** sub-level menu.
-- Note that you can define a `max width` at which your images will be intrinsically resized (default value is `2000px`).
-- Save your settings and that's is ! The plugin can now deliver real time responsive images to all of your WordPress website visitors.
+- Navigate to TwicPics settings to enter your TwicPics *personal subdomain*.
+- You can define a *max width* at which your images will be intrinsically resized (default value is 2000 pixels).
+- Save your settings.
+
+That's it ! The plugin can now deliver real time responsive images to all of your WordPress website visitors.
 
 == Screenshots ==
 
-1. TwicPics domain
-2. Adding a path
-3. Configure your path
-4. TwicPics admin menu
+1. TwicPics homepage
+2. TwicPics documentation
+3. TwicPics dashboard
+4. TwicPics account connection to the WordPress website
 
 == Changelog ==
 
