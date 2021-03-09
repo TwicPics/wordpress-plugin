@@ -3,7 +3,7 @@
 Contributors: TwicPics, studiocassette
 Tags: image, image optimization, image compression, resize image, responsive image, optimize image, performance optimization, page speed, next-gen format, WebP, lazy loading, DPR, Retina, SEO optimization, CDN
 Requires at least: 5.0
-Tested up to: 5.6
+Tested up to: 5.7
 Requires PHP: 7.4
 Stable tag: 0.1.2
 License: GPLv2
