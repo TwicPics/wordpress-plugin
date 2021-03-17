@@ -444,7 +444,7 @@ class TwicPics {
 		}
 
 		/* TwicPics Script 'data-twic-src' attribute */
-		$img->setAttribute( 'data-twic-src', str_replace( get_site_url(), '', $this->get_full_src( $img_url ) ) );
+		$img->setAttribute( 'data-twic-src', preg_replace( '/^https?:\/\/[^\/]+/', '', $this->get_full_src( $img_url ) ) );
 		$img->removeAttribute( 'srcset' );
 		$img->removeAttribute( 'sizes' );
 
