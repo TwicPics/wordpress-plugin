@@ -28,6 +28,13 @@ class TwicPics {
 			return;
 		}
 
+		/* Image atrributes to remove */
+		$this->_img_attributes_to_remove = array(
+			'srcset',
+			'sizes',
+			'data-src',
+		);
+
 		/* Plugins blacklist */
 		include 'blacklist.php';
 		$this->_plugins_blacklist = $plugins_blacklist;
@@ -250,8 +257,9 @@ class TwicPics {
 
 		$attributes['data-twic-src'] = $this->get_full_src( $img_url );
 
-		unset( $attributes['srcset'] );
-		unset( $attributes['sizes'] );
+		foreach ( $this->_img_attributes_to_remove as $attr ) {
+			unset( $attributes[ $attr ] );
+		}
 
 		$width  = '';
 		$height = $width;
