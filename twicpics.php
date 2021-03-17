@@ -33,4 +33,4 @@ function twicpics_init() {
 	$twicpics_admin = new TwicPics_Admin();
 }
 
-add_action( 'wp_loaded', 'twicpics_init' );
+add_action( 'wp_loaded', 'twicpics_init', PHP_INT_MAX );
