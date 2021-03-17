@@ -385,6 +385,14 @@ class TwicPics {
 			}
 		}
 
+		/* Treat span background style attributes */
+		foreach ( $dom->getElementsByTagName( 'span' ) as $span ) {
+			/* not already treated */
+			if ( ! $this->is_treated( $span->getAttribute( 'class' ) ) ) {
+				$this->treat_tag_for_bg( $span );
+			}
+		}
+
 		/* Return data without doctype and html/body */
 		return apply_filters( 'twicpics_the_content_return', substr( $dom->saveHTML( $dom->getElementsByTagName( 'body' )->item( 0 ) ), 6, -7 ), $original_content );
 	}
