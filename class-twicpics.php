@@ -32,7 +32,6 @@ class TwicPics {
 		$this->_img_attributes_to_remove = array(
 			'srcset',
 			'sizes',
-			'data-src',
 		);
 
 		/* Plugins blacklist */
@@ -250,12 +249,16 @@ class TwicPics {
 		}
 
 		$img_url = $attributes['src'];
+		echo '$img_url ';
+		var_dump( $img_url );
 
 		if ( strpos( $img_url, 'http' ) === false ) {
 			$img_url = home_url( $img_url );
 		}
 
 		$attributes['data-twic-src'] = $this->get_full_src( $img_url );
+		echo 'data-twic-src ';
+		var_dump( $attributes['data-twic-src'] );
 
 		foreach ( $this->_img_attributes_to_remove as $attr ) {
 			unset( $attributes[ $attr ] );
@@ -453,8 +456,10 @@ class TwicPics {
 
 		/* TwicPics Script 'data-twic-src' attribute */
 		$img->setAttribute( 'data-twic-src', preg_replace( '/^https?:\/\/[^\/]+/', '', $this->get_full_src( $img_url ) ) );
-		$img->removeAttribute( 'srcset' );
-		$img->removeAttribute( 'sizes' );
+
+		foreach ( $this->_img_attributes_to_remove as $attr ) {
+			$img->removeAttribute( $attr );
+		}
 
 		$width  = '';
 		$height = $width;
