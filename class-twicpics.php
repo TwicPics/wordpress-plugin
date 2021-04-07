@@ -18,6 +18,7 @@ class TwicPics {
 
 		$options = get_option( 'twicpics_options' );
 
+		/* User domain */
 		if ( defined( 'TWICPICS_URL' ) ) {
 			$this->_user_domain = 'https://' . ( 'TWICPICS_URL' );
 		} elseif ( ! empty( $options['user_domain'] ) ) {
@@ -28,17 +29,7 @@ class TwicPics {
 			return;
 		}
 
-		/* Image atrributes to remove */
-		$this->_img_attributes_to_remove = array(
-			'srcset',
-			'sizes',
-		);
-
-		/* Plugins blacklist */
-		include 'blacklist.php';
-		$this->_plugins_blacklist = $plugins_blacklist;
-
-		/* Max width of images */
+		/* Intrinsic max width of images */
 		if ( ! empty( $options['max_width'] ) ) {
 			$this->_max_width = $options['max_width'];
 		} else {
@@ -49,6 +40,20 @@ class TwicPics {
 		if ( ! empty( $options['step'] ) ) {
 			$this->_step = $options['step'];
 		}
+
+		/* Plugins blacklist */
+		include 'blacklist.php';
+		$this->_plugins_blacklist = $plugins_blacklist;
+
+		/* Plugins checklist for placeholders URL dimensions */
+		include 'checklist-for-placeholders-url-dimensions.php';
+		$this->_plugins_checklist_for_placeholders_url_dimensions = $plugins_checklist_for_placeholders_url_dimensions;
+
+		/* Image atrributes to remove */
+		$this->_img_attributes_to_remove = array(
+			'srcset',
+			'sizes',
+		);
 
 		/* Placeholder config */
 		$this->_lazyload = defined( 'TWICPICS_LAZYLOAD_TYPE' ) ? TWICPICS_LAZYLOAD_TYPE : 'preview_placeholder';
@@ -127,6 +132,24 @@ class TwicPics {
 			// phpcs:ignore
 			$parent_node = $parent_node->parentNode;
 		}
+	}
+
+	/**
+	 * Checks if the dimensions of the placeholder can be removed from its URL to load the same origin image (placeholder) as the definitive one
+	 * 
+	 * @param     string $tag The image (placeholder).
+	 * @return boolean false if the plugin that displays the placeholder needs the width and the height from the URL to size the definitive image at expected dimensions
+	 */
+	private function should_placeholder_dimensions_be_removed_from_url( $tag ) {
+		$tag_classes = explode( ' ', $tag->getAttribute( 'class' ) );
+
+		foreach ( $tag_classes as $class ) {
+			if ( in_array( $class, $this->_plugins_checklist_for_placeholders_url_dimensions, true ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -493,7 +516,11 @@ class TwicPics {
 		}
 
 		/* LQIP */
-		$img->setAttribute( 'src', $this->get_twicpics_placeholder( $img_url, $width, $height ) );
+		$img->setAttribute( 'src', $this->get_twicpics_placeholder(
+			$this->should_placeholder_dimensions_be_removed_from_url( $img ) ? $this->get_full_size_url( $img_url ) : $img_url,
+			$width,
+			$height
+		) );
 
 		/* noscript for SEO */
 		$this->add_noscript_tag( $img, $dom );
