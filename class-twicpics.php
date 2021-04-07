@@ -572,12 +572,11 @@ class TwicPics {
 						break;
 					}
 					if ( strpos( $value, ',' ) === false ) {
-						$value          = trim( $value );
-						$bg_urls        = array( substr( $value, 4, -1 ) ); // removes 'url(' and ')'.
-						$bg_placeholder = $this->_user_domain . '/' . $bg_urls[0];
-
-						// $new_style_attr .= $property . ':url(' . $this->get_twicpics_placeholder( $bg_urls[0] ) . ');'; // utile d'appeler ici get_twicpics_placeholder() sachant qu'on ne passe ni largeur ni hauteur ?
-						$new_style_attr .= $property . ':url(' . $bg_placeholder . '?twic=v1/output=preview);';
+						$value           = trim( $value );
+						$bg_urls         = array( substr( $value, 4, -1 ) ); // removes 'url(' and ')'.
+						$bg_url          = $this->get_full_size_url( $bg_urls[0] ); // removes width and height from the URL
+						$bg_placeholder  = $this->_user_domain . '/' . $bg_url;
+						$new_style_attr .= $property . ':url(' . $bg_placeholder . '?twic=v1/output=preview)';
 					}
 					/* else { multiple backgrounds } */
 					break;
@@ -595,7 +594,7 @@ class TwicPics {
 
 		if ( isset( $bg_urls ) && is_array( $bg_urls ) && $this->is_on_same_domain( $bg_urls[0] ) ) {
 			$tag->setAttribute( 'style', $new_style_attr );
-			$tag->setAttribute( 'data-twic-background', 'url(' . preg_replace( '/^https?:\/\/[^\/]+/', '', $bg_urls[0] ) . ')' );
+			$tag->setAttribute( 'data-twic-background', 'url(' . preg_replace( '/^https?:\/\/[^\/]+/', '', $bg_url ) . ')' );
 
 			if ( isset( $x ) && isset( $y ) ) {
 				if ( 50 !== $x || 50 !== $y ) {
