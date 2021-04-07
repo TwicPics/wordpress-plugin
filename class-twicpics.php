@@ -188,14 +188,14 @@ class TwicPics {
 	}
 
 	/**
-	 * Gets the full src of a potential cropped image
+	 * Gets the full size URL of the image
 	 *
-	 * The method simply removes the -{width}x{height} added by WordPress
+	 * The method simply removes the -{width}x{height} added by WordPress from the URL of the originaly requested image 
 	 *
-	 * @param      string $img_url the original (maybe cropped) url of the image.
-	 * @return string the full src image url
+	 * @param      string $img_url the URL of the originaly requested image (maybe cropped).
+	 * @return string the full size URL of the image
 	 */
-	private function get_full_src( $img_url ) {
+	private function get_full_size_url( $img_url ) {
 		global $wpdb;
 		$base_url = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $img_url );
 		$image    = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE guid=%s OR guid=%s;", $base_url, $img_url ) );
@@ -249,16 +249,12 @@ class TwicPics {
 		}
 
 		$img_url = $attributes['src'];
-		echo '$img_url ';
-		var_dump( $img_url );
 
 		if ( strpos( $img_url, 'http' ) === false ) {
 			$img_url = home_url( $img_url );
 		}
 
-		$attributes['data-twic-src'] = $this->get_full_src( $img_url );
-		echo 'data-twic-src ';
-		var_dump( $attributes['data-twic-src'] );
+		$attributes['data-twic-src'] = $this->get_full_size_url( $img_url );
 
 		foreach ( $this->_img_attributes_to_remove as $attr ) {
 			unset( $attributes[ $attr ] );
@@ -455,7 +451,7 @@ class TwicPics {
 		}
 
 		/* TwicPics Script 'data-twic-src' attribute */
-		$img->setAttribute( 'data-twic-src', preg_replace( '/^https?:\/\/[^\/]+/', '', $this->get_full_src( $img_url ) ) );
+		$img->setAttribute( 'data-twic-src', preg_replace( '/^https?:\/\/[^\/]+/', '', $this->get_full_size_url( $img_url ) ) );
 
 		foreach ( $this->_img_attributes_to_remove as $attr ) {
 			$img->removeAttribute( $attr );
