@@ -595,7 +595,7 @@ class TwicPics {
 
 		if ( isset( $bg_urls ) && is_array( $bg_urls ) && $this->is_on_same_domain( $bg_urls[0] ) ) {
 			$tag->setAttribute( 'style', $new_style_attr );
-			$tag->setAttribute( 'data-twic-background', 'url(' . str_replace( get_site_url(), '', $bg_urls[0] ) . ')' );
+			$tag->setAttribute( 'data-twic-background', 'url(' . preg_replace( '/^https?:\/\/[^\/]+/', '', $bg_urls[0] ) . ')' );
 
 			if ( isset( $x ) && isset( $y ) ) {
 				if ( 50 !== $x || 50 !== $y ) {
