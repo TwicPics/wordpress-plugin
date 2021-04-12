@@ -64,9 +64,9 @@ class TwicPics {
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts', 1 );
 		$this->add_filter( 'wp_lazy_loading_enabled', '__return_false', 1 );
 		$this->add_filter( 'script_loader_tag', 'add_async_defer_to_twicpics_script', 10, 3 );
-		$this->add_filter( 'wp_get_attachment_image_attributes', 'image_attributes', 99 );
-		$this->add_filter( 'post_thumbnail_html', 'append_noscript_tag', 99 );
-		$this->add_filter( 'the_content', 'content', 99 );
+		$this->add_filter( 'wp_get_attachment_image_attributes', 'image_attributes', PHP_INT_MAX );
+		$this->add_filter( 'post_thumbnail_html', 'append_noscript_tag', PHP_INT_MAX );
+		$this->add_filter( 'the_content', 'content', PHP_INT_MAX );
 
 		if ( in_array( 'js_composer/js_composer.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ), true ) ) {
 			$this->add_filter( 'get_post_metadata', 'js_composer', 10, 3 );
