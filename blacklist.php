@@ -7,4 +7,5 @@
 
 $plugins_blacklist = array(
 	'Smart Slider Plugin' => 'wp-block-nextend-smartslider3',
+	'Slider'              => 'wds_slider_cont',
 );
