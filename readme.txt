@@ -71,13 +71,13 @@ That's it ! The plugin can now deliver real time responsive images to all of you
 
 == Changelog ==
 
-= 0.1.0 =
-*Initial release*
-
-= 0.1.2 =
-*Minor fixes*
-
 = 0.1.3 =
 *Background images optimization*
 *Handles WordPress subfolder(s)*
 *Improves performances*
+
+= 0.1.2 =
+*Minor fixes*
+
+= 0.1.0 =
+*Initial release*
