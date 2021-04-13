@@ -5,7 +5,7 @@ Tags: image, image optimization, image compression, resize image, responsive ima
 Requires at least: 5.0
 Tested up to: 5.7
 Requires PHP: 7.3
-Stable tag: 0.1.2
+Stable tag: 0.1.3
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,3 +76,8 @@ That's it ! The plugin can now deliver real time responsive images to all of you
 
 = 0.1.2 =
 *Minor fixes*
+
+= 0.1.3 =
+*Background images optimization*
+*Handles WordPress subfolder(s)*
+*Improves performances*

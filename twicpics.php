@@ -4,7 +4,7 @@
  *
  * @package          TwicPics
  * @link             https://www.twicpics.com/
- * @version          0.1.2
+ * @version          0.1.3
  * @license          gpl-2.0
  *
  * @wordpress-plugin
