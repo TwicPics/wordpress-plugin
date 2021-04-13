@@ -11,7 +11,7 @@
  * Plugin Name:      TwicPics
  * Plugin URI:       https://www.twicpics.com/documentation/
  * Description:      Delivers pixel perfect images on the fly.
- * Version:          0.1.2
+ * Version:          0.1.3
  * License:          GPL-2.0+
  * Licence URI:      http://www.gnu.org/licenses/gpl-2.0.txt
  * Author:           TwicPics
