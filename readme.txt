@@ -3,9 +3,9 @@
 Contributors: TwicPics, studiocassette
 Tags: image, image optimization, image compression, resize image, responsive image, optimize image, performance optimization, page speed, next-gen format, WebP, lazy loading, DPR, Retina, SEO optimization, CDN
 Requires at least: 5.0
-Tested up to: 5.7
+Tested up to: 5.8
 Requires PHP: 7.3
-Stable tag: 0.1.3
+Stable tag: 0.1.4
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -70,6 +70,9 @@ That's it ! The plugin can now deliver real time responsive images to all of you
 4. Do not lose the SEO race
 
 == Changelog ==
+
+= 0.1.4 =
+*Handles the coordinates of images' focus point*
 
 = 0.1.3 =
 *Background images optimization*
