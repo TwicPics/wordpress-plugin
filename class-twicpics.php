@@ -464,14 +464,19 @@ class TwicPics {
 	 * @return string the TwicPics 'focus' transformation
 	 */
 	private function treat_focus_coordinates( $img_object_position ) {
-		if ( '' === $img_object_position ) {
+		if ( '' !== $img_object_position ) {
+			$coordinates = explode( ' ', $img_object_position );
+			$x           = str_replace( '%', '', $coordinates[0] );
+			$y           = str_replace( '%', '', $coordinates[1] );
+
+			if ( '' !== $x && '' !== $y ) {
+				return "focus={$x}px{$y}p";
+			}
+
 			return '';
 		}
 
-		$coordinates = explode( ' ', $img_object_position );
-		$x           = str_replace( '%', '', $coordinates[0] );
-		$y           = str_replace( '%', '', $coordinates[1] );
-		return "focus={$x}px{$y}p";
+		return '';
 	}
 
 	/**
