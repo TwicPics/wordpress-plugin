@@ -39,7 +39,7 @@ class TwicPics {
 		/* Step for images resizing */
 		if ( ! empty( $options['step'] ) ) {
 			$this->_step = $options['step'];
-		}
+		} 
 
 		/* Plugins blacklist */
 		include 'blacklist.php';
@@ -64,7 +64,7 @@ class TwicPics {
 		$this->_lazyload_conf = defined( 'TWICPICS_LAZYLOAD_CONF' ) ? TWICPICS_LAZYLOAD_CONF : $this->get_lazyload_conf();
 
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts', 1 );
-		$this->add_filter( 'wp_lazy_loading_enabled', '__return_false', 1 );
+		$this->add_filter( 'wp_lazy_loading_enabled', 'return_false', 1 );
 		$this->add_filter( 'script_loader_tag', 'add_async_defer_to_twicpics_script', 10, 3 );
 		$this->add_filter( 'wp_get_attachment_image_attributes', 'image_attributes', PHP_INT_MAX );
 		$this->add_filter( 'post_thumbnail_html', 'append_noscript_tag', PHP_INT_MAX );
@@ -236,7 +236,22 @@ class TwicPics {
 	 * Enqueues the TwicPics JS script
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script( 'twicpics', $this->_user_domain . '/?v1' . ( $this->_step ? ( '&step=' . $this->_step ) : '' ), array(), $ver = null, false );
+		if ( isset( $this->_step ) ) {
+			wp_enqueue_script( 'twicpics', $this->_user_domain . '/?v1&step=' . $this->_step, array(), $ver = null, false );
+		} else {
+			wp_enqueue_script( 'twicpics', $this->_user_domain . '/?v1', array(), $ver = null, false );
+		}
+	}
+
+	/**
+	 * Returns false.
+	 *
+	 * Useful for returning false to filters easily.
+	 *
+	 * @return false False.
+	 */
+	public function return_false() {
+		return false;
 	}
 
 	/**
@@ -643,8 +658,10 @@ class TwicPics {
 			$tag->setAttribute( 'data-twic-background', 'url(' . preg_replace( '/^https?:\/\/[^\/]+/', '', $bg_url ) . ')' );
 
 			if ( isset( $x ) && isset( $y ) ) {
-				if ( 50 !== $x || 50 !== $y ) {
-					$tag->setAttribute( 'data-twic-background-transform', "focus={$x}px{$y}p/*" );
+				if ( '' !== $x && '' !== $y ) {
+					if ( 50 !== $x || 50 !== $y ) {
+						$tag->setAttribute( 'data-twic-background-transform', "focus={$x}px{$y}p/*" );
+					}
 				}
 			}
 
