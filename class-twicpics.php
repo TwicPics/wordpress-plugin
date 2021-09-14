@@ -654,8 +654,10 @@ class TwicPics {
 			$tag->setAttribute( 'data-twic-background', 'url(' . preg_replace( '/^https?:\/\/[^\/]+/', '', $bg_url ) . ')' );
 
 			if ( isset( $x ) && isset( $y ) ) {
-				if ( 50 !== $x || 50 !== $y ) {
-					$tag->setAttribute( 'data-twic-background-transform', "focus={$x}px{$y}p/*" );
+				if ( '' !== $x && '' !== $y ) {
+					if ( 50 !== $x || 50 !== $y ) {
+						$tag->setAttribute( 'data-twic-background-transform', "focus={$x}px{$y}p/*" );
+					}
 				}
 			}
 
