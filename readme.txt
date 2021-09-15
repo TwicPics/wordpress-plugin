@@ -5,7 +5,7 @@ Tags: image, image optimization, image compression, resize image, responsive ima
 Requires at least: 5.0
 Tested up to: 5.8
 Requires PHP: 7.3
-Stable tag: 0.1.5
+Stable tag: 0.1.6
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -70,6 +70,9 @@ That's it ! The plugin can now deliver real time responsive images to all of you
 4. Do not lose the SEO race
 
 == Changelog ==
+
+= 0.1.6 =
+*Attempts to unblock wordpress publishing*
 
 = 0.1.5 =
 *Fixes handling of focus point coordinates*
