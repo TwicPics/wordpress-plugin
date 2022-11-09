@@ -142,10 +142,8 @@ class TwicPics {
 	 * @param     string $tag The image (placeholder).
 	 * @return boolean false if the plugin that displays the placeholder needs the width and the height from the URL to size the definitive image at expected dimensions
 	 */
-	private function should_placeholder_dimensions_be_removed_from_url( $tag ) {
-		$tag_classes = explode( ' ', $tag->getAttribute( 'class' ) );
-
-		foreach ( $tag_classes as $class ) {
+	private function should_placeholder_dimensions_be_removed_from_url( $img_classes ) {
+		foreach ( $img_classes as $class ) {
 			if ( in_array( $class, $this->_plugins_checklist_for_placeholders_url_dimensions, true ) ) {
 				return false;
 			}
@@ -350,7 +348,7 @@ class TwicPics {
 
 		/* LQIP */
 		$attributes['src'] = $this->get_twicpics_placeholder(
-			$img_url,
+			$this->should_placeholder_dimensions_be_removed_from_url( $attributes['class'] ) ? $this->get_full_size_url( $img_url ) : $img_url,
 			$width,
 			$height
 		);
@@ -580,9 +578,11 @@ class TwicPics {
 			$img->removeAttribute( $attr );
 		}
 
+		$img_classes = explode( ' ', $img->getAttribute( 'class' ) );
+
 		/* LQIP */
 		$img->setAttribute( 'src', $this->get_twicpics_placeholder(
-			$this->should_placeholder_dimensions_be_removed_from_url( $img ) ? $this->get_full_size_url( $img_url ) : $img_url,
+			$this->should_placeholder_dimensions_be_removed_from_url( $img_classes ) ? $this->get_full_size_url( $img_url ) : $img_url,
 			$width,
 			$height
 		) );
