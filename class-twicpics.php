@@ -58,10 +58,7 @@ class TwicPics {
 		);
 
 		/* Placeholder config */
-		$this->_lazyload = defined( 'TWICPICS_LAZYLOAD_TYPE' ) ? TWICPICS_LAZYLOAD_TYPE : 'preview_placeholder';
-
-		/* Conf (colors or percent) depending on lazyload type */
-		$this->_lazyload_conf = defined( 'TWICPICS_LAZYLOAD_CONF' ) ? TWICPICS_LAZYLOAD_CONF : $this->get_lazyload_conf();
+		$this->_placeholder_type = defined( 'TWICPICS_PLACEHOLDER_TYPE' ) ? TWICPICS_PLACEHOLDER_TYPE : 'preview';
 
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts', 1 );
 		$this->add_filter( 'wp_lazy_loading_enabled', 'return_false', 1 );
@@ -175,22 +172,6 @@ class TwicPics {
 	}
 
 	/**
-	 * Gets the lazyload placeholder configuration
-	 *
-	 * @return string the config
-	 */
-	private function get_lazyload_conf() {
-		$options = get_option( 'twicpics_options' );
-
-		switch ( $this->_lazyload ) :
-			case 'preview_placeholder':
-				return 'output=preview';
-		endswitch;
-
-		return false;
-	}
-
-	/**
 	 * Gets the replacement src depending of the type of lazyload configured
 	 *
 	 * @param     string     $src    the original (cropped or not) src of the image.
@@ -199,12 +180,16 @@ class TwicPics {
 	 * @return string the replacement src
 	 */
 	private function get_twicpics_placeholder( $src, $width = '', $height = '' ) {
-		switch ( $this->_lazyload ) :
-			case 'preview_placeholder':
+		switch ( $this->_placeholder_type ) :
+			case 'preview':
 				if ( ! empty( $width ) && ! empty( $height ) ) {
-					$src = $this->_user_domain . '/' . $src . '?twic=v1/cover=' . $width . ':' . $height . '/max=' . $this->_max_width . '/' . $this->_lazyload_conf;
+					$src = $this->_user_domain . '/' . $src . '?twic=v1/cover=' . $width . ':' . $height . '/max=' . $this->_max_width . '/output=preview';
+				} else {
+					$src = $this->_user_domain . '/' . $src . '?twic=v1/max=' . $this->_max_width . '/output=preview';
 				}
 				break;
+			default:
+				$src = $this->_user_domain . '/' . $src . '?twic=v1/max=' . $this->_max_width . '/output=blank';
 		endswitch;
 
 		return $src;
