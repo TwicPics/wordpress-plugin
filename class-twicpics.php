@@ -349,7 +349,11 @@ class TwicPics {
 		}
 
 		/* LQIP */
-		$attributes['src'] = $this->get_twicpics_placeholder( $img_url, $attributes['width'], $attributes['height'] );
+		$attributes['src'] = $this->get_twicpics_placeholder(
+			$img_url,
+			$width,
+			$height
+		);
 
 		return $attributes;
 	}
