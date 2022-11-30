@@ -626,7 +626,7 @@ class TwicPics {
 						$bg_urls         = array( substr( $value, 4, -1 ) ); // removes 'url(' and ')'.
 						$bg_url          = $this->get_full_size_url( $bg_urls[0] ); // removes width and height from the URL
 						$bg_placeholder  = $this->_user_domain . '/' . $bg_url;
-						$new_style_attr .= $property . ':url(' . $bg_placeholder . '?twic=v1/output=preview)';
+						$new_style_attr .= $property . ':url(' . $bg_placeholder . '?twic=v1/max=' . $this->_max_width . '/output=preview)';
 					}
 					/* else { multiple backgrounds } */
 					break;
@@ -645,11 +645,12 @@ class TwicPics {
 		if ( isset( $bg_urls ) && is_array( $bg_urls ) && $this->is_on_same_domain( $bg_urls[0] ) ) {
 			$tag->setAttribute( 'style', $new_style_attr );
 			$tag->setAttribute( 'data-twic-background', 'url(' . preg_replace( '/^https?:\/\/[^\/]+/', '', $bg_url ) . ')' );
+			$tag->setAttribute( 'data-twic-transform', '*/max=' . $this->_max_width );
 
 			if ( isset( $x ) && isset( $y ) ) {
 				if ( '' !== $x && '' !== $y ) {
 					if ( 50 !== $x || 50 !== $y ) {
-						$tag->setAttribute( 'data-twic-background-transform', "focus={$x}px{$y}p/*" );
+						$tag->setAttribute( 'data-twic-focus', "{$x}px{$y}p" );
 					}
 				}
 			}
