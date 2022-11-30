@@ -314,17 +314,16 @@ class TwicPics {
 		$focus_transformation = $this->treat_focus_coordinates( $img_object_position );
 
 		if ( $width && $height ) {
-			if ( '' !== $focus_transformation ) {
-				$attributes['data-twic-src-transform'] = "{$focus_transformation}/cover={$width}:{$height}/*/max={$this->_max_width}";
-			} else {
-				$attributes['data-twic-src-transform'] = "cover={$width}:{$height}/*/max={$this->_max_width}";
-			}
+			$img->setAttribute( 'data-twic-src-transform', "cover={$width}:{$height}/*/max={$this->_max_width}" );
 		} else {
-			if ( '' !== $focus_transformation ) {
-				$attributes['data-twic-src-transform'] = "{$focus_transformation}/*/max={$this->_max_width}";
-			} else {
-				$attributes['data-twic-src-transform'] = "*/max={$this->_max_width}";
-			}
+			$img->setAttribute( 'data-twic-src-transform', "*/max={$this->_max_width}" );
+		}
+
+		$img_object_position = $img->getAttribute( 'data-object-position' );
+		$focus_coordinates   = $this->treat_focus_coordinates( $img_object_position );
+
+		if ( '' !== $focus_coordinates ) {
+				$img->setAttribute( 'data-twic-focus', "{$focus_coordinates}" );
 		}
 
 		foreach ( $this->_img_attributes_to_remove as $attr ) {
@@ -472,7 +471,7 @@ class TwicPics {
 			$y           = str_replace( '%', '', $coordinates[1] );
 
 			if ( '' !== $x && '' !== $y ) {
-				return "focus={$x}px{$y}p";
+				return "{$x}px{$y}p";
 			}
 
 			return '';
@@ -542,21 +541,17 @@ class TwicPics {
 			}
 		}
 
-		$img_object_position  = $img->getAttribute( 'data-object-position' );
-		$focus_transformation = $this->treat_focus_coordinates( $img_object_position );
-
 		if ( $width && $height ) {
-			if ( '' !== $focus_transformation ) {
-				$img->setAttribute( 'data-twic-src-transform', "{$focus_transformation}/cover={$width}:{$height}/*/max={$this->_max_width}" );
-			} else {
-				$img->setAttribute( 'data-twic-src-transform', "cover={$width}:{$height}/*/max={$this->_max_width}" );
-			}
+			$img->setAttribute( 'data-twic-src-transform', "cover={$width}:{$height}/*/max={$this->_max_width}" );
 		} else {
-			if ( '' !== $focus_transformation ) {
-				$img->setAttribute( 'data-twic-src-transform', "{$focus_transformation}/*/max={$this->_max_width}" );
-			} else {
-				$img->setAttribute( 'data-twic-src-transform', "*/max={$this->_max_width}" );
-			}
+			$img->setAttribute( 'data-twic-src-transform', "*/max={$this->_max_width}" );
+		}
+
+		$img_object_position = $img->getAttribute( 'data-object-position' );
+		$focus_coordinates   = $this->treat_focus_coordinates( $img_object_position );
+
+		if ( '' !== $focus_coordinates ) {
+				$img->setAttribute( 'data-twic-focus', "{$focus_coordinates}" );
 		}
 
 		foreach ( $this->_img_attributes_to_remove as $attr ) {
