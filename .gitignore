@@ -5,3 +5,5 @@ npm-debug.log
 
 /vendor/
 /bin
+
+wp-config.php
