@@ -58,7 +58,7 @@ class TwicPics {
 		);
 
 		/* Placeholder config */
-		$this->_placeholder_type = defined( 'TWICPICS_PLACEHOLDER_TYPE' ) ? TWICPICS_PLACEHOLDER_TYPE : 'preview';
+		// $this->_placeholder_type = defined( 'TWICPICS_PLACEHOLDER_TYPE' ) ? TWICPICSG : 'preview';
 
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts', 1 );
 		$this->add_filter( 'wp_lazy_loading_enabled', 'return_false', 1 );
@@ -180,17 +180,15 @@ class TwicPics {
 	 * @return string the replacement src
 	 */
 	private function get_twicpics_placeholder( $src, $width = '', $height = '' ) {
-		switch ( $this->_placeholder_type ) :
-			case 'preview':
-				if ( ! empty( $width ) && ! empty( $height ) ) {
-					$src = $this->_user_domain . '/' . $src . '?twic=v1/cover=' . $width . ':' . $height . '/max=' . $this->_max_width . '/output=preview';
-				} else {
-					$src = $this->_user_domain . '/' . $src . '?twic=v1/max=' . $this->_max_width . '/output=preview';
-				}
-				break;
-			default:
-				$src = $this->_user_domain . '/' . $src . '?twic=v1/max=' . $this->_max_width . '/output=blank';
-		endswitch;
+		$twicpics_base_url    = $this->_user_domain . '/' . $src . '?twic=v1';
+		$twicpics_max_width   = '/max=' . $this->_max_width;
+		$twicpics_placeholder = '/output=preview';
+
+		if ( ! empty( $width ) && ! empty( $height ) ) {
+			$src = $twicpics_base_url . '/cover=' . $width . ':' . $height . $twicpics_max_width . $twicpics_placeholder;
+		} else {
+			$src = $twicpics_base_url . $twicpics_max_width . $twicpics_placeholder;
+		}
 
 		return $src;
 	}
