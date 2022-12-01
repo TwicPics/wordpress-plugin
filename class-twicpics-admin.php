@@ -112,6 +112,19 @@ class TwicPics_Admin {
 				'description' => esc_html( __( 'The step you want your images to be resized. The default value is 10.' ) ),
 			)
 		);
+
+		add_settings_field(
+			'twicpics_field_placeholder_type',
+			__( 'Placeholder type', 'twicpics' ),
+			array( $this, 'field_select' ),
+			'twicpics',
+			'twicpics_section_account_settings',
+			array(
+				'label_for'   => 'placeholder_type',
+				'values'      => array( 'blank', 'maincolor', 'meancolor', 'preview' ),
+				'description' => esc_html( __( 'The placeholder you want to display for the LQIP technique.' ) ),
+			)
+		);
 	}
 
 	/**
@@ -140,9 +153,31 @@ class TwicPics_Admin {
 	 */
 	public function field_textinput( $args ) {
 		$options = get_option( 'twicpics_options' );
+
 		echo '<input type="text" id="', esc_attr( $args['label_for'] ) ,'" name="twicpics_options[', esc_attr( $args['label_for'] ), ']" value="', ( esc_attr( $options[ $args['label_for'] ] ) ? esc_attr( $options[ $args['label_for'] ] ) : '' ),'" class="regular-text" />';
 		?>
 	<p class="description"><?php echo esc_html( $args['description'] ); ?></p>
+		<?php
+	}
+
+	/**
+	 * Callback for the select type fields
+	 *
+	 * @param     array $args Displays values arguments.
+	 */
+	public function field_select( $args ) {
+		$options        = get_option( 'twicpics_options' );
+		$select_options = $args['values'];
+
+		echo '<select id="', esc_attr( $args['label_for'] ) ,'" name="twicpics_options[', esc_attr( $args['label_for'] ), ']"><option value="" disabled>Choose a placeholder type</option>';
+
+		foreach ( $select_options as $option => $value ) :
+			echo '<option value="', esc_attr( $value ),'"', ( esc_attr( $value ) === esc_attr( $options['placeholder_type'] ) ? 'selected' : '' ) ,'>', esc_attr( $value ), '</option>';
+		endforeach;
+
+		echo '</select>'
+		?>
+		<p class="description"><?php echo esc_html( $args['description'] ); ?></p>
 		<?php
 	}
 
