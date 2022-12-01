@@ -20,26 +20,33 @@ class TwicPics {
 
 		/* User domain */
 		if ( defined( 'TWICPICS_URL' ) ) {
-			$this->_user_domain = 'https://' . ( 'TWICPICS_URL' );
+			$this->_twicpics_user_domain = 'https://' . ( 'TWICPICS_URL' );
 		} elseif ( ! empty( $options['user_domain'] ) ) {
-			$this->_user_domain = 'https://' . ( $options['user_domain'] );
+			$this->_twicpics_user_domain = 'https://' . ( $options['user_domain'] );
 		}
 
-		if ( empty( $this->_user_domain ) ) {
+		if ( empty( $this->_twicpics_user_domain ) ) {
 			return;
 		}
 
 		/* Intrinsic max width of images */
 		if ( ! empty( $options['max_width'] ) ) {
-			$this->_max_width = $options['max_width'];
+			$this->_twicpics_max_width = $options['max_width'];
 		} else {
-			$this->_max_width = '2000';
+			$this->_twicpics_max_width = '2000';
 		}
 
 		/* Step for images resizing */
 		if ( ! empty( $options['step'] ) ) {
-			$this->_step = $options['step'];
+			$this->_twicpics_step = $options['step'];
 		} 
+
+		/* Placeholder type for LQIP */
+		if ( ! empty( $options['placeholder_type'] ) ) {
+			$this->_twicpics_placeholder = '/output=' . $options['placeholder_type'];
+		} else {
+			$this->_twicpics_placeholder = '/output=blank';
+		}
 
 		/* Plugins blacklist */
 		include 'blacklist.php';
@@ -56,9 +63,6 @@ class TwicPics {
 			'data-object-fit',
 			'data-object-position',
 		);
-
-		/* Placeholder config */
-		// $this->_placeholder_type = defined( 'TWICPICS_PLACEHOLDER_TYPE' ) ? TWICPICSG : 'preview';
 
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts', 1 );
 		$this->add_filter( 'wp_lazy_loading_enabled', 'return_false', 1 );
@@ -180,14 +184,13 @@ class TwicPics {
 	 * @return string the replacement src
 	 */
 	private function get_twicpics_placeholder( $src, $width = '', $height = '' ) {
-		$twicpics_base_url    = $this->_user_domain . '/' . $src . '?twic=v1';
-		$twicpics_max_width   = '/max=' . $this->_max_width;
-		$twicpics_placeholder = '/output=preview';
+		$twicpics_base_url  = $this->_twicpics_user_domain . '/' . $src . '?twic=v1';
+		$twicpics_max_width = '/max=' . $this->_twicpics_max_width;
 
 		if ( ! empty( $width ) && ! empty( $height ) ) {
-			$src = $twicpics_base_url . '/cover=' . $width . ':' . $height . $twicpics_max_width . $twicpics_placeholder;
+			$src = $twicpics_base_url . '/cover=' . $width . ':' . $height . $twicpics_max_width . $this->_twicpics_placeholder;
 		} else {
-			$src = $twicpics_base_url . $twicpics_max_width . $twicpics_placeholder;
+			$src = $twicpics_base_url . $twicpics_max_width . $this->_twicpics_placeholder;
 		}
 
 		return $src;
@@ -217,10 +220,10 @@ class TwicPics {
 	 * Enqueues the TwicPics JS script
 	 */
 	public function enqueue_scripts() {
-		if ( isset( $this->_step ) ) {
-			wp_enqueue_script( 'twicpics', $this->_user_domain . '/?v1&step=' . $this->_step, array(), $ver = null, false );
+		if ( isset( $this->_twicpics_step ) ) {
+			wp_enqueue_script( 'twicpics', $this->_twicpics_user_domain . '/?v1&step=' . $this->_twicpics_step, array(), $ver = null, false );
 		} else {
-			wp_enqueue_script( 'twicpics', $this->_user_domain . '/?v1', array(), $ver = null, false );
+			wp_enqueue_script( 'twicpics', $this->_twicpics_user_domain . '/?v1', array(), $ver = null, false );
 		}
 	}
 
@@ -312,9 +315,9 @@ class TwicPics {
 		$focus_transformation = $this->treat_focus_coordinates( $img_object_position );
 
 		if ( $width && $height ) {
-			$img->setAttribute( 'data-twic-src-transform', "cover={$width}:{$height}/*/max={$this->_max_width}" );
+			$img->setAttribute( 'data-twic-src-transform', "cover={$width}:{$height}/*/max={$this->_twicpics_max_width}" );
 		} else {
-			$img->setAttribute( 'data-twic-src-transform', "*/max={$this->_max_width}" );
+			$img->setAttribute( 'data-twic-src-transform', "*/max={$this->_twicpics_max_width}" );
 		}
 
 		$img_object_position = $img->getAttribute( 'data-object-position' );
@@ -449,7 +452,7 @@ class TwicPics {
 		$noscript   = $dom->createElement( 'noscript' );
 		$img_cloned = $dom->createElement( 'img' );
 		$img_src    = explode( '?', $img->getAttribute( 'src' ) )[0];
-		$img_cloned->setAttribute( 'src', ( str_replace( ( $this->_user_domain . '/' ), '', $img_src ) ) );
+		$img_cloned->setAttribute( 'src', ( str_replace( ( $this->_twicpics_user_domain . '/' ), '', $img_src ) ) );
 		$img_cloned->setAttribute( 'alt', $img->getAttribute( 'alt' ) );
 		$noscript->appendChild( $img_cloned );
 		// phpcs:ignore
@@ -540,9 +543,9 @@ class TwicPics {
 		}
 
 		if ( $width && $height ) {
-			$img->setAttribute( 'data-twic-src-transform', "cover={$width}:{$height}/*/max={$this->_max_width}" );
+			$img->setAttribute( 'data-twic-src-transform', "cover={$width}:{$height}/*/max={$this->_twicpics_max_width}" );
 		} else {
-			$img->setAttribute( 'data-twic-src-transform', "*/max={$this->_max_width}" );
+			$img->setAttribute( 'data-twic-src-transform', "*/max={$this->_twicpics_max_width}" );
 		}
 
 		$img_object_position = $img->getAttribute( 'data-object-position' );
@@ -604,7 +607,7 @@ class TwicPics {
 					if ( strpos( $value, ',' ) === false ) {
 						$value           = trim( $value );
 						$bg_urls         = array( substr( $value, strpos( $value, 'url(' ) + 4, strpos( $value, ')', strpos( $value, 'url(' ) ) - 4 ) );
-						$bg_placeholder  = $this->_user_domain . '/' . $bg_urls[0];
+						$bg_placeholder  = $this->_twicpics_user_domain . '/' . $bg_urls[0];
 						$new_style_attr .= $property . ':' . str_replace( $bg_urls[0], $bg_placeholder, $value ) . ';';
 					}
 					break;
@@ -618,8 +621,8 @@ class TwicPics {
 						$value           = trim( $value );
 						$bg_urls         = array( substr( $value, 4, -1 ) ); // removes 'url(' and ')'.
 						$bg_url          = $this->get_full_size_url( $bg_urls[0] ); // removes width and height from the URL
-						$bg_placeholder  = $this->_user_domain . '/' . $bg_url;
-						$new_style_attr .= $property . ':url(' . $bg_placeholder . '?twic=v1/max=' . $this->_max_width . '/output=preview)';
+						$bg_placeholder  = $this->_twicpics_user_domain . '/' . $bg_url;
+						$new_style_attr .= $property . ':url(' . $bg_placeholder . '?twic=v1/max=' . $this->_twicpics_max_width . $this->_twicpics_placeholder;
 					}
 					/* else { multiple backgrounds } */
 					break;
@@ -638,7 +641,7 @@ class TwicPics {
 		if ( isset( $bg_urls ) && is_array( $bg_urls ) && $this->is_on_same_domain( $bg_urls[0] ) ) {
 			$tag->setAttribute( 'style', $new_style_attr );
 			$tag->setAttribute( 'data-twic-background', 'url(' . preg_replace( '/^https?:\/\/[^\/]+/', '', $bg_url ) . ')' );
-			$tag->setAttribute( 'data-twic-transform', '*/max=' . $this->_max_width );
+			$tag->setAttribute( 'data-twic-transform', '*/max=' . $this->_twicpics_max_width );
 
 			if ( isset( $x ) && isset( $y ) ) {
 				if ( '' !== $x && '' !== $y ) {
