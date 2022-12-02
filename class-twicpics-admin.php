@@ -139,19 +139,19 @@ class TwicPics_Admin {
 		<?php
 		echo sprintf(
 			'<p>
-          Set your
-          <strong>TwicPics domain</strong>
-          here to begin with your images optimization.
-          <br/>
-          You can get your domain by going to your
-          <a href="%1$s" target="_blank" style="color: #8f00ff;">TwicPics account</a>.
-      </p>
-      <p>
-        <em>
-          For more information about TwicPics domain, please refer to the
-          <a href="%2$s" target="_blank" style="color: #8f00ff;">documentation</a>.
-        </em>
-      </p>',
+					Set your
+					<strong>TwicPics domain</strong>
+					here to begin with your images optimization.
+					<br/>
+					You can get your domain by going to your
+					<a href="%1$s" target="_blank" style="color: #8f00ff;">TwicPics account</a>.
+			</p>
+			<p>
+				<em>
+					For more information about TwicPics domain, please refer to the
+					<a href="%2$s" target="_blank" style="color: #8f00ff;">documentation</a>.
+				</em>
+			</p>',
 			'https://account.twicpics.com/login/?utm_campaign=wordpress-plugin&utm_source=wp-admin&utm_medium=plugins&utm_content=' . esc_attr( preg_replace( '#^https?://#', '', get_site_url() ) ),
 			'https://www.twicpics.com/documentation/subdomain/'
 		);
@@ -168,7 +168,13 @@ class TwicPics_Admin {
 	public function field_textinput( $args ) {
 		$options = get_option( 'twicpics_options' );
 
-		echo '<input type="text" id="', esc_attr( $args['label_for'] ) ,'" name="twicpics_options[', esc_attr( $args['label_for'] ), ']" value="', ( esc_attr( $options[ $args['label_for'] ] ) ? esc_attr( $options[ $args['label_for'] ] ) : '' ),'" class="regular-text" />';
+		echo '
+			<input
+				type="text"
+				id="', esc_attr( $args['label_for'] ) ,'"
+				name="twicpics_options[', esc_attr( $args['label_for'] ), ']"
+				value="', ( esc_attr( $options[ $args['label_for'] ] ) ? esc_attr( $options[ $args['label_for'] ] ) : '' ),'" class="regular-text"
+			/>';
 		?>
 	<p class="description"><?php echo esc_html( $args['description'] ); ?></p>
 		<?php
@@ -183,10 +189,23 @@ class TwicPics_Admin {
 		$options        = get_option( 'twicpics_options' );
 		$select_options = $args['values'];
 
-		echo '<select id="', esc_attr( $args['label_for'] ) ,'" name="twicpics_options[', esc_attr( $args['label_for'] ), ']"><option value="" disabled>Choose a placeholder type</option>';
+		echo '
+			<select
+				id="', esc_attr( $args['label_for'] ) ,'"
+				name="twicpics_options[', esc_attr( $args['label_for'] ), ']"
+			>
+				<option value="" disabled>
+					Choose a placeholder type
+				</option>';
 
 		foreach ( $select_options as $option => $value ) :
-			echo '<option value="', esc_attr( $value ),'"', ( esc_attr( $value ) === esc_attr( $options['placeholder_type'] ) ? 'selected' : '' ) ,'>', esc_attr( $value ), '</option>';
+			echo '
+				<option
+					value="', esc_attr( $value ),'"',
+					( esc_attr( $value ) === esc_attr( $options['placeholder_type'] ) ? 'selected' : '' ),
+				'>',
+					esc_attr( $value ),
+				'</option>';
 		endforeach;
 
 		echo '</select>'
@@ -204,10 +223,20 @@ class TwicPics_Admin {
 		$options = get_option( 'twicpics_options' );
 		$types   = $args['values'];
 		foreach ( $types as $label => $value ) :
-			echo '<label>
-        		<input type="radio" id="', esc_attr( $args['label_for'] ) ,'" name="twicpics_options[', esc_attr( $args['label_for'] ), ']" value="', esc_attr( $value ),'" ',( checked( $options[ $args['label_for'] ] ? $options[ $args['label_for'] ] : 'placeholder', $value, false ) ),'>',
-				esc_html( $label ),
-				'</label><br/><br/>';
+			echo '
+				<label>
+					<input
+						type="radio"
+						id="', esc_attr( $args['label_for'] ) ,'"
+						name="twicpics_options[', esc_attr( $args['label_for'] ), ']"
+						value="', esc_attr( $value ),'"',
+						( checked( $options[ $args['label_for'] ] ? $options[ $args['label_for'] ] : 'placeholder',
+							$value,
+						false ) ),
+					'>',
+					esc_html( $label ),
+				'</label>
+				<br/><br/>';
 		endforeach;
 		?>
 	<p class="description"><?php echo esc_html( $args['description'] ); ?></p>
