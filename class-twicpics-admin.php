@@ -58,6 +58,7 @@ class TwicPics_Admin {
 		?>
 	<div class="wrap">
 		<?php include 'assets/logo.svg.php'; ?>
+			<br/><br/>
 			<form action="options.php" method="post">
 			<?php
 				settings_fields( 'twicpics' );
@@ -134,15 +135,28 @@ class TwicPics_Admin {
 	 */
 	public function section_account_settings( $args ) {
 		?>
-	<p id="<?php echo esc_attr( $args['id'] ); ?>">
+	<div id="<?php echo esc_attr( $args['id'] ); ?>">
 		<?php
 		echo sprintf(
-			'<p> Set your <strong>TwicPics domain</strong> here to begin with your images optimization.<br />You can get your domain by going to your <a href="%1$s" target="_blank">TwicPics account</a>.<p><em>For more information about TwicPics domain, please refer to the <a href="%2$s" target="_blank">documentation</a>.</em></p>',
+			'<p>
+          Set your
+          <strong>TwicPics domain</strong>
+          here to begin with your images optimization.
+          <br/>
+          You can get your domain by going to your
+          <a href="%1$s" target="_blank" style="color: #8f00ff;">TwicPics account</a>.
+      </p>
+      <p>
+        <em>
+          For more information about TwicPics domain, please refer to the
+          <a href="%2$s" target="_blank" style="color: #8f00ff;">documentation</a>.
+        </em>
+      </p>',
 			'https://account.twicpics.com/login/?utm_campaign=wordpress-plugin&utm_source=wp-admin&utm_medium=plugins&utm_content=' . esc_attr( preg_replace( '#^https?://#', '', get_site_url() ) ),
 			'https://www.twicpics.com/documentation/subdomain/'
 		);
 		?>
-	</p>
+	</div><br/><br/>
 		<?php
 	}
 
