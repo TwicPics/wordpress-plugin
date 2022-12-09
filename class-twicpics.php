@@ -43,6 +43,7 @@ class TwicPics {
 
 		/* Placeholder type for LQIP */
 		if ( ! empty( $options['placeholder_type'] ) ) {
+			echo esc_html( $options['placeholder_type'] );
 			$this->_twicpics_placeholder = '/output=' . $options['placeholder_type'];
 		} else {
 			$this->_twicpics_placeholder = '/output=blank';
