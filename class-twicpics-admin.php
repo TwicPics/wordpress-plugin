@@ -86,7 +86,7 @@ class TwicPics_Admin {
 			'twicpics_section_account_settings',
 			array(
 				'label_for'   => 'user_domain',
-				'description' => esc_html( __( 'Fill in your TwicPics domain in this field.', 'twicpics' ) ),
+				'description' => esc_html( __( 'You can find your TwicPics domain in your TwicPics dashboard.', 'twicpics' ) ),
 			)
 		);
 
@@ -98,7 +98,11 @@ class TwicPics_Admin {
 			'twicpics_section_account_settings',
 			array(
 				'label_for'   => 'max_width',
-				'description' => esc_html( __( 'The max width you want your images to be intrinsically resized. The default value is 2000.' ) ),
+				'description' => esc_html( __( 'The maximum intrinsic width for images (in pixels). Default: 2000.' ) ),
+				'doc'         => array(
+					'text' => 'max documentation',
+					'link' => 'https://www.twicpics.com/docs/reference/transformations#max',
+				),
 			)
 		);
 
@@ -110,7 +114,11 @@ class TwicPics_Admin {
 			'twicpics_section_account_settings',
 			array(
 				'label_for'   => 'step',
-				'description' => esc_html( __( 'The step you want your images to be resized. The default value is 10.' ) ),
+				'description' => esc_html( __( 'Step for images resizing (in pixels). Default: 10.' ) ),
+				'doc'         => array(
+					'text' => 'step documentation',
+					'link' => 'https://www.twicpics.com/docs/integrations/wordpress-plugin#step-for-image-resizing',
+				),
 			)
 		);
 
@@ -122,8 +130,29 @@ class TwicPics_Admin {
 			'twicpics_section_account_settings',
 			array(
 				'label_for'   => 'placeholder_type',
-				'values'      => array( 'blank', 'maincolor', 'meancolor', 'preview' ),
-				'description' => esc_html( __( 'The placeholder you want to display for the LQIP technique.' ) ),
+				'options'     => array( 
+					'blank'     => array(
+						'value' => 'blank',
+						'text'  => 'blank',
+					),
+					'maincolor' => array(
+						'value' => 'maincolor',
+						'text'  => 'main color',
+					),
+					'meancolor' => array(
+						'value' => 'meancolor',
+						'text'  => 'mean color',
+					),
+					'preview'   => array(
+						'value' => 'preview',
+						'text'  => 'preview',
+					),
+				),
+				'description' => esc_html( __( 'Type of the image preview displayed when image is loading (LQIP).' ) ),
+				'doc'         => array(
+					'text' => 'ouput preview types documentation',
+					'link' => 'https://www.twicpics.com/docs/reference/transformations#output',
+				),
 			)
 		);
 	}
@@ -139,20 +168,13 @@ class TwicPics_Admin {
 		<?php
 		echo sprintf(
 			'<p>
-					Set your
-					<strong>TwicPics domain</strong>
-					here to begin with your images optimization.
-					<br/>
-					You can get your domain by going to your
-					<a href="%1$s" target="_blank" style="color: #8f00ff;">TwicPics account</a>.
-			</p>
-			<p>
-				<em>
-					For more information about TwicPics domain, please refer to the
-					<a href="%2$s" target="_blank" style="color: #8f00ff;">documentation</a>.
-				</em>
+					Configure your TwicPics domain to start optimizing images. You can create a domain for free on your <a href="%1$s" target="_blank" style="color: #8f00ff;">TwicPics dashboard</a>.
+
+					<span style="display: block; font-style: italic;">
+						Learn more about domains in the <a href="%2$s" target="_blank" rel="noopener noreferrer" style="color: #8f00ff;">documentation</a>.
+					</span>
 			</p>',
-			'https://account.twicpics.com/login/?utm_campaign=wordpress-plugin&utm_source=wp-admin&utm_medium=plugins&utm_content=' . esc_attr( preg_replace( '#^https?://#', '', get_site_url() ) ),
+			'https://account.twicpics.com/signin/?utm_campaign=wordpress-plugin&utm_source=wp-admin&utm_medium=plugins&utm_content=' . esc_attr( preg_replace( '#^https?://#', '', get_site_url() ) ),
 			'https://www.twicpics.com/documentation/subdomain/'
 		);
 		?>
@@ -176,7 +198,14 @@ class TwicPics_Admin {
 				value="', ( esc_attr( $options[ $args['label_for'] ] ) ? esc_attr( $options[ $args['label_for'] ] ) : '' ),'" class="regular-text"
 			/>';
 		?>
-	<p class="description"><?php echo esc_html( $args['description'] ); ?></p>
+		<p class="description">
+			<?php
+			echo esc_html( $args['description'] );
+			if ( isset( $args['doc'] ) ) {
+				echo ' See <a href="' . esc_html( $args['doc']['link'] ) . '" target="_blank" rel="noopener noreferrer" style="color: #8f00ff;">' . esc_html( $args['doc']['text'] ) . '</a>.';
+			}
+			?>
+		</p>
 		<?php
 	}
 
@@ -187,7 +216,7 @@ class TwicPics_Admin {
 	 */
 	public function field_select( $args ) {
 		$options        = get_option( 'twicpics_options' );
-		$select_options = $args['values'];
+		$select_options = $args['options'];
 
 		echo '
 			<select
@@ -198,19 +227,26 @@ class TwicPics_Admin {
 					Choose a placeholder type
 				</option>';
 
-		foreach ( $select_options as $option => $value ) :
+		foreach ( $select_options as $option ) :
 			echo '
 				<option
-					value="', esc_attr( $value ),'"',
-					( esc_attr( $value ) === esc_attr( $options['placeholder_type'] ) ? 'selected' : '' ),
+					value="', esc_attr( $option['value'] ),'"',
+					( esc_attr( $option['value'] ) === esc_attr( $options['placeholder_type'] ) ? 'selected' : '' ),
 				'>',
-					esc_attr( $value ),
+					esc_attr( $option['text'] ),
 				'</option>';
 		endforeach;
 
 		echo '</select>'
 		?>
-		<p class="description"><?php echo esc_html( $args['description'] ); ?></p>
+		<p class="description">
+			<?php
+			echo esc_html( $args['description'] );
+			if ( isset( $args['doc'] ) ) {
+				echo ' See <a href="' . esc_html( $args['doc']['link'] ) . '" target="_blank" rel="noopener noreferrer" style="color: #8f00ff;">' . esc_html( $args['doc']['text'] ) . '</a>.';
+			}
+			?>
+		</p>
 		<?php
 	}
 
