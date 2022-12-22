@@ -58,6 +58,57 @@ class TwicPics_Admin {
 		?>
 	<div class="wrap">
 		<?php include 'assets/logo.svg.php'; ?>
+			<script type="text/JavaScript">
+				let optimizationLevel = '<?php echo esc_html( get_option( 'twicpics_options' )['optimization_level'] ); ?>';
+
+				const updateOptionsDisplay = ( twicpicsOptions, twicpicsDocItems ) => {
+					for ( i = 0; i < twicpicsOptions.length; i++ ) { 
+						if ( 'api' === optimizationLevel ) {
+							twicpicsOptions[i].setAttribute("disabled", true);
+						} else {
+							twicpicsOptions[i].removeAttribute("disabled", false);
+						}
+					}
+
+					for ( i = 0; i < twicpicsDocItems.length; i++ ) { 
+						if ( 'api' === optimizationLevel ) {
+							twicpicsDocItems[i].setAttribute("style", "display: none;");
+						} else {
+							twicpicsDocItems[i].setAttribute("style", "display: block; list-style: inside; font-size: 13px;");
+						}
+					}
+				}
+
+				const handleHighCompatibilityChange = ( twicpicsOptions, twicpicsDocItems ) => {
+					if ( 'api' === optimizationLevel ) {
+						optimizationLevel = 'script';
+					} else {
+						optimizationLevel = 'api';
+					}
+					updateOptionsDisplay( twicpicsOptions, twicpicsDocItems );
+				}
+
+				const callHandleHighCompatibilityChange = ( callback, twicpicsOptions, twicpicsDocItems ) => {
+					callback( twicpicsOptions, twicpicsDocItems );
+				}
+
+				window.onload = () => {
+					const optimizationLevelSelectElt = document.getElementById( "optimization_level" );
+					const stepInputElt = document.getElementById( "step" );
+					const placeholderTypeInputElt = document.getElementById( "placeholder_type" );
+					const twicpicsOptions = [ stepInputElt, placeholderTypeInputElt ];
+					const placeholderTypeOptionsDescriptionElt = document.getElementById( "placeholder-type_options-description" );
+					const twicpicsDocItems = [ placeholderTypeOptionsDescriptionElt ];
+
+					updateOptionsDisplay( twicpicsOptions, twicpicsDocItems );
+
+					optimizationLevelSelectElt.addEventListener( "change", () => {
+						callHandleHighCompatibilityChange( handleHighCompatibilityChange, twicpicsOptions, twicpicsDocItems );
+					}
+				);
+			};
+			</script>
+
 			<br/><br/>
 			<form action="options.php" method="post">
 			<?php
@@ -85,8 +136,36 @@ class TwicPics_Admin {
 			'twicpics',
 			'twicpics_section_account_settings',
 			array(
-				'label_for'   => 'user_domain',
-				'description' => esc_html( __( 'You can find your TwicPics domain in your TwicPics dashboard.', 'twicpics' ) ),
+				'label_for'         => 'user_domain',
+				'field_description' => 'You can find your TwicPics domain in your ',
+			)
+		);
+
+		add_settings_field(
+			'twicpics_field_optimization_level',
+			__( 'Optimization level', 'twicpics' ),
+			array( $this, 'field_select' ),
+			'twicpics',
+			'twicpics_section_account_settings',
+			array(
+				'label_for'         => 'optimization_level',
+				'field_description' => 'How the plugin will optimize images.',
+				'options'           => array( 
+					'script' => array(
+						'value'       => 'script',
+						'text'        => 'Pixel perfect',
+						'isDefault'   => true,
+						'description' => 'JavaScript based, pixel-perfect, lazy loaded image replacement.',
+					),
+					'api'    => array(
+						'value'       => 'api',
+						'text'        => 'Maximum compatibility',
+						'description' => 'static, purely HTML based image replacement.',
+					),
+				),
+				'feature_doc_items' => array(
+					'The default approach should work 90% of the time but some plugins and/or themes, especially JavaScript-heavy ones, may clash with it. Use "Maximum compatibility" if and when you witness weird image distortions and/or flickering.',
+				),
 			)
 		);
 
@@ -97,27 +176,24 @@ class TwicPics_Admin {
 			'twicpics',
 			'twicpics_section_account_settings',
 			array(
-				'label_for'   => 'max_width',
-				'description' => esc_html( __( 'The maximum intrinsic width for images (in pixels). Default: 2000.' ) ),
-				'doc'         => array(
-					'text' => 'max documentation',
-					'link' => 'https://www.twicpics.com/docs/reference/transformations#max',
-				),
+				'label_for'         => 'max_width',
+				'field_description' => 'Maximum width of images in pixels. This prevents generating insanely large images on very wide screens. Default: 2000.',
 			)
 		);
 
 		add_settings_field(
 			'twicpics_field_step',
-			__( 'Step for images resizing', 'twicpics' ),
+			__( 'Resize step', 'twicpics' ),
 			array( $this, 'field_textinput' ),
 			'twicpics',
 			'twicpics_section_account_settings',
 			array(
-				'label_for'   => 'step',
-				'description' => esc_html( __( 'Step for images resizing (in pixels). Default: 10.' ) ),
-				'doc'         => array(
-					'text' => 'step documentation',
-					'link' => 'https://www.twicpics.com/docs/integrations/wordpress-plugin#step-for-image-resizing',
+				'label_for'         => 'step',
+				'field_description' => 'Numbers of pixels image width is rounded by. Default: 10.',
+				'feature_doc_items' => array(
+					'This will reduce the number of variants generated and help CDN performance.',
+					'With the default of 10, a 342 pixel-wide image will be rounded down to 340 pixels.',
+					'The higher the step, the less pixel perfect the result, so use with caution.',
 				),
 			)
 		);
@@ -129,29 +205,33 @@ class TwicPics_Admin {
 			'twicpics',
 			'twicpics_section_account_settings',
 			array(
-				'label_for'   => 'placeholder_type',
-				'options'     => array( 
+				'label_for'         => 'placeholder_type',
+				'field_description' => 'Image placeholder (LQIP) displayed while image is loading.',
+				'options'           => array( 
 					'blank'     => array(
-						'value' => 'blank',
-						'text'  => 'blank',
+						'value'       => 'blank',
+						'text'        => 'Blank',
+						'isDefault'   => true,
+						'description' => 'nothing.',
 					),
 					'maincolor' => array(
-						'value' => 'maincolor',
-						'text'  => 'main color',
+						'value'       => 'maincolor',
+						'text'        => 'Main color',
+						'description' => 'the most represented color in the image',
+						'example'     => 'https://assets.twic.pics/demo/anchor.jpeg?twic=v1/cover=100x100/output=maincolor',
 					),
 					'meancolor' => array(
-						'value' => 'meancolor',
-						'text'  => 'mean color',
+						'value'       => 'meancolor',
+						'text'        => 'Mean color',
+						'description' => 'the average color of the image',
+						'example'     => 'https://assets.twic.pics/demo/anchor.jpeg?twic=v1/cover=100x100/output=meancolor',
 					),
 					'preview'   => array(
-						'value' => 'preview',
-						'text'  => 'preview',
+						'value'       => 'preview',
+						'text'        => 'Preview',
+						'description' => 'a blurry preview of the image',
+						'example'     => 'https://assets.twic.pics/demo/anchor.jpeg?twic=v1/cover=100x100/output=preview',
 					),
-				),
-				'description' => esc_html( __( 'Type of the image preview displayed when image is loading (LQIP).' ) ),
-				'doc'         => array(
-					'text' => 'ouput preview types documentation',
-					'link' => 'https://www.twicpics.com/docs/reference/transformations#output',
 				),
 			)
 		);
@@ -168,14 +248,13 @@ class TwicPics_Admin {
 		<?php
 		echo sprintf(
 			'<p>
-					Configure your TwicPics domain to start optimizing images. You can create a domain for free on your <a href="%1$s" target="_blank" style="color: #8f00ff;">TwicPics dashboard</a>.
-
-					<span style="display: block; font-style: italic;">
-						Learn more about domains in the <a href="%2$s" target="_blank" rel="noopener noreferrer" style="color: #8f00ff;">documentation</a>.
-					</span>
+					You need to create a domain on your <a href="%1$s" target="_blank" style="color: #8f00ff;">TwicPics dashboard</a> to optimize your website images.
+					
+					<br/>
+					<a href="%2$s" target="_blank" style="color: #8f00ff;">Read this guide</a> to get started.
 			</p>',
 			'https://account.twicpics.com/signin/?utm_campaign=wordpress-plugin&utm_source=wp-admin&utm_medium=plugins&utm_content=' . esc_attr( preg_replace( '#^https?://#', '', get_site_url() ) ),
-			'https://www.twicpics.com/documentation/subdomain/'
+			'https://www.twicpics.com/docs/integrations/wordpress-plugin'
 		);
 		?>
 	</div><br/><br/>
@@ -190,23 +269,45 @@ class TwicPics_Admin {
 	public function field_textinput( $args ) {
 		$options = get_option( 'twicpics_options' );
 
+		if ( ! isset( $options['user_domain'] ) ) {
+			$options['user_domain'] = '';
+		}
+
+		if ( 'max_width' === $args['label_for'] ) {
+			if ( ! isset( $options['max_width'] ) || empty( $options['max_width'] ) ) {
+				$options['max_width'] = 2000;
+			}
+		}
+
+		if ( 'step' === $args['label_for'] ) {
+			if ( ! isset( $options['step'] ) || empty( $options['step'] ) ) {
+				$options['step'] = 10;
+			}
+		}
+
 		echo '
 			<input
 				type="text"
 				id="', esc_attr( $args['label_for'] ) ,'"
 				name="twicpics_options[', esc_attr( $args['label_for'] ), ']"
 				value="', ( esc_attr( $options[ $args['label_for'] ] ) ? esc_attr( $options[ $args['label_for'] ] ) : '' ),'" class="regular-text"
-			/>';
+			/>
+		';
+
 		?>
 		<p class="description">
 			<?php
-			echo esc_html( $args['description'] );
-			if ( isset( $args['doc'] ) ) {
-				echo ' See <a href="' . esc_html( $args['doc']['link'] ) . '" target="_blank" rel="noopener noreferrer" style="color: #8f00ff;">' . esc_html( $args['doc']['text'] ) . '</a>.';
+			echo esc_html( $args['field_description'] );
+			if ( 'user_domain' === $args['label_for'] ) {
+				echo '<a href="https://account.twicpics.com/signin" target="_blank" style="color: #8f00ff;">TwicPics dashboard</a>.';
 			}
 			?>
 		</p>
+
 		<?php
+		if ( isset( $args['feature_doc_items'] ) ) {
+			$this->add_feature_doc_items( $args['feature_doc_items'] );
+		}
 	}
 
 	/**
@@ -218,33 +319,84 @@ class TwicPics_Admin {
 		$options        = get_option( 'twicpics_options' );
 		$select_options = $args['options'];
 
+		if ( 'optimization_level' === $args['label_for'] ) {
+			if ( ! isset( $options['optimization_level'] ) ) {
+				$options['optimization_level'] = 'script';
+			}
+		}
+
+		if ( 'placeholder_type' === $args['label_for'] ) {
+			if ( ! isset( $options['placeholder_type'] ) ) {
+				$options['placeholder_type'] = 'blank';
+			}
+		}
+
 		echo '
 			<select
 				id="', esc_attr( $args['label_for'] ) ,'"
 				name="twicpics_options[', esc_attr( $args['label_for'] ), ']"
 			>
-				<option value="" disabled>
-					Choose a placeholder type
-				</option>';
+		';
 
-		foreach ( $select_options as $option ) :
-			echo '
-				<option
-					value="', esc_attr( $option['value'] ),'"',
-					( esc_attr( $option['value'] ) === esc_attr( $options['placeholder_type'] ) ? 'selected' : '' ),
-				'>',
-					esc_attr( $option['text'] ),
-				'</option>';
-		endforeach;
+		foreach ( $select_options as $option ) {
+			if ( ( $args['label_for'] ) === 'optimization_level' ) {
+				echo '
+					<option
+						value="', esc_attr( $option['value'] ),'"',
+						( esc_attr( $option['value'] ) === esc_attr( $options['optimization_level'] ) ? 'selected' : '' ),
+					'>',
+						esc_attr( $option['text'] ),
+					'</option>
+				';
+			};
 
-		echo '</select>'
+			if ( ( $args['label_for'] ) === 'placeholder_type' ) {
+				echo '
+					<option
+						value="', esc_attr( $option['value'] ),'"',
+						( esc_attr( $option['value'] ) === esc_attr( $options['placeholder_type'] ) ? 'selected' : '' ),
+					'>',
+						esc_attr( $option['text'] ),
+					'</option>
+				';
+			};
+		}
+		echo '</select>';
+		?>
+
+		<p class="description">
+			<?php
+			echo esc_html( $args['field_description'] );
+			?>
+		</p>
+
+		<?php
+		$this->add_options_description( $args['label_for'], $select_options );
+
+		if ( isset( $args['feature_doc_items'] ) ) {
+			$this->add_feature_doc_items( $args['feature_doc_items'] );
+		}
+	}
+
+	/**
+	 * Callback for the checkbox input type fields
+	 *
+	 * @param     array $args Displays values arguments.
+	 */
+	public function field_checkbox( $args ) {
+		$options = get_option( 'twicpics_options' );
+		echo '
+			<input
+				type="checkbox"
+				id="', esc_attr( $args['label_for'] ) ,'"
+				class="regular-text"
+				name="twicpics_options[', esc_attr( $args['label_for'] ), ']"',
+				( isset( $options[ $args['label_for'] ] ) ? 'checked' : '' ), 
+			'/>';
 		?>
 		<p class="description">
 			<?php
-			echo esc_html( $args['description'] );
-			if ( isset( $args['doc'] ) ) {
-				echo ' See <a href="' . esc_html( $args['doc']['link'] ) . '" target="_blank" rel="noopener noreferrer" style="color: #8f00ff;">' . esc_html( $args['doc']['text'] ) . '</a>.';
-			}
+			echo esc_html( $args['field_description'] );
 			?>
 		</p>
 		<?php
@@ -275,7 +427,9 @@ class TwicPics_Admin {
 				<br/><br/>';
 		endforeach;
 		?>
-	<p class="description"><?php echo esc_html( $args['description'] ); ?></p>
+	<p class="description">
+		<?php echo esc_html( $args['field_description'] ); ?>
+	</p>
 		<?php
 	}
 
@@ -285,4 +439,60 @@ class TwicPics_Admin {
 	 * @param     array $args Displays values arguments.
 	 */
 	public function field_blank( $args ) {}
+
+	/**
+	 * Adds select options description to the admin interface
+	 * 
+	 * @param     string $label Label of the field.
+	 * @param     array $select_options Options of the <select> HTML element.
+	 */
+	private function add_options_description( $label, $select_options ) {
+		if ( 'placeholder_type' === $label ) {
+			echo '<ul id="placeholder-type_options-description" style="display: none;">';
+		} else {
+			echo '<ul style="list-style: inside; font-size: 13px;">';
+		}
+		foreach ( $select_options as $option ) {
+			echo '
+				<li>
+					<span style="font-weight: bold;">' . esc_attr( $option['text'] ) . '</span>' . 
+					( isset( $option['isDefault'] ) && $option['isDefault'] 
+						? ' (default): ' 
+						: ': ' 
+					) .
+					esc_attr( $option['description'] );
+
+			if ( 'placeholder_type' === $label ) {
+				if ( isset( $option['example'] ) ) {
+					echo '
+						<div style="padding-top: 4px; padding-left: 18px; width: 50px; height: 50px;">
+							<img src="' . esc_attr( $option['example'] ) . '" style="width: 100%; height: 100%; object-fit: cover; border: 1px solid #d1d5db;" alt="LQIP image" />
+						</div>';
+				}
+			}
+			echo '</li>';
+		}
+		echo '</ul>';
+	}
+
+	/**
+	 * Adds documentation items to the admin interface
+	 * 
+	 * @param     array $feature_doc_items
+	 */
+	private function add_feature_doc_items( $feature_doc_items ) {
+		$feature_doc_items_length = count( $feature_doc_items );
+
+		echo '<p style="font-size: 13px; font-style: italic;">';
+		foreach ( $feature_doc_items as $key => $doc_item ) {
+			if ( ( $feature_doc_items_length - 1 ) !== $key ) {
+				echo esc_attr( $doc_item ) . '<br/>';
+			} else {
+				echo esc_attr( $doc_item );
+			};
+		}
+		unset( $doc_item );
+		echo '</p>';
+	}
 }
+?>

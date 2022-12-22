@@ -38,6 +38,10 @@ TwicPics' library being the heart of this WordPress plugin means **you don't hav
 - **Global CDN**: serve your images closer to your visitors thanks to a worldwide CDN powered by Amazon™.
 - **SEO optimization**
 
+= Compatibility =
+
+The TwicPics plugin is compatible with WordPress websites that use Gutenberg blocks. However, we cannot guarantee it will work with all themes, plugins, and site builders.
+
 == Installation ==
 
 To get the full description of the plugin set up, please [visit TwicPics website](https://www.twicpics.com/documentation/wordpress-plugin/?ref=wordpress).
