@@ -48,7 +48,7 @@ To get the full description of the plugin set up, please [visit TwicPics website
 
 = Set your TwicPics account =
 
-- Create your TwicPics account [here](https://account.twicpics.com/signup?ref=wordpress) for free. A personal TwicPics *domain* is then automatically generated for you (e.g.: xxxxxxxxxxx.twic.pics domain).
+- Create your TwicPics account [here](https://account.twicpics.com/signup?ref=wordpress) for free and define your personal TwicPics *domain* (e.g. xxxxxx.twic.pics).
 
 = Install the plugin =
 
@@ -58,13 +58,13 @@ To get the full description of the plugin set up, please [visit TwicPics website
 
 **If you use other image optimization or lazy-loading plugins, please disable them or any related features before moving on the next steps.**
 
-- Activate TwicPics plugin from the list of plugins.
-- Navigate to TwicPics settings to enter your TwicPics *personal domain*.
-- You can define a *max width* at which your images will be intrinsically resized (default value is 2000 pixels).
-- To avoid requesting too may variants of the same image, you can also set a *step* option. TwicPics will round the width of images to the closest multiple of this value (default is 10 pixels).
+- Navigate to your WordPress plugins page and activate the TwicPics Plugin.
+- Go to the TwicPics Plugin settings.
+- Fill in the *TwicPics domain* field with your TwicPics domain.
+- Select the *Optimization level* that will be applied to your images (Pixel perfect or Maximum compatibility).
 - Save your settings.
 
-That's it ! The plugin can now deliver real time responsive images to all of your WordPress website visitors.
+That's it! The plugin can now deliver real time responsive images to all of your WordPress website visitors.
 
 == Screenshots ==
 
