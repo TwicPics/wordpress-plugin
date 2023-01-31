@@ -53,6 +53,15 @@ class TwicPicsApi {
 	}
 
 	/**
+	 * Provides the ability to write logs in JavaScript.
+	 * 
+	 * @param      string $log The log to write
+	 */
+	private function write_logs( $log ) {
+		echo '<script type="text/javascript">console.log( "twicpics",' . wp_json_encode( $log ) . ');</script>';
+	}
+
+	/**
 	 * Checks if the image (<img> or background type) is handled by an uncompatible plugin.
 	 *
 	 * @param      string $tag The image.
