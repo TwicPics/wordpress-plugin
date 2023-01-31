@@ -75,6 +75,9 @@ That's it! The plugin can now deliver real time responsive images to all of your
 
 == Changelog ==
 
+= 0.2.1 =
+*Updates "Installation" section.*
+
 = 0.2.0 =
 *Adds an "optimization level" paramater. Users can now decide whether images are statically or dynamically optimized.*
 *Adds a "placeholder type" parameter. Users can now choose which image placeholder they want to display while the final image is loading.*
