@@ -145,6 +145,15 @@ class TwicPicsScript {
 	}
 
 	/**
+	 * Provides the ability to write logs in JavaScript.
+	 * 
+	 * @param      string $log The log to write
+	 */
+	private function write_logs( $log ) {
+		echo '<script type="text/javascript">console.log( "twicpics",' . wp_json_encode( $log ) . ');</script>';
+	}
+
+	/**
 	 * Checks if an elem has already been treated
 	 *
 	 * @param      string $class the element's class value.
