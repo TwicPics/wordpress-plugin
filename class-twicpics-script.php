@@ -12,6 +12,7 @@ class TwicPicsScript {
 	 * Set required member variables, functions, actions and filters
 	 */
 	public function __construct( $options ) {
+
 		/* TwicPics domain */
 		if ( isset( $options['user_domain'] ) && ! empty( $options['user_domain'] ) ) {
 			$this->_twicpics_user_domain = 'https://' . ( $options['user_domain'] );
@@ -56,6 +57,10 @@ class TwicPicsScript {
 			'data-object-position',
 		);
 
+		/* URLs management */
+		include 'class-twicpics-urls-manager.php';
+		$this->_urls_manager = new TwicPicsUrlsManager();
+		
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts', 1 );
 		$this->add_filter( 'wp_lazy_loading_enabled', 'return_false', 1 );
 		$this->add_filter( 'script_loader_tag', 'add_async_defer_to_twicpics_script', 10, 3 );
@@ -154,36 +159,6 @@ class TwicPicsScript {
 	}
 
 	/**
-	 * Checks if an elem has already been treated
-	 *
-	 * @param      string $class the element's class value.
-	 * @return boolean true if already treated, false otherwise
-	 */
-	private function is_treated( $class ) {
-		return in_array( 'notwic', explode( ' ', $class ), true );
-	}
-
-	/**
-	 * Gets the full size URL of the image
-	 *
-	 * The method simply removes the -{width}x{height} added by WordPress from the URL of the originaly requested image 
-	 *
-	 * @param      string $img_url the URL of the originaly requested image (maybe cropped).
-	 * @return string the full size URL of the image
-	 */
-	private function get_full_size_url( $img_url ) {
-		global $wpdb;
-		$base_url = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $img_url );
-		$image    = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE guid=%s OR guid=%s;", $base_url, $img_url ) );
-
-		if ( ! empty( $image ) ) {
-			return wp_get_attachment_image_src( (int) $image[0], 'full' )[0];
-		} else {
-			return preg_replace( '/(.+)\-\d+x\d+.*(\..+)/', '$1$2', $img_url );
-		}
-	}
-
-	/**
 	 * Check if 'data-object-fit' image's attribute is defined to get the coordinates of its focus point
 	 *
 	 * @param      DOMNode     $img The img tag node.
@@ -249,18 +224,16 @@ class TwicPicsScript {
 	 * @return array treated image attributes
 	 */
 	public function image_attributes( $attributes ) {
-		/* already treated */
-		if ( $this->is_treated( $attributes['class'] ? $attributes['class'] : '' ) ) {
-			return $attributes;
+
+		if ( isset( $attributes['src'] ) ) {
+			$img_url = $this->_urls_manager->get_absolute_url( $this->_urls_manager->_website_url, $attributes['src'] );
 		}
 
-		$img_url = $attributes['src'];
-
-		if ( strpos( $img_url, 'http' ) === false ) {
-			$img_url = home_url( $img_url );
+		if ( ! $this->is_on_same_domain( $img_url ) ) {
+			return;
 		}
 
-		$attributes['data-twic-src'] = $this->get_full_size_url( $img_url );
+		$attributes['data-twic-src'] = $this->_urls_manager->get_original_size_url( $img_url );
 
 		$width  = '';
 		$height = $width;
@@ -319,7 +292,7 @@ class TwicPicsScript {
 		} else {
 			/* LQIP */
 			$attributes['src'] = $this->get_twicpics_placeholder(
-				$this->should_placeholder_dimensions_be_removed_from_url( $img_classes ) ? $this->get_full_size_url( $img_url ) : $img_url,
+				$this->should_placeholder_dimensions_be_removed_from_url( $img_classes ) ? $this->_urls_manager->get_original_size_url( $img_url ) : $img_url,
 				$width,
 				$height
 			);
@@ -369,18 +342,11 @@ class TwicPicsScript {
 
 		/* Treat img tags */
 		foreach ( $dom->getElementsByTagName( 'img' ) as $img ) {
-			/* not already treated */
-			if ( ! $this->is_treated( $img->getAttribute( 'class' ) ) ) {
-				$this->treat_imgtag( $img, $dom );
-			}
+			$this->treat_imgtag( $img, $dom );
 		}
 
 		/* Treat div background style attributes and visual composer class .vc_custom */
 		foreach ( $dom->getElementsByTagName( 'div' ) as $div ) {
-			/* already treated */
-			if ( $this->is_treated( $div->getAttribute( 'class' ) ) ) {
-				continue;
-			}
 
 			/* check class for vc_custom and add style for treatment */
 			if ( strpos( $div->getAttribute( 'class' ), 'vc_custom_' ) !== false ) {
@@ -410,18 +376,12 @@ class TwicPicsScript {
 
 		/* Treat figure background style attributes */
 		foreach ( $dom->getElementsByTagName( 'figure' ) as $fig ) {
-			/* not already treated */
-			if ( ! $this->is_treated( $fig->getAttribute( 'class' ) ) ) {
-				$this->treat_tag_for_bg( $fig );
-			}
+			$this->treat_tag_for_bg( $fig );
 		}
 
 		/* Treat span background style attributes */
 		foreach ( $dom->getElementsByTagName( 'span' ) as $span ) {
-			/* not already treated */
-			if ( ! $this->is_treated( $span->getAttribute( 'class' ) ) ) {
-				$this->treat_tag_for_bg( $span );
-			}
+			$this->treat_tag_for_bg( $span );
 		}
 
 		/* Return data without doctype and html/body */
@@ -494,25 +454,19 @@ class TwicPicsScript {
 			return;
 		};
 
-		$img_url = $img->getAttribute( 'src' );
+		$img_url = $this->_urls_manager->get_absolute_url( $this->_urls_manager->_website_url, $img->getAttribute( 'src' ) );
 
-		/* relative path */
-		if ( strpos( $img_url, '/' ) === 0 ) {
-			$img_url = home_url( $img_url );
-		}
-		if ( strpos( $img_url, 'http' ) === false ) {
-			return;
-		}
 		if ( ! $this->is_on_same_domain( $img_url ) ) {
 			return;
 		}
+
 		// phpcs:ignore
 		if ( 'noscript' === $img->parentNode->tagName ) {
 			return;
 		}
 
 		/* TwicPics Script 'data-twic-src' attribute */
-		$img->setAttribute( 'data-twic-src', preg_replace( '/^https?:\/\/[^\/]+/', '', $this->get_full_size_url( $img_url ) ) );
+		$img->setAttribute( 'data-twic-src', preg_replace( '/^https?:\/\/[^\/]+/', '', $this->_urls_manager->get_original_size_url( $img_url ) ) );
 
 		$width  = '';
 		$height = $width;
@@ -564,7 +518,7 @@ class TwicPicsScript {
 
 		/* LQIP */
 		$img->setAttribute( 'src', $this->get_twicpics_placeholder(
-			$this->should_placeholder_dimensions_be_removed_from_url( $img_classes ) ? $this->get_full_size_url( $img_url ) : $img_url,
+			$this->should_placeholder_dimensions_be_removed_from_url( $img_classes ) ? $this->_urls_manager->get_original_size_url( $img_url ) : $img_url,
 			$width,
 			$height
 		) );
@@ -621,7 +575,7 @@ class TwicPicsScript {
 					if ( strpos( $value, ',' ) === false ) {
 						$value           = trim( $value );
 						$bg_urls         = array( substr( $value, 4, -1 ) ); // removes 'url(' and ')'.
-						$bg_url          = $this->get_full_size_url( $bg_urls[0] ); // removes width and height from the URL
+						$bg_url          = $this->_urls_manager->get_original_size_url( $bg_urls[0] ); // removes width and height from the URL
 						$bg_placeholder  = $this->_twicpics_user_domain . '/' . $bg_url;
 						$new_style_attr .= $property . ':url(' . $bg_placeholder . '?twic=v1/max=' . $this->_twicpics_max_width . $this->_twicpics_placeholder;
 					}
