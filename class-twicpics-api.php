@@ -31,6 +31,10 @@ class TwicPicsApi {
 		include 'blacklist-api.php';
 		$this->_plugins_blacklist = $plugins_blacklist;
 
+		/* URLs management */
+		include 'class-twicpics-urls-manager.php';
+		$this->_urls_manager = new TwicPicsUrlsManager();
+
 		$this->add_filter( 'wp_get_attachment_image_attributes', 'image_attributes', PHP_INT_MAX );
 		$this->add_filter( 'the_content', 'page_content', PHP_INT_MAX );
 	}
@@ -99,27 +103,6 @@ class TwicPicsApi {
 	}
 
 	/**
-	 * Gets the full size URL of the image
-	 *
-	 * The method simply removes the -{width}x{height} added by WordPress from the URL of the originaly requested image 
-	 *
-	 * @param      string $img_url the URL of the originaly requested image (maybe cropped).
-	 * @return string the full size URL of the image
-	 */
-	private function get_full_size_url( $img_url ) {
-		global $wpdb;
-
-		$base_url = preg_replace( '/-\d+x\d+(?=\.(jpg|jpeg|png|gif)$)/i', '', $img_url );
-		$image = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE guid=%s OR guid=%s;", $base_url, $img_url ) );
-
-		if ( ! empty( $image ) ) {
-			return wp_get_attachment_image_src( (int) $image[0], 'full' )[0];
-		} else {
-			return preg_replace( '/(.+)\-\d+x\d+.*(\..+)/', '$1$2', $img_url );
-		}
-	}
-
-	/**
 	 * Gets image dimensions <width>x<height> from its URL
 	 * 
 	 * @param string $img_url the URL of the image, defined in src or srcset attributes.
@@ -165,12 +148,11 @@ class TwicPicsApi {
 	public function image_attributes( $attributes ) {
 
 		if ( isset( $attributes['src'] ) ) {
-			$img_src = $attributes['src'];
+			$img_src = $this->_urls_manager->get_absolute_url( $this->_urls_manager->_website_url, $attributes['src'] );
 		}
 
-		/* relative path */
-		if ( strpos( $img_src, '/' ) === 0 ) {
-			$img_src = home_url( $img_src );
+		if ( ! $this->is_on_same_domain( $img_src ) ) {
+			return;
 		}
 
 		/* TwicPics src*/
@@ -184,7 +166,7 @@ class TwicPicsApi {
 		if ( ! empty( $img_width ) && ! empty( $img_height ) ) {
 				$twicpics_src =
 					$this->_twicpics_user_domain . '/' . 
-					$this->get_full_size_url( $img_src ) . 
+					$this->_urls_manager->get_original_size_url( $img_src ) . 
 					'?twic=v1/cover=' . $img_width . ':' . $img_height . '/max=' . $this->_twicpics_max_width;
 		} else {
 			$img_dimensions_from_url = $this->get_img_dimensions_from_url( $img_src );
@@ -194,7 +176,7 @@ class TwicPicsApi {
 
 				$twicpics_src =
 					$this->_twicpics_user_domain . '/' . 
-					$this->get_full_size_url( $img_src ) . 
+					$this->_urls_manager->get_original_size_url( $img_src ) . 
 					'?twic=v1/cover=' . $img_width_from_url . ':' . $img_height_from_url . 
 					'/max=' . $this->_twicpics_max_width;
 			} else {
@@ -217,7 +199,7 @@ class TwicPicsApi {
 				if ( ! empty( $img_width ) && ! empty( $img_height ) ) {
 					$twicpics_srcset =
 						$twicpics_srcset . $this->_twicpics_user_domain . '/' . 
-						$this->get_full_size_url( $img_variant_items[0] ) . 
+						$this->_urls_manager->get_original_size_url( $img_variant_items[0] ) . 
 						'?twic=v1/cover=' . $img_width . ':' . $img_height . '/resize=' . substr( $img_variant_items[1], 0, -1 ) . '/max=' . $this->_twicpics_max_width .
 						' ' . $img_variant_items[1] . ', ';
 				} else {
@@ -228,7 +210,7 @@ class TwicPicsApi {
 
 						$twicpics_srcset =
 							$twicpics_srcset . $this->_twicpics_user_domain . '/' . 
-							$this->get_full_size_url( $img_variant_items[0] ) . 
+							$this->_urls_manager->get_original_size_url( $img_variant_items[0] ) . 
 							'?twic=v1/cover=' . $img_width_from_url . ':' . $img_height_from_url . 
 							'/resize=' . $img_width_from_url . '/max=' . $this->_twicpics_max_width .
 							' ' . $img_variant_items[1] . ', ';
@@ -259,7 +241,7 @@ class TwicPicsApi {
 			return;
 		};
 
-		$img_src = $img->getAttribute( 'src' );
+		$img_src = $this->_urls_manager->get_absolute_url( $this->_urls_manager->_website_url, $img->getAttribute( 'src' ) );
 
 		/* relative path */
 		if ( strpos( $img_src, '/' ) === 0 ) {
@@ -279,7 +261,7 @@ class TwicPicsApi {
 		if ( ! empty( $img_width ) && ! empty( $img_height ) ) {
 				$twicpics_src =
 					$this->_twicpics_user_domain . '/' . 
-					$this->get_full_size_url( $img_src ) . 
+					$this->_urls_manager->get_original_size_url( $img_src ) . 
 					'?twic=v1/cover=' . $img_width . ':' . $img_height . '/max=' . $this->_twicpics_max_width;
 		} else {
 			$img_dimensions_from_url = $this->get_img_dimensions_from_url( $img_src );
@@ -289,7 +271,7 @@ class TwicPicsApi {
 
 				$twicpics_src =
 					$this->_twicpics_user_domain . '/' . 
-					$this->get_full_size_url( $img_src ) . 
+					$this->_urls_manager->get_original_size_url( $img_src ) . 
 					'?twic=v1/cover=' . $img_width_from_url . ':' . $img_height_from_url . 
 					'/max=' . $this->_twicpics_max_width;
 			} else {
@@ -312,7 +294,7 @@ class TwicPicsApi {
 				if ( ! empty( $img_width ) && ! empty( $img_height ) ) {
 					$twicpics_srcset =
 						$twicpics_srcset . $this->_twicpics_user_domain . '/' . 
-						$this->get_full_size_url( $img_variant_items[0] ) . 
+						$this->_urls_manager->get_original_size_url( $img_variant_items[0] ) . 
 						'?twic=v1/cover=' . $img_width . ':' . $img_height . '/resize=' . substr( $img_variant_items[1], 0, -1 ) . '/max=' . $this->_twicpics_max_width .
 						' ' . $img_variant_items[1] . ', ';
 				} else {
@@ -323,7 +305,7 @@ class TwicPicsApi {
 
 						$twicpics_srcset =
 							$twicpics_srcset . $this->_twicpics_user_domain . '/' . 
-							$this->get_full_size_url( $img_variant_items[0] ) . 
+							$this->_urls_manager->get_original_size_url( $img_variant_items[0] ) . 
 							'?twic=v1/cover=' . $img_width_from_url . ':' . $img_height_from_url . 
 							'/resize=' . $img_width_from_url . '/max=' . $this->_twicpics_max_width .
 							' ' . $img_variant_items[1] . ', ';
@@ -409,7 +391,7 @@ class TwicPicsApi {
 							list( $bg_img_width_from_url, $bg_img_height_from_url ) = explode( 'x', $bg_img_dimensions_from_url, 2 );
 
 							$twicpics_bg_img_url =
-								$this->_twicpics_user_domain . '/' . $this->get_full_size_url( $bg_img_url ) .
+								$this->_twicpics_user_domain . '/' . $this->_urls_manager->get_original_size_url( $bg_img_url ) .
 								'?twic=v1/cover=' . $bg_img_width_from_url . ':' . $bg_img_height_from_url . 
 								'/max=' . $this->_twicpics_max_width;
 						} else {
