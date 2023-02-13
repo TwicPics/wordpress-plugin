@@ -75,6 +75,9 @@ That's it! The plugin can now deliver real time responsive images to all of your
 
 == Changelog ==
 
+= 0.2.2 =
+*Better handling of relative paths.*
+
 = 0.2.1 =
 *Updates "Installation" section.*
 
