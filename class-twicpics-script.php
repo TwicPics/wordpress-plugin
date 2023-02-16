@@ -351,7 +351,7 @@ class TwicPicsScript {
 			/* check class for vc_custom and add style for treatment */
 			if ( strpos( $div->getAttribute( 'class' ), 'vc_custom_' ) !== false ) {
 				global $vc_bg;
-				$classes = explode( '', $div->getAttribute( 'class' ) );
+				$classes = explode( ' ', $div->getAttribute( 'class' ) );
 
 				foreach ( $classes as $class ) {
 					if ( strpos( $class, 'vc_custom_' ) === false ) {
@@ -548,7 +548,7 @@ class TwicPicsScript {
 
 		foreach ( $styles as $rule ) {
 			if ( empty( trim( $rule ) ) ) {
-				return;
+				continue;
 			}
 
 			list( $property, $value ) = explode( ':', $rule, 2 );
@@ -573,8 +573,21 @@ class TwicPicsScript {
 						break;
 					}
 					if ( strpos( $value, ',' ) === false ) {
-						$value           = trim( $value );
-						$bg_urls         = array( substr( $value, 4, -1 ) ); // removes 'url(' and ')'.
+						$value = trim( $value );
+
+						if ( "'" === substr( $value, 4, 1 ) || '"' === substr( $value, 4, 1 ) ) {
+							if ( "'" === substr( $value, -2, -1 ) || '"' === substr( $value, -2, -1 ) ) {
+								/* Removes "url('" and "')". */
+								$bg_urls = array( substr( $value, 5, -2 ) );
+							} else {
+								/* Removes "url('" and ")". */
+								$bg_urls = array( substr( $value, 5, -1 ) ); 
+							}
+						} else {
+							/* Removes "url(" and ")". */
+							$bg_urls = array( substr( $value, 4, -1 ) ); 
+						}
+
 						$bg_url          = $this->_urls_manager->get_original_size_url( $bg_urls[0] ); // removes width and height from the URL
 						$bg_placeholder  = $this->_twicpics_user_domain . '/' . $bg_url;
 						$new_style_attr .= $property . ':url(' . $bg_placeholder . '?twic=v1/max=' . $this->_twicpics_max_width . $this->_twicpics_placeholder;
@@ -602,21 +615,6 @@ class TwicPicsScript {
 				if ( '' !== $x && '' !== $y ) {
 					if ( 50 !== $x || 50 !== $y ) {
 						$tag->setAttribute( 'data-twic-focus', "{$x}px{$y}p" );
-					}
-				}
-			}
-
-			$tag_img_children = $tag->getElementsByTagName( 'img' );
-
-			if ( ! empty( $tag_img_children ) ) {
-
-				foreach ( $tag_img_children as $img ) {
-					$img_url = $img->getAttribute( 'src' );
-					$img_url = explode( '?', $img_url );
-
-					/* Compares preview placeholders of <figure> and its <img> children */
-					if ( $bg_placeholder === $img_url[0] ) {
-						$tag->removeChild( $img );
 					}
 				}
 			}

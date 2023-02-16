@@ -344,7 +344,7 @@ class TwicPicsApi {
 
 		foreach ( $styles as $rule ) {
 			if ( empty( trim( $rule ) ) ) {
-				return;
+				continue;
 			}
 
 			list( $property, $value ) = explode( ':', $rule, 2 );
@@ -372,8 +372,8 @@ class TwicPicsApi {
 					if ( strpos( $value, ',' ) === false ) {
 						$value = trim( $value );
 
-						if ( "'" === substr( $value, 4, 1 ) ) {
-							if ( "'" === substr( $value, -2, -1 ) ) {
+						if ( "'" === substr( $value, 4, 1 ) || '"' === substr( $value, 4, 1 ) ) {
+							if ( "'" === substr( $value, -2, -1 ) || '"' === substr( $value, -2, -1 ) ) {
 								/* Removes "url('" and "')". */
 								$bg_img_url = substr( $value, 5, -2 );
 							} else {
@@ -381,7 +381,7 @@ class TwicPicsApi {
 								$bg_img_url = substr( $value, 5, -1 ); 
 							}
 						} else {
-							/* Rremoves "url(" and ")". */
+							/* Removes "url(" and ")". */
 							$bg_img_url = substr( $value, 4, -1 ); 
 						}
 
@@ -440,7 +440,7 @@ class TwicPicsApi {
 			/* check class for vc_custom and add style for treatment */
 			if ( strpos( $div->getAttribute( 'class' ), 'vc_custom_' ) !== false ) {
 				global $vc_bg;
-				$classes = explode( '', $div->getAttribute( 'class' ) );
+				$classes = explode( ' ', $div->getAttribute( 'class' ) );
 
 				foreach ( $classes as $class ) {
 					if ( strpos( $class, 'vc_custom_' ) === false ) {
