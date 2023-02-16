@@ -5,7 +5,7 @@ Tags: image, image optimization, image compression, resize image, responsive ima
 Requires at least: 6.0
 Tested up to: 6.1
 Requires PHP: 7.3
-Stable tag: 0.2.2
+Stable tag: 0.2.3
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
