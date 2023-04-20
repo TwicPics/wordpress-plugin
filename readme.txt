@@ -75,6 +75,9 @@ That's it! The plugin can now deliver real time responsive images to all of your
 
 == Changelog ==
 
+= 0.2.4 =
+*Corrects a typo in the usage of a variable.*
+
 = 0.2.3 =
 *Fixes empty CSS rules issue for background images.*
 
