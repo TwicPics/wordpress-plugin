@@ -240,7 +240,7 @@ class TwicPicsScript {
 
 		/* Get sizing */
 		if ( isset( $attributes['width'] ) && isset( $attributes['height'] ) ) {
-			if ( 'auto' !== $attributes['width'] && 'auto' !== $$attributes['height'] ) {
+			if ( 'auto' !== $attributes['width'] && 'auto' !== $attributes['height'] ) {
 				/* treat only if both width & height */
 				$width  = $attributes['width'];
 				$height = $attributes['height'];
