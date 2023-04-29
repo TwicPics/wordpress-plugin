@@ -1,0 +1,10 @@
+{
+    "autoload": {
+        "psr-4": {
+            "TwicPics\\": "lib/"
+        }
+    },
+    "require": {
+        "sabberworm/php-css-parser": "*"
+    }
+}
