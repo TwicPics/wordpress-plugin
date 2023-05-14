@@ -287,8 +287,8 @@ class Element {
      * Gets image dimensions (width and height attributes)
      */
     public function size() {
-        $height = $img->attr( 'height' );
-        $width  = $img->attr( 'width' );
+        $height = $this->attr( 'height' );
+        $width  = $this->attr( 'width' );
         $hm = [];
         $wm = [];
         preg_match( $R_DIM, $height, $hm );
@@ -339,19 +339,22 @@ class Element {
      * Get final transform
      */
     public function transform( $type, $transform, $final, $fit = null ) {
-        static $R_FINAL = '/(?:^|\/)\*(?:\/|$)/';
-        static $R_FIT = '/\b\*\b/';
+        static $R_FIT = '#(^|\/)\*(\/|$)#';
+        static $R_SLASHES = '#/+#';
+        static $R_TRIM = '#^/+|/+$#';
         $default = self::get_default_transform( $fit );
         $base = $this->attr_from( 'data-twic-' . $type . '-transform', 'data-twic-transform' );
         if ( $base === null ) {
             $base = $default;
         } else {
-            $base = preg_replace( $R_FIT, $default, $base );
+            $base = preg_replace( $R_FIT, "$1" . $default . "$2", $base );
         }
         $expression = $transform->as_string( $base );
         if ( $final ) {
-            $expression = preg_replace( $R_FINAL, '', $expression );
+            $expression = preg_replace( $R_FIT, '$1$2', $expression );
         }
+        $expression = preg_replace( $R_SLASHES, '/', $expression );
+        $expression = preg_replace( $R_TRIM, '', $expression );
         return $expression;
     }
 

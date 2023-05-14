@@ -6,7 +6,7 @@ new class {
      * tests position data, creates focus attribute and returns it properly formatted if found
      */
     static private function get_focus( $position ) {
-        static $R_OBJECT_POSITION = '/^\s*(\d+(?:\.\d+))%(?:\s+(\d+(?:\.\d+))%)?\s*$/';
+        static $R_OBJECT_POSITION = '/^\s*(\d+(?:\.\d+)?)%(?:\s+(\d+(?:\.\d+)?)%)?\s*$/';
         if ( $position !== null ) {
             $matches = [];
             if ( preg_match( $R_OBJECT_POSITION, $position, $matches ) ) {
@@ -18,6 +18,25 @@ new class {
             }
         }
         return null;
+    }
+
+    /**
+     * transforms srcset for api
+     */
+    private function get_api_srcset( $set ) {
+        return implode( ',', array_map(
+            function ( $part ) {
+                if ( is_string( $part ) ) {
+                    return $part;
+                }
+                $transform = $part->item->get_default_transformation();
+                if ( ( $transform === null ) && ( $part->width !== null ) ) {
+                    $transform = "resize=" . $part->width;
+                }
+                return $part->item->get_url( $this->domain, $transform ) . ' ' . $part->modifier;
+            },
+            $set
+        ) );
     }
 
     /**
@@ -102,8 +121,34 @@ new class {
      */
     private function handle_background_with_api( $background, $element, $dom ) {
 
-        // TODO: port actual logic from plugin.
-        $element->attr( 'data-twic-test-background', 'api ' . $background->item->get_path() );
+        // do we have data-src and data-src-set?
+        $has_data_src    = ( $element->attr( 'data-src' ) !== null );
+        $has_data_srcset = ( $element->attr( 'data-src-set' ) !== null );
+
+        // removes unnecessary attributes
+        foreach( [
+            'data-src',
+            'data-src-set',
+        ] as $name ) {
+            $element->attr( $name, null );
+        }
+
+        // compute and set new background
+        if ( $background ) {
+            $background_transform = $background->item->get_default_transformation();
+            $new_background = $background->item->get_url( $this->domain, $background_transform );
+            if ( $has_data_src ) {
+                $element->background( $background->item->get_url( $this->domain, 'output=' . $this->placeholder ) );
+                $element->attr( 'data-src', $new_background );
+            } else {
+                $element->background( $new_background );
+            }
+        }
+
+        // compute and set new srcset
+        if ( $has_data_srcset && $set && count( $set ) ) {
+            $element->attr( 'data-src-set', $this->get_api_srcset( $set ) );
+        }
     }
 
     /**
@@ -126,7 +171,7 @@ new class {
 
         // creates preview
         $p_transform = new \TwicPics\Transform();
-        if ( $focus ) {
+        if ( $focus !== null ) {
             $p_transform->before( 'focus', $focus );
             if ( $item->height !== null ) {
                 $p_transform->before( 'cover', $item->width . 'x' . $item->height );
@@ -134,13 +179,12 @@ new class {
         }
         $p_transform->after( 'output', $this->placeholder );
         $element->background(
-            $item->get_url( $this->domain, $element->transform( 'background', $p_transform, true ) ),
-            false
+            $item->get_url( $this->domain, $element->transform( 'background', $p_transform, true ) )
         );
 
         // handles data-twic-background-transform
         $transform = new \TwicPics\Transform();
-        if ( $focus ) {
+        if ( $focus !== null ) {
             $transform->before( 'focus', $focus );
         }
         if ( $this->max_width > 0 ) {
@@ -192,12 +236,14 @@ new class {
 
             // inspect the whole body
             foreach ( $body->all_descendants() as $element ) {
-                if ( !$element->should_skip( 'background' ) ) {
-                    $this->handle_background( $element, $dom );
-                }
                 // handles img elements
-                if ( $element->is( 'img' ) && !$element->should_skip( 'src' ) ) {
-                    $this->handle_image( $element, $dom );
+                if ( $element->is( 'img' ) ) {
+                    if ( !$element->should_skip( 'src' ) ) {
+                        $this->handle_image( $element, $dom );
+                    }
+                // handles backgrounds
+                } else if ( !$element->should_skip( 'background' ) ) {
+                    $this->handle_background( $element, $dom );
                 }
                 if ( !$use_script ) {
                     $use_script =
@@ -303,19 +349,7 @@ new class {
 
         // compute and set new srcset
         if ( $set && count( $set ) ) {
-            $new_srcset = implode( ',', array_map(
-                function ( $part ) {
-                    if ( is_string( $part ) ) {
-                        return $part;
-                    }
-                    return $part->item->get_url(
-                        $this->domain,
-                        $part->item->get_default_transformation()
-                    ) . ' ' . $part->modifier;
-                },
-                $set
-            ) );
-            $img->attr( $has_data_srcset ? 'data-src-set' : 'srcset', $new_srcset );
+            $img->attr( $has_data_srcset ? 'data-src-set' : 'srcset', $this->get_api_srcset( $set ) );
         }
     }
 
@@ -360,7 +394,7 @@ new class {
 
         // creates preview
         $p_transform = new \TwicPics\Transform();
-        if ( $focus ) {
+        if ( $focus !== null ) {
             $p_transform->before( 'focus', $focus );
             if ( $fit === 'cover' ) {
                 $size = ( $item->height === null ) ? $img->size() : $item;
