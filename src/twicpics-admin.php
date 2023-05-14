@@ -135,13 +135,13 @@ new class {
 
         add_settings_field(
             'twicpics_field_optimization_level',
-            __( 'Optimization level', 'twicpics' ),
+            __( 'Optimization approach', 'twicpics' ),
             array( $this, 'field_select' ),
             'twicpics',
             'twicpics_section_account_settings',
             array(
                 'label_for'         => 'optimization_level',
-                'field_description' => 'How the plugin will optimize images.',
+                'field_description' => 'How the plugin will modify your pages.',
                 'options'           => array( 
                     'script' => array(
                         'value'       => 'script',
@@ -157,6 +157,40 @@ new class {
                 ),
                 'feature_doc_items' => array(
                     'The default approach should work 90% of the time but some plugins and/or themes, especially JavaScript-heavy ones, may clash with it. Use "Maximum compatibility" if and when you witness weird image distortions and/or flickering.',
+                ),
+            )
+        );
+
+        add_settings_field(
+            'twicpics_field_quality',
+            __( 'Image quality', 'twicpics' ),
+            array( $this, 'field_select' ),
+            'twicpics',
+            'twicpics_section_account_settings',
+            array(
+                'label_for'         => 'quality',
+                'field_description' => 'How much the plugin will compress images.',
+                'options'           => array(
+                    '60' => array(
+                        'value'       => '60',
+                        'description' => 'Best performance, Poor quality',
+                    ),
+                    '70' => array(
+                        'value'       => '70',
+                        'isDefault'   => true,
+                        'description' => 'Good performance, Good quality',
+                    ),
+                    '80' => array(
+                        'value'       => '80',
+                        'description' => 'Bad performance, High quality',
+                    ),
+                    '90' => array(
+                        'value'       => '90',
+                        'description' => 'Worst performance, Best quality',
+                    ),
+                ),
+                'feature_doc_items' => array(
+                    'By default, TwicPics will compress you images at a quality of 70 which is perfect for web performance. If your images require higher quality, feel free to up that setting a notch but keep in mind higher quality levels mean worst web performance.',
                 ),
             )
         );
@@ -199,11 +233,10 @@ new class {
             array(
                 'label_for'         => 'placeholder_type',
                 'field_description' => 'Image placeholder (LQIP) displayed while image is loading.',
-                'options'           => array( 
+                'options'           => array(
                     'blank'     => array(
                         'value'       => 'blank',
                         'text'        => 'Blank',
-                        'isDefault'   => true,
                         'description' => 'nothing.',
                     ),
                     'maincolor' => array(
@@ -221,6 +254,7 @@ new class {
                     'preview'   => array(
                         'value'       => 'preview',
                         'text'        => 'Preview',
+                        'isDefault'   => true,
                         'description' => 'a blurry preview of the image',
                         'example'     => 'https://assets.twic.pics/demo/anchor.jpeg?twic=v1/cover=100x100/output=preview',
                     ),
@@ -311,47 +345,29 @@ new class {
         $options        = get_option( 'twicpics_options' );
         $select_options = $args['options'];
 
-        if ( 'optimization_level' === $args['label_for'] ) {
-            if ( !isset( $options['optimization_level'] ) ) {
-                $options['optimization_level'] = 'script';
-            }
-        }
-
-        if ( 'placeholder_type' === $args['label_for'] ) {
-            if ( !isset( $options['placeholder_type'] ) ) {
-                $options['placeholder_type'] = 'blank';
-            }
-        }
+        $target = $args['label_for'];
+        $optionExists = !empty( $options[ $target ] );
 
         echo '
             <select
-                id="', esc_attr( $args['label_for'] ) ,'"
-                name="twicpics_options[', esc_attr( $args['label_for'] ), ']"
+                id="', esc_attr( $target ) ,'"
+                name="twicpics_options[', esc_attr( $target ), ']"
             >
         ';
 
         foreach ( $select_options as $option ) {
-            if ( ( $args['label_for'] ) === 'optimization_level' ) {
-                echo '
-                    <option
-                        value="', esc_attr( $option['value'] ),'"',
-                        ( esc_attr( $option['value'] ) === esc_attr( $options['optimization_level'] ) ? 'selected' : '' ),
-                    '>',
-                        esc_attr( $option['text'] ),
-                    '</option>
-                ';
-            };
-
-            if ( ( $args['label_for'] ) === 'placeholder_type' ) {
-                echo '
-                    <option
-                        value="', esc_attr( $option['value'] ),'"',
-                        ( esc_attr( $option['value'] ) === esc_attr( $options['placeholder_type'] ) ? 'selected' : '' ),
-                    '>',
-                        esc_attr( $option['text'] ),
-                    '</option>
-                ';
-            };
+            $text = empty( $option['text'] ) ? ( $option['value'] . ': ' .$option['description'] ) : $option['text'];
+            $isDefault = $optionExists ?
+                ( ( '' . $option['value'] ) == ( '' . $options[$target] ) ) :
+                !empty( $option['isDefault'] ) && $option['isDefault'];
+            echo '
+                <option
+                    value="', esc_attr( $option['value'] ),'"',
+                    ( $isDefault ? 'selected' : '' ),
+                '>',
+                    esc_attr( $text ),
+                '</option>
+            ';
         }
         echo '</select>';
         ?>
@@ -445,12 +461,13 @@ new class {
             echo '<ul style="list-style: inside; font-size: 13px;">';
         }
         foreach ( $select_options as $option ) {
+            $text = empty( $option['text'] ) ? $option['value'] : $option['text'];
             echo '
                 <li>
-                    <span style="font-weight: bold;">' . esc_attr( $option['text'] ) . '</span>' . 
+                    <span style="font-weight: bold;">' . esc_attr( $text ) . '</span>' .
                     ( isset( $option['isDefault'] ) && $option['isDefault'] 
-                        ? ' (default): ' 
-                        : ': ' 
+                        ? ' (default): '
+                        : ': '
                     ) .
                     esc_attr( $option['description'] );
 
