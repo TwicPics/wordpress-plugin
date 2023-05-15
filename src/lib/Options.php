@@ -109,6 +109,13 @@ class Options {
     }
 
     /**
+     * Utility to get everything as an object
+     */
+    static public function get_object() {
+        return ( object ) self::get_options();
+    }
+
+    /**
      * Determine if an option is set to its default value
      *
      * @param string $name Option name.
