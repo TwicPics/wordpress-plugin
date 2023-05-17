@@ -49,7 +49,7 @@ class Options {
                         }
                         case 'integer': {
                             $value = ( integer ) $value;
-                            if ( $value < 0 ) {
+                            if ( $value <= 0 ) {
                                 $value = null;
                             }
                             break;

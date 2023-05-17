@@ -1,4 +1,5 @@
 <script>
+    import Aliasing from "./Aliasing.svelte";
     import Logo from "./Logo.svelte";
     import Select from "./Select.svelte";
     import Text from "./Text.svelte";
@@ -10,7 +11,7 @@
     let placeholderType = options[ `placeholder_type` ];
 </script>
 <Logo />
-<form action="options.php" method="post">
+<form action="options.php" method="post" style="max-width: 1000px">
     <input type='hidden' name='option_page' value='twicpics' />
     <input type="hidden" name="action" value="update" />
     {@html hiddenFields }
@@ -29,31 +30,6 @@
             <td>
                 <Text name="user_domain" value="{ options[ 'user_domain' ] }" />
                 <p class="description">You can find your TwicPics domain in your <a href="https://account.twicpics.com/signin" target="_blank" style="color: #8f00ff;">TwicPics dashboard</a>.</p>
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">
-                <label for="optimization_level">Optimization approach</label>
-            </th>
-            <td>
-                <Select
-                    name="optimization_level"
-                    bind:value="{ optimizationLevel }"
-                    options="{ {
-                        "script": `Pixel perfect`,
-                        "api": `Maximum Compatibility`,
-                    } }"
-                />
-                <p class="description">How the plugin will modify your pages.</p>
-                <ul style="list-style: inside; font-size: 13px;">
-                    <li>
-                        <span style="font-weight: bold;">Pixel perfect</span> (default): JavaScript based, pixel-perfect, lazy loaded image replacement.
-                    </li>
-                    <li>
-                        <span style="font-weight: bold;">Maximum compatibility</span>: static, purely HTML based image replacement.
-                    </li>
-                </ul>
-                <p style="font-size: 13px; font-style: italic;">The default approach should work 90% of the time but some plugins and/or themes, especially JavaScript-heavy ones, may clash with it. Use &quot;Maximum compatibility&quot; if and when you witness weird image distortions and/or flickering.</p>
             </td>
         </tr>
         <tr>
@@ -82,6 +58,31 @@
             <td>
                 <Text name="max_width" value="{ options[ `max_width` ] }" />
                 <p class="description">Maximum width of images in pixels. This prevents generating insanely large images on very wide screens. Default: 2000.</p>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">
+                <label for="optimization_level">Optimization approach</label>
+            </th>
+            <td>
+                <Select
+                    name="optimization_level"
+                    bind:value="{ optimizationLevel }"
+                    options="{ {
+                        "script": `Pixel perfect`,
+                        "api": `Maximum Compatibility`,
+                    } }"
+                />
+                <p class="description">How the plugin will modify your pages.</p>
+                <ul style="list-style: inside; font-size: 13px;">
+                    <li>
+                        <span style="font-weight: bold;">Pixel perfect</span> (default): JavaScript based, pixel-perfect, lazy loaded image replacement.
+                    </li>
+                    <li>
+                        <span style="font-weight: bold;">Maximum compatibility</span>: static, purely HTML based image replacement.
+                    </li>
+                </ul>
+                <p style="font-size: 13px; font-style: italic;">The default approach should work 90% of the time but some plugins and/or themes, especially JavaScript-heavy ones, may clash with it. Use &quot;Maximum compatibility&quot; if and when you witness weird image distortions and/or flickering.</p>
             </td>
         </tr>
         {#if optimizationLevel === `script` }
@@ -141,6 +142,7 @@
             </td>
         </tr>
         {/if}
+        <Aliasing alias="{ options[ `alias` ] }" />
     </table>
     <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Save Settings" /></p>
 </form>

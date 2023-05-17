@@ -36,7 +36,7 @@ class Alias {
         if ( !isset( self::$_alias_list ) ) {
             self::$_alias_list = [];
             foreach( explode(
-                '\n',
+                "\n",
                 preg_replace( '/<host>/', TWICPICS_PAGE_DOMAIN, \TwicPics\Options::get( 'alias' ) )
             ) as $line ) {
                 if ( !empty( ( $line = trim( $line ) ) ) ) {
