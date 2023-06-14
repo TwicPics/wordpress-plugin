@@ -42,6 +42,9 @@ new class {
         /* Shows error/update messages. */
         settings_errors( 'twicpics_messages' );
         ?>
+        <style>
+            <?php include 'admin.css'; ?>
+        </style>
         <div class="wrap" id="twicpics-options-admin-wrapper"></div>
         <script>
             var TWICPICS = <?php echo wp_json_encode( ( object ) array(
@@ -50,9 +53,6 @@ new class {
             ) ); ?>;
             <?php include 'admin.js'; ?>
         </script>
-        <style>
-            <?php include 'admin.css'; ?>
-        </style>
         <?php
     }
 };
