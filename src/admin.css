@@ -113,6 +113,8 @@ body {
 	padding: 10px 20px;
 	background-color: #06ffa3;
 	border-radius: 30px;
+	color: #1f2937;
+	font-weight: 500;
 }
 
 #twicpics-options-admin-wrapper .add-aliasing-btn:hover {
