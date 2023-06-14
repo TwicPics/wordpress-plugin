@@ -63,7 +63,13 @@
             <li>one path named <code>/{ domainWithProtocol }</code> pointing to <code>{ domainWithProtocol }/</code></li>
             <li>another named <code>/https://another.wordpress.net</code> pointing to <code>https://another.wordpress.net/</code></li>
         </ul>
-        <p>If you want more control over path naming, click on the <em>Add Custom WordPress Path</em> button.</p>
+        <div class="options-details">
+          <svg class="options-details-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
+          </svg>
+          <p>If you want more control over path naming, click on the <em>Add Custom WordPress Path</em> button.</p>
+        </div>
+        <div class="separation-line"></div>
         <AliasingList urlType="WordPress" bind:items={ wordPressItems } />
     </td>
 </tr>
@@ -74,7 +80,13 @@
     </th>
     <td>
         <p>By default, the TwicPics plugin will only handle images hosted on your WordPress sites.</p>
-        <p>If you wish to optimize images from another source, like a bucket or a DAM, click on the <em>Add a new external site path</em> and make sure the configuration here corresponds to the one in your TwicPics dashboard.</p>
+        <div class="options-details">
+          <svg class="options-details-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
+          </svg>
+          <p>If you wish to optimize images from another source, like a bucket or a DAM, click on the <em>Add a new external site path</em> and make sure the configuration here corresponds to the one in your TwicPics dashboard.</p>
+        </div>
+        <div class="separation-line"></div>
         <AliasingList urlType="External Site" urlSample="https://storage.com/my-account" bind:items={ externalItems } />
         <input name="twicpics_options[alias]" type="hidden" bind:value="{ alias }" />
     </td>

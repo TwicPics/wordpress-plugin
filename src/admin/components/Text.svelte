@@ -4,8 +4,8 @@
 </script>
 <input
     type="text"
-    class="regular-text"
     id="{ name }"
+    class="inputs"
     name="twicpics_options[{ name }]"
     bind:value="{ value }"
 />
