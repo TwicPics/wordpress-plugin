@@ -50,6 +50,9 @@ new class {
             ) ); ?>;
             <?php include 'admin.js'; ?>
         </script>
+        <style>
+            <?php include 'admin.css'; ?>
+        </style>
         <?php
     }
 };
