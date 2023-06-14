@@ -7,9 +7,15 @@ body {
 }
 
 #twicpics-options-admin-wrapper button {
+	background-color: unset;
 	border: none;
 	cursor: pointer;
+	padding: 0;
 	transition: all 0.1s;
+}
+
+#twicpics-options-admin-wrapper #twicpics_section_account_settings p {
+	font-size: 14px;
 }
 
 #twicpics-options-admin-wrapper .twicpics-links {
@@ -84,6 +90,16 @@ body {
 	font-weight: bold;
 }
 
+/* === placeholder option === */
+#twicpics-options-admin-wrapper .placeholder-img {
+	display: block;
+	margin: 12px auto;
+	width: 90%;
+	aspect-ratio: 3/2;
+	object-fit: cover;
+	border: 1px solid #d1d5db;
+}
+
 /* ======================= */
 /* === ALIASING STYLES === */
 /* ======================= */
@@ -145,4 +161,32 @@ body {
 #twicpics-options-admin-wrapper .aliasing-list-container button:hover {
 	color: #fff;
 	background-color: #ef4444;
+}
+
+/* ================================ */
+/* === EXAMPLE COMPONENT STYLES === */
+/* ================================ */
+
+#twicpics-options-admin-wrapper #example-container button {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	margin: 10px 0 16px;
+	font-weight: 600;
+	color: #4f46e5;
+}
+
+#twicpics-options-admin-wrapper #example-container button svg {
+	height: 18px;
+	width: 18px;
+}
+
+#twicpics-options-admin-wrapper #example-container button p {
+	margin: 0;
+}
+
+#twicpics-options-admin-wrapper #example-container .example-content {
+	margin: 16px 0 20px;
+	padding-left: 20px;
+	border-left: 1px solid #c7d2fe;
 }
