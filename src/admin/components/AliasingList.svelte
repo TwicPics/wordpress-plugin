@@ -64,5 +64,5 @@
 {/if}
 </div>
 <div class="add-aliasing-btn-container">
-  <button class="add-aliasing-btn" type="button" on:click="{ add }">Add Custom { urlType } Path</button>
+  <button class="add-aliasing-btn" type="button" on:click="{ add }">Add custom { urlType } path</button>
 </div>

@@ -17,8 +17,13 @@
     {@html hiddenFields }
     <h2>Account Settings</h2>
     <div id="twicpics_section_account_settings">
-        <p>You need to create a domain on your <a class="twicpics-links" href="https://account.twicpics.com/signin/?utm_campaign=wordpress-plugin&utm_source=wp-admin&utm_medium=plugins&utm_content=hikaru.goldorak.co.za" target="_blank">TwicPics dashboard</a> to optimize your website images.</p>
-        <p><a class="twicpics-links" href="https://www.twicpics.com/docs/integrations/wordpress-plugin" target="_blank">Read this guide</a> to get started.</p>
+        <p>
+          You need to create a <em>domain</em> on your
+          <a class="twicpics-links" href="https://account.twicpics.com/signin/?utm_campaign=wordpress-plugin&utm_source=wp-admin&utm_medium=plugins&utm_content=hikaru.goldorak.co.za" target="_blank">TwicPics dashboard</a>
+          to optimize your website images.
+          <br/>
+          <a class="twicpics-links" href="https://www.twicpics.com/docs/integrations/wordpress-plugin" target="_blank">Read this guide</a> to get started.
+        </p>
     </div>
     <br/>
     <br/>
@@ -76,7 +81,7 @@
                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
                   </svg>
                   <p>
-                    By default, TwicPics will compress you images at a quality of 70 which is perfect for web performance. If your images require higher quality, feel free to up that setting a notch but keep in mind higher quality levels mean worst web performance.
+                    By default, TwicPics will compress your images at a quality of 70 which is perfect for web performance. If your images require higher quality, feel free to up that setting a notch but keep in mind higher quality levels mean worst web performance.
                   </p>
                 </div>
             </td>
@@ -144,16 +149,7 @@
         <tr>
             <th scope="row">
                 <label for="placeholder_type">Placeholder type</label>
-                <img
-                    style="
-                        display: block;
-                        margin: 1em auto;
-                        width: 90%;
-                        aspect-ratio: 2/1;
-                        object-fit: cover;
-                        border: 3px solid #d1d5db;
-                        border-radius: 4px;
-                    "
+                <img class="placeholder-img"
                     src="https://assets.twic.pics/demo/anchor.jpeg?twic=v1/focus=auto/cover=400x200/output={ placeholderType }"
                     alt="{ placeholderType }"
                 />
@@ -175,13 +171,13 @@
                         <span class="list-options-values">Blank</span> (default): nothing.
                     </li>
                     <li>
-                        <span class="list-options-values">Main color</span>: the most represented color in the image
+                        <span class="list-options-values">Main color</span>: the most represented color in the image.
                     </li>
                     <li>
-                        <span class="list-options-values">Mean color</span>: the average color of the image
+                        <span class="list-options-values">Mean color</span>: the average color of the image.
                     </li>
                     <li>
-                        <span class="list-options-values">Preview</span>: a blurry preview of the image
+                        <span class="list-options-values">Preview</span>: a blurry preview of the image.
                     </li>
                 </ul>
             </td>
