@@ -27,7 +27,7 @@
     "name": "twicpics-wordpress-plugin-admin",
     "private": true,
     "scripts": {
-        "compile": "rollup -c ./rollup.js"
+        "postinstall": "rollup -c ./rollup.js"
     },
     "type": "module"
 }

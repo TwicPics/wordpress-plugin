@@ -3,9 +3,9 @@ import svelte from 'rollup-plugin-svelte';
 import terser from '@rollup/plugin-terser';
 
 export default {
-    "input": `./index.js`,
+    "input": `./admin/index.js`,
     "output": {
-        "file": `../admin.js`,
+        "file": `./admin.js`,
         "format": `iife`,
     },
     "plugins": [

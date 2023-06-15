@@ -7,3 +7,20 @@ It reduces image file sizes with adaptive compression and automatic Next-Gen for
 TwicPics ensures your images are perfect. Neither too big nor too small.
 
 You can download and install this plugin from your WordPress Installation or on [WordPress website](https://wordpress.org/plugins/twicpics/).
+
+## Prepare for deployment
+
+### Pre-requisites
+
+You need to install
+- [Composer 2.5.4+](https://getcomposer.org/)
+- [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
+
+### Commands
+
+```bash
+composer install
+yarn
+```
+
+This should create a `vendor` directory and an `admin.js` file at the root of the project.

@@ -1,44 +1,37 @@
 <?xml version="1.0"?>
 <ruleset name="WordPress coding standards">
-
-	<description>Starting Point Rule Set.</description>
-
-	<!-- sniff both PHP -->
-	<arg name="extensions" value="php/PHP" />
-
-	<!-- Exclude paths -->
-	<exclude-pattern>*/node_modules/*</exclude-pattern>
-	<exclude-pattern>*/vendor/*</exclude-pattern>>
-
-	<!-- Show sniff codes in all reports, and progress when running -->
-	<arg value="snp" />
-
-	<!-- Turns on the WordPress Standard -->
-	<rule ref="WordPress">
-		<exclude-pattern>*/js/*</exclude-pattern>
-		<exclude name="Generic.Commenting" />
-		<exclude name="Generic.PHP.DisallowShortOpenTag.EchoFound" />
-		<exclude name="Generic.WhiteSpace.DisallowSpaceIndent.SpacesUsed" />
-		<exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine" />
-		<exclude name="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket" />
-		<exclude name="PEAR.Functions.FunctionCallSignature.MultipleArguments" />
-		<exclude name="PEAR.Functions.FunctionCallSignature.OpeningIndent" />
-		<exclude name="Squiz.Commenting" />
-		<exclude name="Squiz.WhiteSpace.SuperfluousWhitespace.EndLine" />
-		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
-		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
-		<exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid" />
-		<exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores" />
-		<exclude name="WordPress.Variables.GlobalVariables.OverrideProhibited" />
-	</rule>
-
-	<!-- wp_verify_nonce() handles casting on it's own and does not need extra overhead -->
-	<rule ref="WordPress.Security.ValidatedSanitizedInput">
-		<properties>
-			<property name="customUnslashingSanitizingFunctions" type="array">
-				<element value="wp_verify_nonce"/>
-			</property>
-		</properties>
-	</rule>
-
+    <description>Starting Point Rule Set.</description>
+    <!-- sniff both PHP -->
+    <arg name="extensions" value="php/PHP" />
+    <!-- Exclude paths -->
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <!-- Show sniff codes in all reports, and progress when running -->
+    <arg value="snp" />
+    <!-- Turns on the WordPress Standard -->
+    <rule ref="WordPress">
+        <exclude-pattern>*/js/*</exclude-pattern>
+        <exclude name="Generic.Commenting" />
+        <exclude name="Generic.PHP.DisallowShortOpenTag.EchoFound" />
+        <exclude name="Generic.WhiteSpace.DisallowSpaceIndent.SpacesUsed" />
+        <exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine" />
+        <exclude name="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket" />
+        <exclude name="PEAR.Functions.FunctionCallSignature.MultipleArguments" />
+        <exclude name="PEAR.Functions.FunctionCallSignature.OpeningIndent" />
+        <exclude name="Squiz.Commenting" />
+        <exclude name="Squiz.WhiteSpace.SuperfluousWhitespace.EndLine" />
+        <exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+        <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
+        <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid" />
+        <exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores" />
+        <exclude name="WordPress.Variables.GlobalVariables.OverrideProhibited" />
+    </rule>
+    <!-- wp_verify_nonce() handles casting on it's own and does not need extra overhead -->
+    <rule ref="WordPress.Security.ValidatedSanitizedInput">
+        <properties>
+            <property name="customUnslashingSanitizingFunctions" type="array">
+                <element value="wp_verify_nonce"/>
+            </property>
+        </properties>
+    </rule>
 </ruleset>
