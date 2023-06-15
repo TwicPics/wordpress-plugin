@@ -3,6 +3,8 @@
 /*.json
 /*.lock
 /*.md
+/*.zip
 /admin
 /node_modules
+/pack.js
 /rollup.js

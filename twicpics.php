@@ -4,14 +4,14 @@
  *
  * @package          TwicPics
  * @link             https://www.twicpics.com/
- * @version          0.3.0
+ * @version          0.3.0-beta
  * @license          gpl-2.0
  *
  * @wordpress-plugin
  * Plugin Name:      TwicPics
  * Plugin URI:       https://www.twicpics.com/documentation/
  * Description:      Delivers pixel perfect images on the fly.
- * Version:          0.3.0
+ * Version:          0.3.0-beta
  * License:          GPL-2.0+
  * Licence URI:      http://www.gnu.org/licenses/gpl-2.0.txt
  * Author:           TwicPics
