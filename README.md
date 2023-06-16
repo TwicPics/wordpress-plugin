@@ -32,18 +32,20 @@ This should create a `vendor` directory and an `admin.js` file at the root of th
 To generate a pre-release/development version as a zip file to be installed on a test site or distributed to external testers, type the following command:
 
 ```bash
-node pack.js "version"
+node pack.js
 ```
 
-where `version` is a string akin to:
-- `0.3.0-beta`
-- `0.4.2-RC1`
+This will generate a zip file at the root of the project called `twicpics.<version>.<datetime>.zip` that can be distributed safely.
 
-This will generate a zip file at the root of the project called `twicpics.<version>.<timestamp>.zip` that can be distributed safely.
+`<version>` is extracted from the main `twicpics.php` file plugin description. For example: `Version: 0.3.0-beta` would result in `<version>` being `0.3.0-beta`
 
-For instance something akin to `twicpics.0.3.0-beta.1686834953077.zip`
+`<datetime>` is of the format `yymmddHHMM`. The higher the value, the more recent the archive.
 
-`pack.js` does follow `.distignore` which means the zip file should be as close to an actual plugin distribution as possible.
+Here is a complete example: `twicpics.0.3.0-beta.2306161602.zip`.
+
+`pack.js` will amend the version number in both `twicpics.php` and `readme.txt` by appending `<datetime>`.
+
+`pack.js` does parse and follow `.distignore` which means the zip file should be as close to an actual plugin distribution as possible.
 
 __Please note you must follow the same steps as when preparing for deployment prior to packaging that way or crucial files will be missing from the archive.__
 

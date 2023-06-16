@@ -2,8 +2,8 @@ import { fileURLToPath } from "url";
 const __dirname = fileURLToPath( new URL( `.`, import.meta.url ) );
 
 import archiver from "archiver";
-import { argv } from "process";
 import { createWriteStream } from "fs";
+import dateFormat from "dateformat";
 import { glob } from "glob";
 import { readFile, stat } from "fs/promises";
 import { relative } from "path";
@@ -30,9 +30,19 @@ await Promise.all( ( await readFile( `${ __dirname }/.distignore`, `utf8` ) ).sp
     } ) );
 } ) );
 
-const [ , , version ] = argv;
+const versionHolders = new Map( await Promise.all( [ `twicpics.php`, `readme.txt` ].map( async filename => [
+    filename,
+    await readFile( `${ __dirname }/${ filename }`, `utf8` ),
+] ) ) );
 
-const zipFile = createWriteStream( `twicpics.${ version ? `${ version }.` : `` }${ Date.now() }.zip` );
+const version =
+    /\bVersion\s*:\s*(?<version>\S+)/
+        .exec( versionHolders.get( `twicpics.php` ) )
+        ?.groups?.version;
+
+const actualVersion = `${ version ? `${ version }.` : `` }${ dateFormat( Date.now(), `yymmddHHMM` ) }`;
+
+const zipFile = createWriteStream( `twicpics.${ actualVersion }.zip` );
 const archive = archiver( `zip`, {
     "zlib": {
         "level": 9,
@@ -40,12 +50,19 @@ const archive = archiver( `zip`, {
 } );
 archive.pipe( zipFile );
 
-for ( const file of files ) {
+for ( const filename of files ) {
     // eslint-disable-next-line no-await-in-loop
-    if ( !( await stat( file ) ).isDirectory() ) {
-        archive.file( file, {
-            "name": relative( __dirname, file ),
-        } );
+    if ( !( await stat( filename ) ).isDirectory() ) {
+        const relFilename = relative( __dirname, filename );
+        if ( versionHolders.has( relFilename ) ) {
+            archive.append( versionHolders.get( relFilename ).replaceAll( version, actualVersion ), {
+                "name": relFilename,
+            } );
+        } else {
+            archive.file( filename, {
+                "name": relFilename,
+            } );
+        }
     }
 }
 
