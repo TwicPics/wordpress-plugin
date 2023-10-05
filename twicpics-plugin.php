@@ -267,8 +267,18 @@ new class {
                             ( ( $step === null ) ? '' : ( '&step=' . $step ) ),
                     ]
                 );
+
+                // register script
                 $head = $dom->get_head();
                 $head->insertBefore( $script, $head->firstChild );
+
+                $style  = $dom->create(
+                    'style',
+                    '.wp-block-image>.twic-img{display:block;width:100%}',
+                );
+
+                // register style
+                $dom->get_head()->appendChild( $style );
             }
 
         } catch ( \Exception $e ) {
@@ -424,6 +434,9 @@ new class {
 
         // puts data-twic-src
         $img->attr( 'data-twic-src', $item->get_path() );
+
+        // adds twic-img class
+        $img->attr('class','twic-img');
 
         // handles data-twic-src-transform
         $transform = new \TwicPics\Transform();
