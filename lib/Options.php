@@ -19,7 +19,6 @@ class Options {
         'placeholder_type'   => 'blank',
         'quality'            => 70,
         'step'               => 10,
-        'truecolor'          => false,
         'user_domain'        => '',
     ];
 

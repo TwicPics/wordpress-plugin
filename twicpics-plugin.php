@@ -60,11 +60,6 @@ new class {
     private $quality;
 
     /**
-     * true color for PNG (false by default)
-     */
-    private $truecolor;
-
-    /**
      * Constructor
      */
     public function __construct() {
@@ -80,7 +75,6 @@ new class {
         $this->max_width   = \TwicPics\Options::get( 'max_width' );
         $this->placeholder = \TwicPics\Options::get( 'placeholder_type' );
         $this->quality     = \TwicPics\Options::get( 'quality', null );
-        $this->truecolor   = \TwicPics\Options::get( 'truecolor' );
 
         // enables output buffering.
         ob_start( [ $this, 'handle_content' ] );
@@ -192,9 +186,6 @@ new class {
         }
         if ( $this->quality !== null ) {
             $transform->after( 'quality', $this->quality );
-        }
-        if ( $this->truecolor ) {
-            $transform->after( 'truecolor' );
         }
         $element->apply_transform( 'background', $transform );
     }
@@ -448,9 +439,6 @@ new class {
         }
         if ( $this->quality !== null ) {
             $transform->after( 'quality', $this->quality );
-        }
-        if ( $this->truecolor ) {
-            $transform->after( 'truecolor' );
         }
         $img->apply_transform( 'src', $transform, $fit );
     }
