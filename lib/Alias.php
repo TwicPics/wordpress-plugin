@@ -51,8 +51,10 @@ class Alias {
                             'match'    =>
                                 '/^' . preg_quote(
                                     self::trim_slashes(
-                                        http_build_url( TWICPICS_PAGE_DOMAIN, wp_parse_url( $items[ 0 ] ) )
-                                    ),
+                                        http_build_url(
+                                            $external ? array() : TWICPICS_PAGE_DOMAIN,
+                                            wp_parse_url( $items[ 0 ] )
+                                        ) ),
                                     '/'
                                 ) . '(?=\/)/',
                             'target'   => self::trim_slashes( $items[ 1 ] ),
@@ -98,6 +100,7 @@ class Alias {
         // if not external, finds and removes dimensions
         $height = null;
         $width = null;
+
         if ( !$alias_item[ 'external' ] ) {
             $url = explode( '?', $url );
             $matches = [];
