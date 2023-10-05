@@ -6,8 +6,6 @@
 
     export let alias = ``;
 
-    const { host } = document.location;
-
     let wordPressItems = [];
     let externalItems = [];
 

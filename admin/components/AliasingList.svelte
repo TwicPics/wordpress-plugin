@@ -1,5 +1,5 @@
 <script>
-    import { checkPath, checkURL, domainWithProtocol } from "../utils";
+    import { domainWithProtocol } from "../utils";
 
     export let items;
     export let urlType;
