@@ -75,7 +75,7 @@ class Element {
 
     /**
      * Style
-     * 
+     *
      * @var \TwicPics\Style $_style
      */
     private $_style;
@@ -128,7 +128,7 @@ class Element {
             $this->attr( 'data-twic-' . $type . '-transform', $expression );
         }
     }
-    
+
     /**
      * Get/set/remove attributes
      */
@@ -172,7 +172,6 @@ class Element {
         if ( count( $values ) > 0 ) {
             $this->_style->set_background( ...$values );
             $this->attr( 'style', $this->_style->as_string() );
-
         }
         return $previous;
     }
@@ -187,10 +186,23 @@ class Element {
     // matches helpers
     static private $MATCHERS = [];
     static private $SUBS = [];
+    /**
+     * Handles special case(s) (for now just the '>' case)
+     * and evaluates whether to create an entry in table self::$SUBS
+     */
+    static private function should_create_sub( $sub ) {
+        if (
+            !isset( self::$SUBS[ $sub ] ) &&
+            $sub === '>'
+        ) {
+            self::$SUBS[ $sub ] = $sub;
+        }
+        return !isset( self::$SUBS[$sub] );
+    }
     static private function create_sub( $sub ) {
         static $R_DELIMITERS = '/\]([[.])|([[.])/';
-        if ( !isset( self::$SUBS[ $sub ] ) ) {
-            $list = preg_split( $R_DELIMITERS, $sub, 0, PREG_SPLIT_DELIM_CAPTURE );
+        if ( self::should_create_sub( $sub ) ) {
+            $list = preg_split( $R_DELIMITERS, $sub, 0, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE );
             $attributes = [];
             $classes    = [];
             for ( $i = 1; $i < count( $list ); ) {
@@ -200,14 +212,14 @@ class Element {
                     array_push( $classes, '/\b' . preg_quote( $value, '/' ) . '\b/i' );
                 } else {
                     array_push( $attributes, $value );
-                } 
+                }
             }
             self::$SUBS[ $sub ] = ( object ) [
                 'attributes' => $attributes,
                 'classes' => $classes,
                 'tag' => (
                     ( empty( $list[ 0 ] ) || ( $list[ 0 ] === '*' ) ) ?
-                        null : 
+                        null :
                         ( '/^' . preg_quote( $list[ 0 ], '/' ) . '$/i' )
                 ),
             ];
