@@ -34,7 +34,7 @@ class Style {
      * Get declared value
      */
     private function get_value( $name ) {
-        $rule = $this->_decl->getRulesAssoc()[ $name ];
+        $rule = $this->_decl ? $this->_decl->getRulesAssoc()[ $name ] : null;
         return isset( $rule ) ? $rule->getValue() : null;
     }
 
@@ -42,6 +42,9 @@ class Style {
      * Get declared value
      */
     private function set_value( $name, $value ) {
+        if ( !isset( $this->_decl ) ) {
+            return;
+        }
         $rule = $this->_decl->getRulesAssoc()[ $name ];
         if ( isset( $rule ) ) {
             if ( $value === null ) {
@@ -49,7 +52,7 @@ class Style {
             }
             $rule->setValue( $value );
         } else if ( $value !== null ) {
-            $rule = new \Sabberworm\CSS\Rule( $name, 0, 0 );
+            $rule = new \Sabberworm\CSS\Rule\Rule( $name, 0, 0 );
             $rule->setValue( $value );
             $this->_decl->addRule( $rule );
         }
@@ -62,7 +65,7 @@ class Style {
         static $R_BACKGROUND = '/\bbackground(?:-image)?\s*:/';
         static $R_URL = '/^url\((.+)\)$/';
         if ( ( $style !== null ) && preg_match( $R_BACKGROUND, $style ) ) {
-            $this->_decl = ( new \Sabberworm\CSS\Parser(
+                    $this->_decl = ( new \Sabberworm\CSS\Parser(
                 'a{' . $style . '}',
                 \Sabberworm\CSS\Settings::create()->withDefaultCharset( $encoding )
             ) )->parse()->getAllDeclarationBlocks()[ 0 ];
