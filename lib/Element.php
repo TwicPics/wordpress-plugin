@@ -96,6 +96,10 @@ class Element {
     public function __construct( $element, $optimization_level ) {
         // sets element
         $this->_element           = $element;
+        $this->_style = new \TwicPics\Style(
+            $this->attr( 'style' ),
+            $this->_element->ownerDocument->encoding
+        );
         $this->optimization_level = $optimization_level;
         // switches to API if element is from a blacklisted plugin
         if ( ( $optimization_level === 'script' ) && isset( $element->getAttribute ) ) {
@@ -226,17 +230,49 @@ class Element {
         }
         return self::$SUBS[ $sub ];
     }
-static private function create_matcher( $expression ) {
+
+    static private function create_matchers( $expression ) {
         static $R_SEPARATOR  = '/\s*(>)\s*|\s+/';
         if ( !isset( self::$MATCHERS[ $expression ] ) ) {
-            self::$MATCHERS[ $expression ] = array_map(
+            $matchers = [];
+            $sub_expressions = explode(",",$expression);
+            foreach( $sub_expressions as $sub_expression ) {
+                array_push(
+                    $matchers,
+                    array_map(
                         [ '\\TwicPics\\Element', 'create_sub' ],
-                        array_reverse( preg_split( $R_SEPARATOR, trim( $expression ), -1, PREG_SPLIT_DELIM_CAPTURE ) ),
-                                    );
+                        array_reverse( preg_split( $R_SEPARATOR, trim( $sub_expression ), -1, PREG_SPLIT_DELIM_CAPTURE ) ),
+                    )
+                );
             }
-                    return self::$MATCHERS[ $expression ];
+            self::$MATCHERS[ $expression ] = $matchers;
+        }
+        return self::$MATCHERS[ $expression ];
     }
-        static private function matches_sub( $element, $sub ) {
+    private static function matches( $element, $matcher ){
+        if ( count( $matcher ) === 0 ) {
+            return true;
+        }
+        $force_next = true;
+        foreach( \TwicPics\DOM::all_ancestor_elements( $element, true ) as $ancestor ) {
+            if ( self::matches_sub( $ancestor, $matcher[ 0 ] ) ) {
+                array_shift( $matcher );
+                if ( count( $matcher ) === 0 ) {
+                    return true;
+                }
+                while ( ( $force_next = ( $matcher[ 0 ] === '>' ) ) ) {
+                    array_shift( $matcher );
+                    if ( count( $matcher ) === 0 ) {
+                        return true;
+                    }
+                }
+            } else if ( $force_next ) {
+                return false;
+            }
+        }
+        return false;
+    }
+    static private function matches_sub( $element, $sub ) {
         if ( !empty( $sub->tag ) ) {
             if ( !preg_match( $sub->tag, $element->tagName ) ) {
                 return false;
@@ -255,31 +291,16 @@ static private function create_matcher( $expression ) {
 
     /**
      * Simple matcher
-     * Accepts tagNames, classes, and direct descendant selector (>)
+     * Accepts tagNames, classes, direct descendant selector (>) and or condition (,)
      */
     public function is( $expression ) {
         if ( !method_exists( $this->_element, 'getAttribute' ) ) {
             return false;
         }
-        $matcher = self::create_matcher( $expression );
-        if ( count( $matcher ) === 0 ) {
-            return true;
-        }
-        $force_next = true;
-        foreach( \TwicPics\DOM::all_ancestor_elements( $this->_element, true ) as $ancestor ) {
-            if ( self::matches_sub( $ancestor, $matcher[ 0 ] ) ) {
-                array_shift( $matcher );
-                if ( count( $matcher ) === 0 ) {
-                    return true;
-                }
-                while ( ( $force_next = ( $matcher[ 0 ] === '>' ) ) ) {
-                    array_shift( $matcher );
-                    if ( count( $matcher ) === 0 ) {
+        $matchers = self::create_matchers( $expression );
+        foreach ( $matchers as $matcher ) {
+            if ( self::matches( $this->_element, $matcher ) ) {
                 return true;
-            }
-        }
-} else if ( $force_next ) {
-                return false;
             }
         }
         return false;
