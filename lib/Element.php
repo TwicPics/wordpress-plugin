@@ -226,17 +226,17 @@ class Element {
         }
         return self::$SUBS[ $sub ];
     }
-    static private function create_matcher( $expression ) {
+static private function create_matcher( $expression ) {
         static $R_SEPARATOR  = '/\s*(>)\s*|\s+/';
         if ( !isset( self::$MATCHERS[ $expression ] ) ) {
             self::$MATCHERS[ $expression ] = array_map(
-                [ '\\TwicPics\\Element', 'create_sub' ],
-                array_reverse( preg_split( $R_SEPARATOR, trim( $expression ), -1, PREG_SPLIT_DELIM_CAPTURE ) ),
-            );
-        }
-        return self::$MATCHERS[ $expression ];
+                        [ '\\TwicPics\\Element', 'create_sub' ],
+                        array_reverse( preg_split( $R_SEPARATOR, trim( $expression ), -1, PREG_SPLIT_DELIM_CAPTURE ) ),
+                                    );
+            }
+                    return self::$MATCHERS[ $expression ];
     }
-    static private function matches_sub( $element, $sub ) {
+        static private function matches_sub( $element, $sub ) {
         if ( !empty( $sub->tag ) ) {
             if ( !preg_match( $sub->tag, $element->tagName ) ) {
                 return false;
@@ -275,10 +275,10 @@ class Element {
                 while ( ( $force_next = ( $matcher[ 0 ] === '>' ) ) ) {
                     array_shift( $matcher );
                     if ( count( $matcher ) === 0 ) {
-                        return true;
-                    }
-                }
-            } else if ( $force_next ) {
+                return true;
+            }
+        }
+} else if ( $force_next ) {
                 return false;
             }
         }
@@ -301,23 +301,9 @@ class Element {
     public function size() {
         $height = $this->attr( 'height' );
         $width  = $this->attr( 'width' );
-        $hm = [];
-        $wm = [];
-        preg_match( $R_DIM, $height, $hm );
-        preg_match( $R_DIM, $width, $wm );
-        $height = $hm[ 1 ];
-        $width  = $wm[ 1 ];
-        if ( ( $height !== null ) && ( $width !== null ) ) {
-            $height = ( int ) $height;
-            $width  = ( int ) $width;
-            if ( ( $height === 0 ) || ( $width === 0 ) ) {
-                $height = null;
-                $width  = null;
-            }
-        }
         return ( object ) [
-            'height' => $height,
-            'width'  => $width,
+            'height' => $height ? ( int )$height :null,
+            'width'  => $width ? ( int )$width :null,
         ];
     }
 
