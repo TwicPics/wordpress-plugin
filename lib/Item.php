@@ -61,4 +61,8 @@ class Item {
                 ( '?twic=v1/' . $transformation )
         );
     }
+
+    public function has_size() {
+        return $this->width !== null || $this->height !== null;
+    }
 }

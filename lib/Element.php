@@ -27,6 +27,24 @@ class Element {
     }
 
     /**
+     * Parses value of aspec-ratio from Style
+     * Returns number or null
+     */
+    static private function parse_aspect_ratio ( $value ) {
+        static $R_ASPECT_RATIO = '/(\d+(?:\.\d+)?)(?:\s*[\/:]\s*(\d+(?:\.\d+)?))?/';
+        $parsed_aspect_ratio = null;
+        if ( $value ) {
+            preg_match( $R_ASPECT_RATIO, $value, $parsed );
+            if ( $parsed ) {
+                [ , $width, $height ] = $parsed;
+                $height = $height ?? 1;
+                $parsed_aspect_ratio = (float)$width / (float)$height;
+            }
+        }
+        return $parsed_aspect_ratio;
+    }
+
+    /**
      * parses srcset attribute
      */
     static private function parse_srcset( $value ) {
@@ -81,6 +99,16 @@ class Element {
     private $_style;
 
     /**
+     * Accessor with initialization if needed
+     */
+    public function get_style() {
+        if ( $this->_style === null ) {
+            $this->_style = new \TwicPics\Style( $this->attr( 'style' ), $this->_element->ownerDocument->encoding );
+        }
+        return $this->_style;
+    }
+
+    /**
      * Optimization level
      *
      * @var string $_optimization_level the optimization level (api or string)
@@ -96,10 +124,6 @@ class Element {
     public function __construct( $element, $optimization_level ) {
         // sets element
         $this->_element           = $element;
-        $this->_style = new \TwicPics\Style(
-            $this->attr( 'style' ),
-            $this->_element->ownerDocument->encoding
-        );
         $this->optimization_level = $optimization_level;
         // switches to API if element is from a blacklisted plugin
         if ( ( $optimization_level === 'script' ) && isset( $element->getAttribute ) ) {
@@ -131,6 +155,19 @@ class Element {
         if ( $expression !== '*' ) {
             $this->attr( 'data-twic-' . $type . '-transform', $expression );
         }
+    }
+
+    /**
+     * Get/set aspect_ratio
+     */
+    public function aspect_ratio( ...$values ) {
+        $rValidRatio = '/(\d+(?:\.\d+)?)(?:\s*[\/:]\s*(\d+(?:\.\d+)?))?/';
+        $previous = self::parse_aspect_ratio( $this->get_style()->get_string_value( 'aspect-ratio' ) );
+        if ( count( $values ) > 0 ) {
+            $this->get_style()->set_aspect_ratio( ...$values );
+            $this->attr( 'style', $this->get_style()->as_string() );
+        }
+        return $previous;
     }
 
     /**
@@ -169,15 +206,28 @@ class Element {
      * Get/set background
      */
     public function background( ...$values ) {
-        if ( $this->_style === null ) {
-            $this->_style = new \TwicPics\Style( $this->attr( 'style' ), $this->_element->ownerDocument->encoding );
-        }
-        $previous = $this->_style->get_background();
+        $previous = $this->get_style()->get_background();
         if ( count( $values ) > 0 ) {
-            $this->_style->set_background( ...$values );
-            $this->attr( 'style', $this->_style->as_string() );
+            $this->get_style()->set_background( ...$values );
+            $this->attr( 'style', $this->get_style()->as_string() );
         }
         return $previous;
+    }
+
+    /**
+     * Get/set class attribute
+     */
+    public function class( ...$values ) {
+        if ( count( $values ) > 0 ) {
+            $classes = explode(' ', $this->attr( 'class' ) );
+            foreach ( $values as $value ) {
+                if ( !in_array( $value, $classes )) {
+                    $classes[] = $value;
+                }
+            }
+            $this->attr( 'class', implode(' ', $classes ) );
+        }
+        return $this->attr( 'class' );
     }
 
     /**
@@ -185,6 +235,42 @@ class Element {
      */
     public function has_attr( $name ) {
         return $this->_element->hasAttribute( $name );
+    }
+
+    /**
+     * Get/set object-fit
+     */
+    public function object_fit( ...$values ) {
+        $previous = $this->get_style()->get_string_value( 'object-fit' );
+        if ( count( $values ) > 0 ) {
+            $this->get_style()->set_object_fit( ...$values );
+            $this->attr( 'style', $this->get_style()->as_string() );
+        }
+        return $previous;
+    }
+
+    /**
+     * Get/set width
+     */
+    public function width( ...$values ) {
+        $previous = $this->get_style()->get_dimension( 'width' );
+        if ( count( $values ) > 0 ) {
+            $this->get_style()->set_dimension( 'width', ...$values );
+            $this->attr( 'style', $this->get_style()->as_string() );
+        }
+        return $previous;
+    }
+
+    /**
+     * Get/set height
+     */
+    public function height( ...$values ) {
+        $previous = $this->get_style()->get_dimension( 'height' );
+        if ( count( $values ) > 0 ) {
+            $this->get_style()->set_dimension( 'height', ...$values );
+            $this->attr( 'style', $this->get_style()->as_string() );
+        }
+        return $previous;
     }
 
     // matches helpers
@@ -289,6 +375,15 @@ class Element {
         return true;
     }
 
+
+    public function append_attr( $name, $value )
+    {
+        $previous = $this->attr( $name );
+        if ( $value ) {
+            $this->attr( $name, $previous ? $previous.$value : $value);
+        }
+    }
+
     /**
      * Simple matcher
      * Accepts tagNames, classes, direct descendant selector (>) and or condition (,)
@@ -376,5 +471,4 @@ class Element {
         $expression = preg_replace( $R_TRIM, '', $expression );
         return $expression;
     }
-
 }

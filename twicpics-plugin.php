@@ -2,6 +2,17 @@
 
 new class {
 
+
+    /**
+     * Selectors that should be modified for script compliance
+     *
+     * @var array $SCRIPT_CLASS_COMPLIANCE Blacklisted plugins
+     */
+    static private $SCRIPT_CLASS_COMPLIANCE = [
+        '*.wp-block-image > img',
+        '*.wp-block-media-text__media > img',
+    ];
+
     /**
      * tests position data, creates focus attribute and returns it properly formatted if found
      */
@@ -265,7 +276,7 @@ new class {
 
                 $style  = $dom->create(
                     'style',
-                    '.wp-block-image>.twic-img{display:block;width:100%}',
+                    '.wp-block-image .twic-img{display:block;width:100%;}'
                 );
 
                 // register style
@@ -365,7 +376,7 @@ new class {
     private function handle_image_with_script( $src, $set, $img, $dom ) {
 
         // handles guthenberg fake images
-        if ( $img->is( '.wp-block-media-text.is-image-fill figure.wp-block-media-text__media > img' ) ) {
+        if ( $img->is( '*.wp-block-media-text.is-image-fill *.wp-block-media-text__media > img' ) ) {
             $img->remove();
             return;
         }
@@ -427,7 +438,26 @@ new class {
         $img->attr( 'data-twic-src', $item->get_path() );
 
         // adds twic-img class
-        $img->attr('class','twic-img');
+        $img->class('twic-img');
+
+        // makes image suitable for TwicPics's Script if needed
+        if ( $img->is( implode( ',', self::$SCRIPT_CLASS_COMPLIANCE ) ) ) {
+            if ( $src->has_size() && !$img->width() ) {
+                $_aspect_ratio_from_style = $img->aspect_ratio();
+                $_height_from_style = $img->height();
+                if ( $_aspect_ratio_from_style ) {
+                    // sets actual image width
+                    $img->width( $_height_from_style ?
+                        $_aspect_ratio_from_style * $_height_from_style:
+                        $src->width
+                    );
+                } else {
+                    $img->aspect_ratio( $src->width.'/'.$src->height );
+                    $img->object_fit( 'cover ');
+                    $img->width( $src->width );
+                }
+            }
+        }
 
         // handles data-twic-src-transform
         $transform = new \TwicPics\Transform();

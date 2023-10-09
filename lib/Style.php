@@ -7,8 +7,19 @@ namespace TwicPics;
  */
 class Style {
 
+
+    const R_PX = '/px$/';
+
+    /**
+     * Removes 'px' units from a given CSS value and returns the numeric value.
+     */
+    static private function css_without_px( $css ) {
+        return ( float )preg_replace( self::R_PX, '', $css );
+    }
+
     /**
      * Get deep inside an array without breaking
+     * MBG: to be removed
      */
     static private function in_array( $array, ...$indices ) {
         foreach( $indices as $index ) {
@@ -61,27 +72,24 @@ class Style {
     /**
      * Constructor
      */
-    public function __construct( $style, $encoding ) {
-        static $R_BACKGROUND = '/\bbackground(?:-image)?\s*:/';
+    public function __construct( $style = "", $encoding ) {
         static $R_URL = '/^url\((.+)\)$/';
-        if ( ( $style !== null ) && preg_match( $R_BACKGROUND, $style ) ) {
-                    $this->_decl = ( new \Sabberworm\CSS\Parser(
-                'a{' . $style . '}',
-                \Sabberworm\CSS\Settings::create()->withDefaultCharset( $encoding )
-            ) )->parse()->getAllDeclarationBlocks()[ 0 ];
-            $this->_decl->expandBorderShorthand();
-            $image = $this->get_value( 'background-image' );
-            if ( $image instanceof \Sabberworm\CSS\Value\URL ) {
-                $tmp = [];
-                if ( preg_match( $R_URL, ( string ) $image, $tmp ) ) {
-                    $item = \TwicPics\Alias::resolve( json_decode( $tmp[ 1 ] ) );
-                    if ( !empty( $item ) ) {
-                        $position = $this->get_value( 'background-position' );
-                        $this->_background = ( object ) [
-                            'item'     => $item,
-                            'position' => empty( $position ) ? null : ( ( string ) $position ),
-                        ];
-                    }
+        $this->_decl = ( new \Sabberworm\CSS\Parser(
+            'a{' . $style . '}',
+            \Sabberworm\CSS\Settings::create()->withDefaultCharset( $encoding )
+        ) )->parse()->getAllDeclarationBlocks()[ 0 ];
+        $this->_decl->expandBorderShorthand();
+        $image = $this->get_value( 'background-image' );
+        if ( $image instanceof \Sabberworm\CSS\Value\URL ) {
+            $tmp = [];
+            if ( preg_match( $R_URL, ( string ) $image, $tmp ) ) {
+                $item = \TwicPics\Alias::resolve( json_decode( $tmp[ 1 ] ) );
+                if ( !empty( $item ) ) {
+                    $position = $this->get_value( 'background-position' );
+                    $this->_background = ( object ) [
+                        'item'     => $item,
+                        'position' => empty( $position ) ? null : ( ( string ) $position ),
+                    ];
                 }
             }
         }
@@ -103,6 +111,30 @@ class Style {
     }
 
     /**
+     * Gets dimension (width or height) without units
+     */
+    public function get_dimension( $name ) {
+        $dimension  = $this->get_value( $name );
+        return $dimension  ? self::css_without_px( $dimension )  : null;
+    }
+
+    /**
+     * gets aspect-ratio from style or null if not set
+     */
+    public function get_string_value( $name ) {
+        $value = $this->get_value( $name );
+        return $value ? ( string )$value : null;
+    }
+
+    /**
+     * Sets aspect-ratio in style attribute
+     */
+    public function set_aspect_ratio( $aspect_ratio )
+    {
+        $this->set_value( 'aspect-ratio', $aspect_ratio);
+    }
+
+    /**
      * sets background
      */
     public function set_background( $url, $position = null ) {
@@ -118,4 +150,16 @@ class Style {
             );
         }
     }
+
+    public function set_dimension( $name, $dimension ) {
+        $this->set_value( $name, new \Sabberworm\CSS\Value\Size( $dimension, 'px' ));
+    }
+
+    /**
+     * Sets object-fit in style attribute
+     */
+    public function set_object_fit( $object_fit ) {
+        $this->set_value( 'object-fit', $object_fit);
+    }
+
 }
