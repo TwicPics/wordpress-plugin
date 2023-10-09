@@ -18,20 +18,6 @@ class Style {
     }
 
     /**
-     * Get deep inside an array without breaking
-     * MBG: to be removed
-     */
-    static private function in_array( $array, ...$indices ) {
-        foreach( $indices as $index ) {
-            if ( empty( $array ) || ( count( $array ) <= $index ) ) {
-                return null;
-            }
-            $array = $array[ $index ];
-        }
-        return $array;
-    }
-
-    /**
      * internal decl object
      */
     private $_background;
