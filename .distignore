@@ -5,6 +5,7 @@
 /*.md
 /*.zip
 /admin
+/build
+/js
 /node_modules
 /pack.js
-/rollup.js

@@ -289,12 +289,24 @@ new class {
             \TwicPics\Log::error( '' . $e );
         }
 
+        // adds additional script if needed
+        foreach ( \TwicPics\Script::list() as $additional_script )
+        {
+            $script = $dom->create(
+                'script',
+                htmlspecialchars( file_get_contents( $additional_script, true) )
+            );
+            $dom->get_head()->appendChild( $script );
+        }
+
         // adds logs if needed.
         $logs_code = \TwicPics\Log::code();
         if ( null !== $logs_code ) {
             $script = $dom->create( 'script', htmlspecialchars( $logs_code ) );
             $dom->get_head()->appendChild( $script );
         }
+
+
 
         // returns HTML.
         return $dom->to_html();
@@ -322,6 +334,9 @@ new class {
         } else {
             $this->handle_image_with_api( $src, $set, $img, $dom );
         }
+
+        // do we have to add a special script for this case ?
+        \TwicPics\Script::handles_special_script( $img );
     }
 
     /**
@@ -471,5 +486,6 @@ new class {
             $transform->after( 'quality', $this->quality );
         }
         $img->apply_transform( 'src', $transform, $fit );
+
     }
 };

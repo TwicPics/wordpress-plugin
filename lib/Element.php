@@ -80,8 +80,8 @@ class Element {
      * @var array $SCRIPT_CLASS_BLACKLIST Blacklisted plugins
      */
     static private $SCRIPT_CLASS_BLACKLIST = [
-        '.wp-block-nextend-smartslider3', // Smart Slider Plugin.
-        '.wds_slider_cont', // Slider.
+        '*.wp-block-nextend-smartslider3', // Smart Slider Plugin.
+        '*.wds_slider_cont', // Slider.
     ];
 
     /**
@@ -126,12 +126,9 @@ class Element {
         $this->_element           = $element;
         $this->optimization_level = $optimization_level;
         // switches to API if element is from a blacklisted plugin
-        if ( ( $optimization_level === 'script' ) && isset( $element->getAttribute ) ) {
-            foreach ( self::$SCRIPT_CLASS_BLACKLIST as $selector ) {
-                if ( $this->is( $selector ) ) {
-                    $this->optimization_level = 'api';
-                    return;
-                }
+        if ( ( $optimization_level === 'script' ) ) {
+            if ( $this->is( implode( ',', self::$SCRIPT_CLASS_BLACKLIST ) ) ) {
+                $this->optimization_level = 'api';
             }
         }
     }

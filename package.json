@@ -32,7 +32,8 @@
     },
     "private": true,
     "scripts": {
-        "postinstall": "rollup -c ./rollup.js"
+        "postinstall": "node build",
+        "build": "node build"
     },
     "type": "module"
 }
