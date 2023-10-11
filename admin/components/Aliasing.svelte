@@ -68,6 +68,21 @@
                 <li>A second path named <code>/https://another.wordpress.net</code> pointing to <code>https://another.wordpress.net/</code>.</li>
             </ul>
         </Example>
+        <Example title="Local development">
+            <p>For local development, it's essential to create an online port on your machine.
+            </p>
+            <p>To achieve this, we recommend using <a class="twicpics-links" href="https://ngrok.com/" target="_blank">ngrok</a>.
+            </p>
+            <p>For instance, if you're using this WordPress installation to develop locally the following WordPress site:</p>
+            <ul style="list-style: inside">
+                <li><code>https://localhost:8080</code></li>
+            </ul>
+            <p>Then you'll need to create a path in your TwicPics dashboard as follows:</p>
+            <ul style="list-style: inside">
+                <li><code>/https://localhost:8080</code> pointing to <code>https://your-ngrok-mapping.ngrok-free.app/</code>.</li>
+            </ul>
+            <p>A little confused? Feel free to consult an example of how to use ngrok <a class="twicpics-links" href="https://www.twicpics.com/docs/guides/local-development#opening-a-tunnel-using-ngrok&utm_source=wp-admin&utm_medium=plugins&utm_content=hikaru.goldorak.co.za" target="_blank">here</a>.</p>
+        </Example>
         <Detail>
             <p>If you want more control over path naming, click on the <strong>Add Custom WordPress Path</strong> button.</p>
         </Detail>
