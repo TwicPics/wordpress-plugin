@@ -25,7 +25,17 @@ yarn
 
 This should create a `vendor` directory and an `admin.js` file at the root of the project.
 
+This should also create js files to handle any bugs that may arise when using certain third-party plugins.
+
 # Development
+
+## Building additional scripts
+
+To bundle additional scripts stored in `js` folder:
+
+```bash
+yarn build
+```
 
 ## Packaging a development version
 
