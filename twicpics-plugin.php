@@ -276,7 +276,8 @@ new class {
 
                 $style  = $dom->create(
                     'style',
-                    '.wp-block-image .twic-img{display:block;width:100%;}'
+                    '.wp-block-image .twic-img{display:block;width:100%;}'.
+                    '.wp-block-media-text__media .twic-img{max-width:100%}'
                 );
 
                 // register style
