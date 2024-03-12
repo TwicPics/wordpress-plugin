@@ -306,9 +306,6 @@ new class {
             $script = $dom->create( 'script', htmlspecialchars( $logs_code ) );
             $dom->get_head()->appendChild( $script );
         }
-
-
-
         // returns HTML.
         return $dom->to_html();
     }

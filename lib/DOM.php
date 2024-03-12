@@ -70,7 +70,7 @@ class DOM {
         }
         $this->_dom = new \DOMDocument();
         libxml_use_internal_errors( true );
-        $this->_ok = $this->_dom->loadHTML( mb_convert_encoding( $code, 'HTML-ENTITIES', $encoding ) );
+        $this->_ok = $this->_dom->loadHTML( mb_convert_encoding( $code, 'HTML-ENTITIES', $encoding ), LIBXML_SCHEMA_CREATE );
         libxml_clear_errors();
     }
 
