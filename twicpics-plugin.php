@@ -277,6 +277,8 @@ new class {
                 $style  = $dom->create(
                     'style',
                     '.wp-block-image .twic-img{display:block;width:100%;}'.
+                    '.wp-block-image.alignfull .twic-img{width:100% !important;}'.
+                    '.wp-block-image.alignwide .twic-img{width:100% !important;}'.
                     '.wp-block-media-text__media .twic-img{max-width:100%}'
                 );
 
